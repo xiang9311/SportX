@@ -33,6 +33,8 @@ public class Constant {
     public static final String AUTO_LOGIN = "autologin";
     public static final String CKECKED = "checked";
     public static final String LAST_CHECKED_TIME = "last_checked_time";
+    public static final String IMAGES = "images";
+    public static final String CURRENT_INDEX = "current_index";
 
     public static final int FROM_PAGER = 1;
     public static final int FROM_USER_DETAIL = 2;
@@ -107,5 +109,10 @@ public class Constant {
      */
     public static final int ARTICLE_IMAGE = 3;
 
+
+
+    /*******************  froms  *********************/
+    public static final int FROM_FOLLOW = 1;
+    public static final int FROM_GYM_DETAIL = 2;
 
 }

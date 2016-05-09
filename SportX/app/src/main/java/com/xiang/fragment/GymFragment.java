@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.github.clans.fab.FloatingActionButton;
@@ -29,6 +30,7 @@ import com.xiang.factory.DisplayOptionsFactory;
 import com.xiang.listener.OnRclViewItemClickListener;
 import com.xiang.proto.nano.Common;
 import com.xiang.sportx.GymDetailActivity;
+import com.xiang.sportx.ImageAndTextActivity;
 import com.xiang.sportx.R;
 
 import link.fls.swipestack.SwipeStack;
@@ -45,6 +47,7 @@ public class GymFragment extends Fragment {
     private TextView tv_equipment_more, tv_class_more, tv_card_more;
     private TextView tv_recommend_content;
     private FloatingActionButton fab_checkin;
+    private RelativeLayout rl_gym;
 
     private SwipeStack swipeStack_user;
 
@@ -91,6 +94,7 @@ public class GymFragment extends Fragment {
         tv_class_more = (TextView) findHeadViewById(R.id.tv_course_more);
         tv_card_more = (TextView) findHeadViewById(R.id.tv_card_more);
         fab_checkin = (FloatingActionButton) findHeadViewById(R.id.fab_checkin);
+        rl_gym = (RelativeLayout) findHeadViewById(R.id.rl_gym);
 
 
 
@@ -99,6 +103,12 @@ public class GymFragment extends Fragment {
         initGymDetail();
 
         initGymList();
+
+        // 这里做的东西在initGymDetail做了
+        configHeaderView();
+    }
+
+    private void configHeaderView() {
 
     }
 
@@ -148,6 +158,14 @@ public class GymFragment extends Fragment {
      */
     private void initGymDetail() {
         imageLoader.displayImage(detailGym.briefGym.gymCover[0], iv_cover, options);
+        iv_cover.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), ImageAndTextActivity.class);
+                intent.putExtra(Constant.IMAGES, detailGym.briefGym.gymCover);
+                startActivity(intent);
+            }
+        });
         imageLoader.displayImage(detailGym.briefGym.gymAvatar, iv_avatar, options);
         tv_gym_name.setText(detailGym.briefGym.gymName);
         tv_place.setText(detailGym.briefGym.place);
@@ -177,6 +195,13 @@ public class GymFragment extends Fragment {
             sb_card.append("元 ");
         }
         tv_card_more.setText(sb_card);
+
+        rl_gym.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getContext(), GymDetailActivity.class));
+            }
+        });
 
 
         // 打卡点击事件的一些信息

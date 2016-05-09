@@ -1,6 +1,7 @@
 package com.xiang.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,18 +9,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.xiang.Util.Constant;
 import com.xiang.Util.SportTimeUtil;
 import com.xiang.Util.ViewUtil;
 import com.xiang.factory.DisplayOptionsFactory;
 import com.xiang.listener.OnRclViewItemClickListener;
 import com.xiang.proto.nano.Common;
 import com.xiang.sportx.R;
+import com.xiang.sportx.TrendDetailActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,17 +36,24 @@ public class TrendAdapter extends BaseRecyclerAdapter<TrendAdapter.MyViewHolder>
     private Context context;
     private List<Common.Trend> trends = new ArrayList<>();
     private RecyclerView recyclerView;
+    private int from;
+
+    private int lastClickIndex;
+    public Common.Trend getLastClickTrend(){
+        return (Common.Trend) getDataByPosition(lastClickIndex);
+    }
 
     // tools
     private ImageLoader imageLoader = ImageLoader.getInstance();
     private DisplayImageOptions avatarOption = DisplayOptionsFactory.createBigAvatarOption(0);
     private DisplayImageOptions imageOptions = DisplayOptionsFactory.createNormalImageOption();
 
-    public TrendAdapter(Context context, List<Common.Trend> trends, RecyclerView recyclerView) {
+    public TrendAdapter(Context context, List<Common.Trend> trends, RecyclerView recyclerView, int from) {
         super(context, trends, recyclerView);
         this.context = context;
         this.trends = trends;
         this.recyclerView = recyclerView;
+        this.from = from;
     }
 
     private OnRclViewItemClickListener onRclViewItemClickListener;
@@ -59,7 +70,7 @@ public class TrendAdapter extends BaseRecyclerAdapter<TrendAdapter.MyViewHolder>
     public int getItemViewType(int position) {
         int type = super.getItemViewType(position);
         if(type == 0){
-            return trends.get(position).imgs.length + headMaxSize + 1;
+            return ((Common.Trend) getDataByPosition(position)).imgs.length + headMaxSize + 1;
         } else {
             return type;
         }
@@ -72,8 +83,6 @@ public class TrendAdapter extends BaseRecyclerAdapter<TrendAdapter.MyViewHolder>
         if(view != null){
             return new MyViewHolder(view);
         }
-
-//        Log.d("onCreateViewHolder",""+viewType);
 
         MyViewHolder holder = new MyViewHolder(LayoutInflater.from(context).inflate(R.layout.listitem_trend_follow, parent, false));
 
@@ -109,7 +118,7 @@ public class TrendAdapter extends BaseRecyclerAdapter<TrendAdapter.MyViewHolder>
             return ;
         }
 
-        final Common.Trend trend = trends.get(position);
+        final Common.Trend trend = (Common.Trend) getDataByPosition(position);
         holder.tv_username.setText(trend.briefUser.userName);
         holder.tv_content.setText(trend.content);
         holder.tv_place.setText(trend.gymName);
@@ -177,6 +186,15 @@ public class TrendAdapter extends BaseRecyclerAdapter<TrendAdapter.MyViewHolder>
             }
         });
 
+        holder.rl_parent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                lastClickIndex = position;
+                Intent intent = new Intent(context, TrendDetailActivity.class);
+                intent.putExtra(Constant.FROM, from);
+                context.startActivity(intent);
+            }
+        });
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder{
@@ -193,6 +211,7 @@ public class TrendAdapter extends BaseRecyclerAdapter<TrendAdapter.MyViewHolder>
         private TextView tv_comment_count, tv_like_count;
 
         private GridLayout gv_images;
+        private RelativeLayout rl_parent;
 
         public MyViewHolder(View itemView) {
             super(itemView);
@@ -220,6 +239,8 @@ public class TrendAdapter extends BaseRecyclerAdapter<TrendAdapter.MyViewHolder>
             iv_like = (ImageView) itemView.findViewById(R.id.iv_like);
             tv_comment_count = (TextView) itemView.findViewById(R.id.tv_comment_count);
             tv_like_count = (TextView) itemView.findViewById(R.id.tv_like_count);
+
+            rl_parent = (RelativeLayout) itemView.findViewById(R.id.rl_parent);
         }
     }
 }

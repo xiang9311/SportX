@@ -13,6 +13,7 @@ import com.xiang.adapter.MainPagerAdapter;
 import com.xiang.fragment.FollowFragment;
 import com.xiang.fragment.GymFragment;
 import com.xiang.fragment.UserFragment;
+import com.xiang.proto.nano.Common;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +25,7 @@ public class MainPagerActivity extends BaseAppCompatActivity {
     private ViewPager viewPager;
     private RadioButton rb_discover, rb_follow, rb_user, rb[];
     private MainPagerAdapter mainPagerAdapter;
-    private List<Fragment> fragmentList;
+    private static List<Fragment> fragmentList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,14 +115,14 @@ public class MainPagerActivity extends BaseAppCompatActivity {
                 viewPager.setCurrentItem(0, false);
             }
         });
-        rb_follow.setOnClickListener(new View.OnClickListener(){
+        rb_follow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
                 resetRbs(1);
                 viewPager.setCurrentItem(1, false);
             }
         });
-        rb_user.setOnClickListener(new View.OnClickListener(){
+        rb_user.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
                 resetRbs(2);
@@ -174,5 +175,9 @@ public class MainPagerActivity extends BaseAppCompatActivity {
         rb[1].setAlpha(0.4f);
         rb[2].setAlpha(0.4f);
         rb[index].setAlpha(1.0f);
+    }
+
+    public static Common.Trend getLastClickTrend(){
+        return ((FollowFragment)fragmentList.get(1)).getLastClickTrend();
     }
 }

@@ -13,6 +13,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.xiang.Util.ArrayUtil;
 import com.xiang.Util.CardUtil;
+import com.xiang.Util.Constant;
 import com.xiang.adapter.GymImageAdapter;
 import com.xiang.adapter.TrendAdapter;
 import com.xiang.adapter.UserInGymAdapter;
@@ -34,7 +35,7 @@ public class GymDetailActivity extends BaseAppCompatActivity {
 
     // adapter
     private GymImageAdapter gymImageAdapter;
-    private TrendAdapter trendAdapter;
+    private static TrendAdapter trendAdapter;
     private UserInGymAdapter userAdapter;
 
     // data
@@ -96,6 +97,9 @@ public class GymDetailActivity extends BaseAppCompatActivity {
         initUserRecyclerView();
     }
 
+    /**
+     * 初始化推荐用户列表
+     */
     private void initUserRecyclerView() {
         userAdapter = new UserInGymAdapter(this, DefaultUtil.getBriefUsers(8), rv_user_in_gym);
         userAdapter.setOnRclViewItemClickListener(new OnRclViewItemClickListener() {
@@ -116,8 +120,11 @@ public class GymDetailActivity extends BaseAppCompatActivity {
         rv_user_in_gym.setLayoutManager(manager);
     }
 
+    /**
+     * 初始化 trend 列表
+     */
     private void initTrendRecyclerView() {
-        trendAdapter = new TrendAdapter(this, DefaultUtil.getTrends(10), rv_trend_in_gym);
+        trendAdapter = new TrendAdapter(this, DefaultUtil.getTrends(10), rv_trend_in_gym, Constant.FROM_GYM_DETAIL);
 
         // add head view
         trendAdapter.addHeadView(headView);
@@ -141,11 +148,16 @@ public class GymDetailActivity extends BaseAppCompatActivity {
         rv_trend_in_gym.setLayoutManager(manager);
     }
 
+    // 建设房水平滑动图片列表
     private void initImageRecyclerView() {
         gymImageAdapter = new GymImageAdapter(this, ArrayUtil.Array2List(detailGym.briefGym.gymCover), rv_gym_images);
         gymImageAdapter.setOnRclViewItemClickListener(new OnRclViewItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
+                Intent intent = new Intent(GymDetailActivity.this, ImageAndTextActivity.class);
+                intent.putExtra(Constant.IMAGES, detailGym.briefGym.gymCover);
+                intent.putExtra(Constant.CURRENT_INDEX, position);
+                startActivity(intent);
             }
 
             @Override
@@ -160,6 +172,7 @@ public class GymDetailActivity extends BaseAppCompatActivity {
         rv_gym_images.setLayoutManager(manager);
     }
 
+    // 初始化gym详细信息
     private void initDetailGym() {
         imageLoader.displayImage(detailGym.briefGym.gymAvatar, iv_avatar, options);
         tv_gym_name.setText(detailGym.briefGym.gymName);
@@ -190,9 +203,14 @@ public class GymDetailActivity extends BaseAppCompatActivity {
             sb_card.append("元 ");
         }
         tv_card_more.setText(sb_card);
+
     }
 
     private View findHeadViewById(int id){
         return headView.findViewById(id);
+    }
+
+    public static Common.Trend getLastClickTrend(){
+        return trendAdapter.getLastClickTrend();
     }
 }

@@ -10,6 +10,26 @@ import java.util.List;
  */
 public class DefaultUtil {
 
+    public static List<Common.Comment> getComments(int count){
+        List<Common.Comment> comments = new ArrayList<>();
+        String[] coms = new String[]{"系统还提供了相关值TextAppearance_Small, TextAppearance_Large等。如有需要可在以上样式基础上修改。"
+                ,"Here are all the FloatingActionMenu's xml attributes with their default values which means that you don't have to set all of them:"};
+        String[] name = new String[]{"欧意健身房","吊炸天健身房","乐美多健身房","工体游泳馆","海淀最大游泳馆","北京体育场"};
+        for (int i = 0; i < count; i ++){
+            Common.Comment comment = new Common.Comment();
+            comment.briefUser = getBriefUser();
+            comment.commentId = 0;
+            comment.commentContent = coms[getRandom(2)];
+            comment.trendId = 0;
+            comment.toUserid = getRandom(5);
+            comment.toUserName = "张伟要上天";
+            comment.createTime = System.currentTimeMillis() - 1000*getRandom(40);
+            comment.gymName = name[getRandom(6)];
+            comments.add(comment);
+        }
+        return comments;
+    }
+
     public static List<Common.BriefGym> getGyms(int count){
         String[] gymcover = new String[]{
                 "http://pic13.nipic.com/20110301/5713677_135704571127_2.jpg",

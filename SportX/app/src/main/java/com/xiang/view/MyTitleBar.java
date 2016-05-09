@@ -90,6 +90,16 @@ public class MyTitleBar extends RelativeLayout {
         }
     }
 
+    /**
+     *
+     * @param colorId
+     */
+    public void setBackButtomBackgroundColor(int colorId){
+        if(iv_back != null){
+            iv_back.setBackgroundColor(getResources().getColor(colorId));
+        }
+    }
+
     public void setMoreButton(int resId, boolean show, OnClickListener listener){
         if (show){
             iv_more.setVisibility(View.VISIBLE);

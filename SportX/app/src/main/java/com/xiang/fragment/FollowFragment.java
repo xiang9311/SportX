@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.xiang.Util.Constant;
 import com.xiang.adapter.TrendAdapter;
 import com.xiang.dafault.DefaultUtil;
 import com.xiang.proto.nano.Common;
@@ -57,7 +58,7 @@ public class FollowFragment extends BaseFragment implements SwipeRefreshLayout.O
     private boolean initTrend() {
         if (trendList.size() > 0){
 
-            trendAdapter = new TrendAdapter(getContext(), trendList, rv_trend);
+            trendAdapter = new TrendAdapter(getContext(), trendList, rv_trend, Constant.FROM_FOLLOW);
             LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
 
             rv_trend.setAdapter(trendAdapter);
@@ -138,5 +139,9 @@ public class FollowFragment extends BaseFragment implements SwipeRefreshLayout.O
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
+    }
+
+    public Common.Trend getLastClickTrend() {
+        return trendAdapter.getLastClickTrend();
     }
 }

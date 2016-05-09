@@ -7,10 +7,11 @@
 
     <ImageView
         android:id="@+id/iv_back"
-        android:layout_width="@dimen/top_height"
+        android:layout_width="40dp"
         android:layout_height="@dimen/top_height"
         android:scaleType="fitCenter"
-        android:padding="7dp"
+        android:paddingTop="9dp"
+        android:paddingBottom="9dp"
         android:clickable="true"
         android:background="@drawable/selector_main_pressed"
         android:src="@mipmap/back"/>
@@ -24,7 +25,6 @@
         android:textColor="@color/white"
         android:textSize="@dimen/text_big"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:singleLine="true"/>
 

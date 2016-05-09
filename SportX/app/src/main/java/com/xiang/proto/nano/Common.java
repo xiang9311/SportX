@@ -1900,4 +1900,196 @@ public interface Common {
       return new CommentMessage().mergeFrom(input);
     }
   }
+
+  public static final class Comment extends
+      com.google.protobuf.nano.MessageNano {
+
+    private static volatile Comment[] _emptyArray;
+    public static Comment[] emptyArray() {
+      // Lazily initializes the empty array
+      if (_emptyArray == null) {
+        synchronized (
+            com.google.protobuf.nano.InternalNano.LAZY_INIT_LOCK) {
+          if (_emptyArray == null) {
+            _emptyArray = new Comment[0];
+          }
+        }
+      }
+      return _emptyArray;
+    }
+
+    // optional .com.xiang.proto.BriefUser briefUser = 1;
+    public BriefUser briefUser;
+
+    // optional int32 commentId = 2;
+    public int commentId;
+
+    // optional string commentContent = 3;
+    public String commentContent;
+
+    // optional int32 trendId = 4;
+    public int trendId;
+
+    // optional int32 toUserid = 5;
+    public int toUserid;
+
+    // optional string toUserName = 6;
+    public String toUserName;
+
+    // optional int64 createTime = 7;
+    public long createTime;
+
+    // optional string gymName = 8;
+    public String gymName;
+
+    public Comment() {
+      clear();
+    }
+
+    public Comment clear() {
+      briefUser = null;
+      commentId = 0;
+      commentContent = "";
+      trendId = 0;
+      toUserid = 0;
+      toUserName = "";
+      createTime = 0L;
+      gymName = "";
+      cachedSize = -1;
+      return this;
+    }
+
+    @Override
+    public void writeTo(com.google.protobuf.nano.CodedOutputByteBufferNano output)
+        throws java.io.IOException {
+      if (this.briefUser != null) {
+        output.writeMessage(1, this.briefUser);
+      }
+      if (this.commentId != 0) {
+        output.writeInt32(2, this.commentId);
+      }
+      if (!this.commentContent.equals("")) {
+        output.writeString(3, this.commentContent);
+      }
+      if (this.trendId != 0) {
+        output.writeInt32(4, this.trendId);
+      }
+      if (this.toUserid != 0) {
+        output.writeInt32(5, this.toUserid);
+      }
+      if (!this.toUserName.equals("")) {
+        output.writeString(6, this.toUserName);
+      }
+      if (this.createTime != 0L) {
+        output.writeInt64(7, this.createTime);
+      }
+      if (!this.gymName.equals("")) {
+        output.writeString(8, this.gymName);
+      }
+      super.writeTo(output);
+    }
+
+    @Override
+    protected int computeSerializedSize() {
+      int size = super.computeSerializedSize();
+      if (this.briefUser != null) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+          .computeMessageSize(1, this.briefUser);
+      }
+      if (this.commentId != 0) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeInt32Size(2, this.commentId);
+      }
+      if (!this.commentContent.equals("")) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeStringSize(3, this.commentContent);
+      }
+      if (this.trendId != 0) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeInt32Size(4, this.trendId);
+      }
+      if (this.toUserid != 0) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeInt32Size(5, this.toUserid);
+      }
+      if (!this.toUserName.equals("")) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeStringSize(6, this.toUserName);
+      }
+      if (this.createTime != 0L) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeInt64Size(7, this.createTime);
+      }
+      if (!this.gymName.equals("")) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeStringSize(8, this.gymName);
+      }
+      return size;
+    }
+
+    @Override
+    public Comment mergeFrom(
+            com.google.protobuf.nano.CodedInputByteBufferNano input)
+        throws java.io.IOException {
+      while (true) {
+        int tag = input.readTag();
+        switch (tag) {
+          case 0:
+            return this;
+          default: {
+            if (!com.google.protobuf.nano.WireFormatNano.parseUnknownField(input, tag)) {
+              return this;
+            }
+            break;
+          }
+          case 10: {
+            if (this.briefUser == null) {
+              this.briefUser = new BriefUser();
+            }
+            input.readMessage(this.briefUser);
+            break;
+          }
+          case 16: {
+            this.commentId = input.readInt32();
+            break;
+          }
+          case 26: {
+            this.commentContent = input.readString();
+            break;
+          }
+          case 32: {
+            this.trendId = input.readInt32();
+            break;
+          }
+          case 40: {
+            this.toUserid = input.readInt32();
+            break;
+          }
+          case 50: {
+            this.toUserName = input.readString();
+            break;
+          }
+          case 56: {
+            this.createTime = input.readInt64();
+            break;
+          }
+          case 66: {
+            this.gymName = input.readString();
+            break;
+          }
+        }
+      }
+    }
+
+    public static Comment parseFrom(byte[] data)
+        throws com.google.protobuf.nano.InvalidProtocolBufferNanoException {
+      return com.google.protobuf.nano.MessageNano.mergeFrom(new Comment(), data);
+    }
+
+    public static Comment parseFrom(
+            com.google.protobuf.nano.CodedInputByteBufferNano input)
+        throws java.io.IOException {
+      return new Comment().mergeFrom(input);
+    }
+  }
 }
