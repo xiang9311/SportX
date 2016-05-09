@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:background="@drawable/selector_white_to_gray"
+        style="@style/main_padding">
+
+        <ImageView
+            android:id="@+id/iv_follow_avatar"
+            android:layout_width="@dimen/avatar_in_follow"
+            android:layout_height="@dimen/avatar_in_follow"
+            android:src="@mipmap/avatar_01"/>
+
+        <LinearLayout
+            android:layout_toRightOf="@+id/iv_follow_avatar"
+            android:layout_marginLeft="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                style="@style/text_user_name_in_follow"
+                android:text="飞天小王子"/>
+
+            <TextView
+                android:id="@+id/tv_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                style="@style/text_content"
+                android:text="内部推荐英文翻译:internal referral…,点击查查权威在线词典详细解释内部推荐英文怎么说,怎么用英语翻译内部推荐,内部推荐的英语例句用法和解释。"/>
+
+            <ImageView
+                android:id="@+id/iv_big"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxWidth="@dimen/follow_big_image_max_size"
+                android:visibility="gone"
+                android:scaleType="centerCrop"
+                android:layout_marginTop="3dp"
+                android:src="@mipmap/image"/>
+
+            <GridLayout
+                android:id="@+id/gv_images"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:visibility="gone"
+                android:columnCount="3">
+
+                <ImageView
+                    android:id="@+id/iv_image0"
+                    style="@style/follow_image"
+                    android:src="@mipmap/image"/>
+
+                <ImageView
+                    android:id="@+id/iv_image1"
+                    style="@style/follow_image"
+                    android:layout_marginLeft="@dimen/follow_image_margin"
+                    android:src="@mipmap/image"/>
+
+                <ImageView
+                    android:id="@+id/iv_image2"
+                    style="@style/follow_image"
+                    android:layout_marginLeft="@dimen/follow_image_margin"
+                    android:src="@mipmap/image"/>
+
+                <ImageView
+                    android:id="@+id/iv_image3"
+                    style="@style/follow_image"
+                    android:layout_marginTop="@dimen/follow_image_margin"
+                    android:src="@mipmap/image"/>
+
+                <ImageView
+                    android:id="@+id/iv_image4"
+                    style="@style/follow_image"
+                    android:layout_marginTop="@dimen/follow_image_margin"
+                    android:layout_marginLeft="@dimen/follow_image_margin"
+                    android:src="@mipmap/image"/>
+
+                <ImageView
+                    android:id="@+id/iv_image5"
+                    style="@style/follow_image"
+                    android:layout_marginTop="@dimen/follow_image_margin"
+                    android:layout_marginLeft="@dimen/follow_image_margin"
+                    android:src="@mipmap/image"/>
+
+                <ImageView
+                    android:id="@+id/iv_image6"
+                    style="@style/follow_image"
+                    android:layout_marginTop="@dimen/follow_image_margin"
+                    android:src="@mipmap/image"/>
+
+                <ImageView
+                    android:id="@+id/iv_image7"
+                    style="@style/follow_image"
+                    android:layout_marginTop="@dimen/follow_image_margin"
+                    android:layout_marginLeft="@dimen/follow_image_margin"
+                    android:src="@mipmap/image"/>
+
+                <ImageView
+                    android:id="@+id/iv_image8"
+                    style="@style/follow_image"
+                    android:layout_marginTop="@dimen/follow_image_margin"
+                    android:layout_marginLeft="@dimen/follow_image_margin"
+                    android:src="@mipmap/image"/>
+
+            </GridLayout>
+
+            <TextView
+                android:id="@+id/tv_place"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:textColor="@color/main_color"
+                android:textSize="@dimen/text_smaller"
+                android:text="三里屯乐乐建设房"/>
+
+            <TextView
+                android:id="@+id/tv_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:textColor="@color/text_light"
+                android:textSize="@dimen/text_smaller"
+                android:text="3小时前"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/iv_like"
+                    android:layout_width="@dimen/like_comment_icon_size"
+                    android:layout_height="@dimen/like_comment_icon_size"
+                    android:padding="5dp"
+                    android:scaleType="fitCenter"
+                    android:layout_toLeftOf="@+id/tv_like_count"
+                    android:src="@mipmap/like"/>
+
+                <TextView
+                    android:id="@+id/tv_like_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@+id/iv_comment"
+                    android:textColor="@color/action_icon_color"
+                    android:layout_marginRight="10dp"
+                    android:layout_centerVertical="true"
+                    android:text="10"/>
+
+                <ImageView
+                    android:id="@+id/iv_comment"
+                    android:layout_width="@dimen/like_comment_icon_size"
+                    android:layout_height="@dimen/like_comment_icon_size"
+                    android:padding="5dp"
+                    android:scaleType="fitCenter"
+                    android:layout_toLeftOf="@+id/tv_comment_count"
+                    android:src="@mipmap/comment"/>
+
+                <TextView
+                    android:id="@+id/tv_comment_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:textColor="@color/action_icon_color"
+                    android:layout_centerVertical="true"
+                    android:text="10"/>
+
+            </RelativeLayout>
+
+
+        </LinearLayout>
+
+    </RelativeLayout>
+    
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/lightLightGray"/>
+
+</LinearLayout>

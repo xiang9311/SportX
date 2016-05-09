@@ -1,0 +1,440 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/refreshLayout"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <View
+                android:id="@+id/view_00"
+                android:layout_height="6dp"
+                android:layout_width="match_parent"
+                android:background="@color/white"/>
+
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/vp_banner"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/banner_height"
+                android:focusable="true"
+                android:layout_below="@+id/view_00"
+                android:focusableInTouchMode="true">
+
+            </android.support.v4.view.ViewPager>
+
+            <me.relex.circleindicator.CircleIndicator
+                android:id="@+id/indicator"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="80dp"/>
+
+            <LinearLayout
+                android:id="@+id/ll_0"
+                android:layout_below="@+id/vp_banner"
+                android:background="@color/white"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                style="@style/main_padding">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="精选动态"
+                    style="@style/text_part_title"/>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv_prefer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="-4dp"
+                    android:layout_marginRight="-4dp">
+
+                </android.support.v7.widget.RecyclerView>
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/view_1"
+                android:layout_height="6dp"
+                android:layout_width="match_parent"
+                android:layout_below="@+id/ll_0"
+                android:background="@color/lightestGray"/>
+
+            <!-- 下面是附近健身房推荐 -->
+
+            <TextView
+                android:id="@+id/tv_0"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/view_1"
+                android:paddingTop="@dimen/padding_tb"
+                android:paddingLeft="@dimen/padding_lr"
+                android:background="@color/white"
+                style="@style/text_part_title"
+                android:text="附近"/>
+
+            <LinearLayout
+                android:id="@+id/ll_1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/main_padding"
+                android:background="@color/white"
+                android:layout_below="@+id/tv_0"
+                android:orientation="horizontal">
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:id="@+id/iv_gym0"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:scaleType="centerCrop"
+                        android:src="@mipmap/image"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:padding="5dp"
+                        android:background="@color/colorOpcity"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tv_gym0"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:singleLine="true"
+                            android:ellipsize="end"
+                            android:gravity="right"
+                            style="@style/text_gym_name_in_discover"
+                            android:text="欧意健身房"/>
+
+                        <TextView
+                            android:id="@+id/tv_place0"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:singleLine="true"
+                            android:ellipsize="end"
+                            android:gravity="right"
+                            style="@style/text_gym_name_in_discover"
+                            android:text="海淀区知春路13号院五层2503"/>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="200dp"
+                    android:layout_weight="0.5"
+                    android:layout_marginLeft="4dp"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="98dp">
+
+                        <ImageView
+                            android:id="@+id/iv_gym1"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:src="@mipmap/image"/>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:padding="5dp"
+                            android:background="@color/colorOpcity"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tv_gym1"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:singleLine="true"
+                                android:ellipsize="end"
+                                android:gravity="right"
+                                style="@style/text_gym_name_in_discover"
+                                android:text="欧意健身房"/>
+
+                            <TextView
+                                android:id="@+id/tv_place1"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:singleLine="true"
+                                android:ellipsize="end"
+                                android:gravity="right"
+                                style="@style/text_gym_name_in_discover"
+                                android:text="海淀区知春路13号院五层2503"/>
+
+
+
+                        </LinearLayout>
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="98dp"
+                        android:layout_marginTop="4dp">
+
+                        <ImageView
+                            android:id="@+id/iv_gym2"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:src="@mipmap/image"/>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:padding="5dp"
+                            android:background="@color/colorOpcity"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tv_gym2"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:singleLine="true"
+                                android:ellipsize="end"
+                                android:gravity="right"
+                                style="@style/text_gym_name_in_discover"
+                                android:text="欧意健身房"/>
+
+                            <TextView
+                                android:id="@+id/tv_place2"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:singleLine="true"
+                                android:ellipsize="end"
+                                android:gravity="right"
+                                style="@style/text_gym_name_in_discover"
+                                android:text="海淀区知春路13号院五层2503"/>
+
+
+
+                        </LinearLayout>
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/view_2"
+                android:layout_height="6dp"
+                android:layout_width="match_parent"
+                android:layout_below="@+id/ll_1"
+                android:background="@color/lightestGray"/>
+
+            <!-- 推荐关注 -->
+            <TextView
+                android:id="@+id/tv_1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/view_2"
+                android:paddingTop="@dimen/padding_tb"
+                android:paddingLeft="@dimen/padding_lr"
+                android:background="@color/white"
+                style="@style/text_part_title"
+                android:text="推荐关注"/>
+
+            <LinearLayout
+                android:id="@+id/ll_users"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_1"
+                android:orientation="horizontal"
+                android:background="@color/white"
+                style="@style/main_padding">
+
+                <LinearLayout
+                    android:id="@+id/ll_user_01"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/civ_user_01"
+                        style="@style/prefer_user_avatar"
+                        android:layout_gravity="center_horizontal"
+                        android:src="@mipmap/avatar_01"/>
+
+                    <TextView
+                        android:id="@+id/tv_username_01"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:singleLine="true"
+                        android:ellipsize="end"
+                        android:text="就是要上天"
+                        style="@style/prefer_user_name"
+                        android:gravity="center"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_user_02"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="@dimen/prefer_image_margin"
+                    android:orientation="vertical">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/civ_user_02"
+                        style="@style/prefer_user_avatar"
+                        android:layout_gravity="center_horizontal"
+                        android:src="@mipmap/avatar_01"/>
+
+                    <TextView
+                        android:id="@+id/tv_username_02"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:singleLine="true"
+                        android:ellipsize="end"
+                        android:text="就是要上天"
+                        style="@style/prefer_user_name"
+                        android:gravity="center"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_user_03"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="@dimen/prefer_image_margin"
+                    android:orientation="vertical">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/civ_user_03"
+                        style="@style/prefer_user_avatar"
+                        android:layout_gravity="center_horizontal"
+                        android:src="@mipmap/avatar_01"/>
+
+                    <TextView
+                        android:id="@+id/tv_username_03"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:singleLine="true"
+                        android:ellipsize="end"
+                        android:text="就是要上天"
+                        style="@style/prefer_user_name"
+                        android:gravity="center"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_user_04"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="@dimen/prefer_image_margin"
+                    android:orientation="vertical">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/civ_user_04"
+                        style="@style/prefer_user_avatar"
+                        android:layout_gravity="center_horizontal"
+                        android:src="@mipmap/avatar_01"/>
+
+                    <TextView
+                        android:id="@+id/tv_username_04"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:singleLine="true"
+                        android:ellipsize="end"
+                        android:text="就是要上天"
+                        style="@style/prefer_user_name"
+                        android:gravity="center"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_user_05"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="@dimen/prefer_image_margin"
+                    android:orientation="vertical">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/civ_user_05"
+                        style="@style/prefer_user_avatar"
+                        android:layout_gravity="center_horizontal"
+                        android:src="@mipmap/avatar_01"/>
+
+                    <TextView
+                        android:id="@+id/tv_username_05"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:singleLine="true"
+                        android:ellipsize="end"
+                        android:text="就是要上天"
+                        style="@style/prefer_user_name"
+                        android:gravity="center"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/view_3"
+                android:layout_height="6dp"
+                android:layout_width="match_parent"
+                android:layout_below="@+id/ll_users"
+                android:background="@color/lightestGray"/>
+
+            <LinearLayout
+                android:id="@+id/ll_3"
+                android:layout_below="@+id/view_3"
+                android:background="@color/white"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                style="@style/main_padding">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="推荐内容"
+                    style="@style/text_part_title"/>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv_feed"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="-4dp"
+                    android:layout_marginRight="-4dp">
+
+                </android.support.v7.widget.RecyclerView>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+
+</android.support.v4.widget.SwipeRefreshLayout>

@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardBackgroundColor="@color/white">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/main_padding"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/iv_avatar"
+            android:layout_width="@dimen/avatar_in_card"
+            android:layout_height="@dimen/avatar_in_card"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/image"/>
+
+        <TextView
+            android:id="@+id/tv_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/iv_avatar"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="10dp"
+            android:text="用户名"/>
+
+        <TextView
+            android:id="@+id/tv_sign"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_username"
+            android:layout_alignLeft="@+id/tv_username"
+            android:layout_marginTop="3dp"
+            android:text="这里是用的签名"/>
+
+        <TextView
+            android:id="@+id/tv_0"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/iv_avatar"
+            android:layout_marginTop="5dp"
+            style="@style/text_user_in_card_info"
+            android:text="动态"/>
+
+        <TextView
+            android:id="@+id/tv_trend_count"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/tv_0"
+            android:layout_below="@+id/tv_0"
+            style="@style/text_user_in_card_count"
+            android:text="1009"/>
+
+        <TextView
+            android:id="@+id/tv_1"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/tv_0"
+            android:layout_alignTop="@+id/tv_0"
+            android:layout_marginLeft="8dp"
+            style="@style/text_user_in_card_info"
+            android:text="关注"/>
+
+        <TextView
+            android:id="@+id/tv_guanzhu_count"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/tv_1"
+            android:layout_below="@+id/tv_1"
+            style="@style/text_user_in_card_count"
+            android:text="1009"/>
+
+        <TextView
+            android:id="@+id/tv_2"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/tv_1"
+            android:layout_marginLeft="8dp"
+            android:layout_alignTop="@+id/tv_0"
+            style="@style/text_user_in_card_info"
+            android:text="粉丝"/>
+
+        <TextView
+            android:id="@+id/tv_fensi_count"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/tv_2"
+            android:layout_below="@+id/tv_2"
+            style="@style/text_user_in_card_count"
+            android:text="1009"/>
+
+        <LinearLayout
+            android:id="@+id/ll_0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_guanzhu_count"
+            android:layout_alignLeft="@+id/tv_trend_count"
+            android:layout_alignRight="@+id/tv_fensi_count"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_follow"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/selector_follow_unfollow"
+                android:gravity="center"
+                android:text="关注"/>
+
+            <TextView
+                android:id="@+id/tv_detail"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/selector_follow_unfollow"
+                android:gravity="center"
+                android:text="查看详情"/>
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/iv_image0"
+            android:layout_width="@dimen/user_image_size"
+            android:layout_height="@dimen/user_image_size"
+            android:layout_below="@+id/ll_0"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/image"/>
+
+        <ImageView
+            android:id="@+id/iv_image1"
+            android:layout_width="@dimen/user_image_size"
+            android:layout_height="@dimen/user_image_size"
+            android:layout_below="@+id/ll_0"
+            android:layout_toRightOf="@+id/iv_image0"
+            android:layout_marginLeft="5dp"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/image"/>
+
+        <ImageView
+            android:id="@+id/iv_image2"
+            android:layout_width="@dimen/user_image_size"
+            android:layout_height="@dimen/user_image_size"
+            android:layout_below="@+id/ll_0"
+            android:layout_toRightOf="@+id/iv_image1"
+            android:layout_marginLeft="5dp"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/image"/>
+
+        <ImageView
+            android:id="@+id/iv_image3"
+            android:layout_width="@dimen/user_image_size"
+            android:layout_height="@dimen/user_image_size"
+            android:layout_below="@+id/ll_0"
+            android:layout_toRightOf="@+id/iv_image2"
+            android:layout_marginLeft="5dp"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/image"/>
+
+    </RelativeLayout>
+
+
+
+</android.support.v7.widget.CardView>

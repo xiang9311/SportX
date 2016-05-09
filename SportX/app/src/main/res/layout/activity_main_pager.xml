@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.xiang.sportx.MainPagerActivity">
+
+    <RelativeLayout
+        android:id="@+id/rl_top"
+        android:layout_width="match_parent"
+        android:background="@color/main_color"
+        android:layout_height="@dimen/top_height">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_big"
+            android:textColor="@color/white"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:text="SportX"/>
+
+        <!--<ImageView-->
+            <!--android:id="@+id/iv_scan"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:padding="5dp"-->
+            <!--android:scaleType="centerInside"-->
+            <!--android:src="@mipmap/scan"-->
+            <!--android:layout_alignParentRight="true"/>-->
+
+        <ImageView
+            android:id="@+id/iv_search"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:paddingLeft="12dp"
+            android:paddingRight="10dp"
+            android:scaleType="fitCenter"
+            android:layout_alignParentRight="true"
+            android:clickable="true"
+            android:background="@drawable/selector_main_pressed"
+            android:src="@mipmap/search"/>
+
+    </RelativeLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vp_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/rl_top"
+        android:layout_marginBottom="@dimen/bottom_height_plus1">
+
+    </android.support.v4.view.ViewPager>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bottom_height_plus1"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/lightestGray"></LinearLayout>
+
+        <RadioGroup
+            android:id="@+id/rg_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/bottom_height"
+            android:layout_alignParentBottom="true"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/radio0"
+                style="@style/main_tab_bottom"
+                android:text="发现" />
+
+            <RadioButton
+                android:id="@+id/radio1"
+                style="@style/main_tab_bottom"
+                android:text="关注" />
+
+            <!--<RadioButton-->
+                <!--android:id="@+id/radio2"-->
+                <!--style="@style/main_tab_bottom"-->
+                <!--android:text="消息" />-->
+
+            <RadioButton
+                android:id="@+id/radio2"
+                style="@style/main_tab_bottom"
+                android:text="我" />
+
+        </RadioGroup>
+
+    </LinearLayout>
+
+</RelativeLayout>

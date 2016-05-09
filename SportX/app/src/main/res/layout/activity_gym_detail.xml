@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.xiang.sportx.GymDetailActivity">
+
+    <com.xiang.view.MyTitleBar
+        android:id="@+id/myTitleBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </com.xiang.view.MyTitleBar>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_trend_in_gym"
+        android:layout_below="@+id/myTitleBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </android.support.v7.widget.RecyclerView>
+
+    <com.github.clans.fab.FloatingActionMenu
+        android:id="@+id/right_labels"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
+        fab:menu_colorNormal="@color/main_color"
+        fab:menu_colorPressed="@color/main_color_pressed"
+        fab:menu_labels_position="left"
+        fab:menu_openDirection="up"
+        fab:menu_labels_style="@style/menu_labels_style">
+
+        <com.github.clans.fab.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ok"
+            fab:fab_colorNormal="@color/main_color"
+            fab:fab_label="签到"
+            fab:fab_colorPressed="@color/main_color_pressed"/>
+
+        <com.github.clans.fab.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/write"
+            fab:fab_colorNormal="@color/main_color"
+            fab:fab_label="发动态"
+            fab:fab_colorPressed="@color/main_color_pressed"/>
+
+    </com.github.clans.fab.FloatingActionMenu>
+
+</RelativeLayout>

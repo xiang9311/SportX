@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <dimen name="bottom_height">50dp</dimen>
+    <dimen name="bottom_height_plus1">51dp</dimen>
+    <dimen name="top_height">46dp</dimen>
+    <dimen name="top_height_plus1">47dp</dimen>
+
+    <!-- text size-->
+    <dimen name="text_normal">15sp</dimen>
+    <dimen name="text_small">13sp</dimen>
+    <dimen name="text_smaller">12sp</dimen>
+    <dimen name="text_smallest">11sp</dimen>
+    <dimen name="text_big">17sp</dimen>
+    <dimen name="text_bigger">18sp</dimen>
+    <dimen name="text_biggest">19sp</dimen>
+
+    <dimen name="radius">2dp</dimen>
+
+    <dimen name="padding_lr">10dp</dimen>
+    <dimen name="padding_tb">7dp</dimen>
+
+    <!-- margin -->
+    <dimen name="prefer_image_margin">5dp</dimen>
+    <dimen name="follow_image_margin">3dp</dimen>
+
+    <!-- image size -->
+    <dimen name="avatar_small_in_discover">30dp</dimen>
+    <dimen name="avatar_in_follow">45dp</dimen>
+    <dimen name="avatar_in_gym">50dp</dimen>
+    <dimen name="avatar_in_card">70dp</dimen>
+    <dimen name="gym_image_height">90dp</dimen>
+    <dimen name="gym_equipment_icon">22dp</dimen>
+    <dimen name="avatar_in_user">80dp</dimen>
+    <dimen name="user_cat_icon">26dp</dimen>
+    <dimen name="bottom_image_size">20dp</dimen>
+    <dimen name="like_comment_icon_size">28dp</dimen>
+    <dimen name="back_icon_size">25dp</dimen>
+
+    <dimen name="gym_intro_icon_size">31dp</dimen>
+
+    <dimen name="banner_height">130dp</dimen>
+    <dimen name="prefer_trend_image_height">130dp</dimen>
+    <dimen name="follow_image_size">80dp</dimen>
+    <dimen name="follow_big_image_max_size">240dp</dimen>
+
+    <dimen name="gym_cover_height">160dp</dimen>
+    <dimen name="gym_detail_margin_top">140dp</dimen>
+    <dimen name="gym_check_button_margin_top">115dp</dimen>
+    <dimen name="gym_avatar_size">55dp</dimen>
+    <dimen name="gym_category_size">35dp</dimen>
+
+    <dimen name="text_user_info_size">90dp</dimen>
+    <dimen name="user_image_size">70dp</dimen>
+</resources>

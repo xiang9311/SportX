@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rv_root"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/top_height"
+    android:background="@color/main_color">
+
+    <ImageView
+        android:id="@+id/iv_back"
+        android:layout_width="@dimen/top_height"
+        android:layout_height="@dimen/top_height"
+        android:scaleType="fitCenter"
+        android:padding="7dp"
+        android:clickable="true"
+        android:background="@drawable/selector_main_pressed"
+        android:src="@mipmap/back"/>
+
+    <TextView
+        android:id="@+id/tv_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/iv_back"
+        android:layout_toLeftOf="@+id/iv_more"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_big"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:singleLine="true"/>
+
+    <ImageView
+        android:id="@+id/iv_more"
+        android:layout_width="@dimen/top_height"
+        android:layout_height="@dimen/top_height"
+        android:layout_alignParentRight="true"
+        android:padding="7dp"
+        android:scaleType="fitCenter"
+        android:background="@drawable/selector_main_pressed"
+        android:src="@mipmap/image"/>
+
+</RelativeLayout>

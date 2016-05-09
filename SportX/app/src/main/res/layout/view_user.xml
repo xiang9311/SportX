@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="@color/gray_background"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:layout_marginTop="20dp"
+        style="@style/main_padding"
+        android:background="@drawable/selector_white_to_gray">
+        
+        <ImageView
+            android:id="@+id/iv_avatar"
+            android:layout_width="@dimen/avatar_in_user"
+            android:layout_height="@dimen/avatar_in_user"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/image"/>
+
+        <TextView
+            android:id="@+id/tv_username"
+            android:layout_toRightOf="@+id/iv_avatar"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="7dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_normal"
+            android:textColor="@color/text_normal"
+            android:text="你咋不上天呢"/>
+
+        <TextView
+            android:id="@+id/tv_user_sign"
+            android:layout_toRightOf="@+id/iv_avatar"
+            android:layout_marginLeft="10dp"
+            android:layout_below="@+id/tv_username"
+            android:layout_marginTop="7dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_small"
+            android:textColor="@color/text_light"
+            android:text="你咋不上天呢"/>
+        
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_photo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:layout_marginTop="30dp"
+        style="@style/user_rl_style"
+        android:background="@drawable/selector_white_to_gray">
+
+        <ImageView
+            android:id="@+id/iv_0"
+            android:layout_width="@dimen/user_cat_icon"
+            android:layout_height="@dimen/user_cat_icon"
+            android:src="@mipmap/photo"
+            android:background="@color/white"
+            android:scaleType="fitCenter"/>
+        
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/iv_0"
+            style="@style/text_option"
+            android:text="相册"/>
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/lightLightGray"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_signin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        style="@style/user_rl_style"
+        android:background="@drawable/selector_white_to_gray">
+
+        <ImageView
+            android:id="@+id/iv_1"
+            android:layout_width="@dimen/user_cat_icon"
+            android:layout_height="@dimen/user_cat_icon"
+            android:src="@mipmap/signin"
+            android:background="@color/white"
+            android:scaleType="fitCenter"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/iv_1"
+            style="@style/text_option"
+            android:text="打卡"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_guanzhu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:layout_marginTop="30dp"
+        style="@style/user_rl_style"
+        android:background="@drawable/selector_white_to_gray">
+
+        <ImageView
+            android:id="@+id/iv_2"
+            android:layout_width="@dimen/user_cat_icon"
+            android:layout_height="@dimen/user_cat_icon"
+            android:src="@mipmap/guanzhu"
+            android:background="@color/white"
+            android:scaleType="fitCenter"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/text_option"
+            android:layout_toRightOf="@+id/iv_2"
+            android:text="关注"/>
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/lightLightGray"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_fensi"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        style="@style/user_rl_style"
+        android:background="@drawable/selector_white_to_gray">
+
+        <ImageView
+            android:id="@+id/iv_3"
+            android:layout_width="@dimen/user_cat_icon"
+            android:layout_height="@dimen/user_cat_icon"
+            android:src="@mipmap/fensi"
+            android:background="@color/white"
+            android:scaleType="fitCenter"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/text_option"
+            android:layout_toRightOf="@+id/iv_3"
+            android:text="粉丝"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_setting"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:layout_marginTop="30dp"
+        style="@style/user_rl_style"
+        android:background="@drawable/selector_white_to_gray">
+
+        <ImageView
+            android:id="@+id/iv_4"
+            android:layout_width="@dimen/user_cat_icon"
+            android:layout_height="@dimen/user_cat_icon"
+            android:src="@mipmap/setting"
+            android:background="@color/white"
+            android:scaleType="fitCenter"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/iv_4"
+            style="@style/text_option"
+            android:text="设置"/>
+
+    </RelativeLayout>
+
+</LinearLayout>
