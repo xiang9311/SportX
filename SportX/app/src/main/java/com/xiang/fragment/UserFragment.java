@@ -16,6 +16,7 @@ import com.xiang.factory.DisplayOptionsFactory;
 import com.xiang.sportx.MyDetailActivity;
 import com.xiang.sportx.R;
 import com.xiang.sportx.UserAlbumActivity;
+import com.xiang.sportx.UserListActivity;
 import com.xiang.sportx.XMoneyActivity;
 
 /**
@@ -25,7 +26,7 @@ public class UserFragment extends BaseFragment {
 
     private View mView;
     private ImageView iv_avatar;
-    private RelativeLayout rl_photo, rl_user_detail, rl_money;
+    private RelativeLayout rl_photo, rl_user_detail, rl_money, rl_guanzhu, rl_fensi;
 
     // tools
     private ImageLoader imageLoader = ImageLoader.getInstance();
@@ -37,6 +38,8 @@ public class UserFragment extends BaseFragment {
         rl_photo = (RelativeLayout) findViewById(R.id.rl_photo);
         rl_user_detail = (RelativeLayout) findViewById(R.id.rl_user_detail);
         rl_money = (RelativeLayout) findViewById(R.id.rl_money);
+        rl_guanzhu = (RelativeLayout) findViewById(R.id.rl_guanzhu);
+        rl_fensi = (RelativeLayout) findViewById(R.id.rl_fensi);
         initUser();
 
 
@@ -59,6 +62,20 @@ public class UserFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getContext(), XMoneyActivity.class));
+            }
+        });
+
+        rl_guanzhu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getContext(), UserListActivity.class));
+            }
+        });
+
+        rl_fensi.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getContext(), UserListActivity.class));
             }
         });
     }

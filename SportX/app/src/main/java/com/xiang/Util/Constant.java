@@ -35,6 +35,7 @@ public class Constant {
     public static final String LAST_CHECKED_TIME = "last_checked_time";
     public static final String IMAGES = "images";
     public static final String CURRENT_INDEX = "current_index";
+    public static final String SP_AUTO_SHOW_MONEY_DIALOG = "sp_auto_show_money_dialog";
 
     public static final String HEADER_CMDID = "cmdid";
 

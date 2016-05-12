@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">SportX</string>
+
+    <string name="money_info">
+        获取途径：\n1.每发布一条带有场馆的动态获得8X币（每日一次）\n2.每增加一个粉丝（之前从未关注过你）获得2X币\n\n
+        使用途径：（最迟7月1日开启）\n1.X币换卡，可使用若干X币兑换合作场馆的体验卡等\n2.购物代金，可在设备商城使用X币充当部分现金。
+    </string>
 </resources>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tv_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_normal"
+        android:textColor="@color/text_normal"
+        android:padding="5dp"
+        android:lineSpacingExtra="1dp"
+        android:text="测试文字内容"/>
+
+    <com.rey.material.widget.CheckBox
+        android:id="@+id/checkBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:cbd_strokeSize="2dp"
+        app:cbd_strokeColor="@color/main_color"
+        app:cbd_animDuration="200"
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        android:text="不再提示"/>
+
+</LinearLayout>

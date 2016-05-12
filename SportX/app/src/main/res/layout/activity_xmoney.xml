@@ -33,7 +33,7 @@
             android:textColor="@color/main_color"
             android:layout_marginLeft="10dp"
             android:textSize="30dp"
-            android:text="100001"/>
+            android:text="10"/>
 
         <ImageView
             android:id="@+id/iv_money"
@@ -42,6 +42,7 @@
             android:layout_toRightOf="@+id/tv_money"
             android:layout_alignBottom="@+id/tv_money"
             android:layout_alignTop="@+id/tv_0"
+            android:layout_marginBottom="5dp"
             android:src="@mipmap/money"/>
 
         <TextView
@@ -51,6 +52,7 @@
             android:layout_toRightOf="@+id/iv_money"
             android:layout_alignBottom="@+id/tv_money"
             android:textSize="20dp"
+            android:layout_marginBottom="5dp"
             android:text="币"/>
 
     </RelativeLayout>
@@ -74,6 +76,7 @@
         android:orientation="horizontal">
 
         <RelativeLayout
+            android:id="@+id/rl_card"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -84,7 +87,7 @@
                 android:layout_centerHorizontal="true"
                 android:scaleType="fitCenter"
                 style="@style/image_money_item"
-                android:src="@mipmap/money"/>
+                android:src="@mipmap/card_big"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -92,7 +95,7 @@
                 android:layout_below="@+id/iv_0"
                 android:gravity="center"
                 style="@style/text_money_item"
-                android:text="积分换卡"/>
+                android:text="X币换卡"/>
 
         </RelativeLayout>
 
@@ -102,6 +105,7 @@
             android:background="@color/lightLightGray"/>
 
         <RelativeLayout
+            android:id="@+id/rl_shop"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"

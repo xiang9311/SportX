@@ -1,5 +1,6 @@
 package com.xiang.sportx;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
@@ -7,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -33,6 +35,7 @@ public class UserDetailActivity extends BaseAppCompatActivity {
     private TextView tv_sign;         // 签名
     private ImageView iv_sex;
     private TextView tv_guanzhu_count, tv_fensi_count, tv_trend_count;
+    private LinearLayout ll_guanzhu, ll_fensi;
 
     // adapter
     private static TrendAdapter trendAdapter;
@@ -70,6 +73,8 @@ public class UserDetailActivity extends BaseAppCompatActivity {
         tv_guanzhu_count = (TextView) findHeadViewById(R.id.tv_guanzhu_count);
         tv_fensi_count = (TextView) findHeadViewById(R.id.tv_fensi_count);
         tv_trend_count = (TextView) findHeadViewById(R.id.tv_trend_count);
+        ll_guanzhu = (LinearLayout) findHeadViewById(R.id.ll_guanzhu);
+        ll_fensi = (LinearLayout) findHeadViewById(R.id.ll_fensi);
     }
 
     private View findHeadViewById(int id){
@@ -134,6 +139,20 @@ public class UserDetailActivity extends BaseAppCompatActivity {
             @Override
             public void onClick(View v) {
                 Snackbar.make(rv_trend, "操作成功", Snackbar.LENGTH_SHORT).show();
+            }
+        });
+
+        ll_guanzhu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(UserDetailActivity.this, UserListActivity.class));
+            }
+        });
+
+        ll_fensi.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(UserDetailActivity.this, UserListActivity.class));
             }
         });
     }

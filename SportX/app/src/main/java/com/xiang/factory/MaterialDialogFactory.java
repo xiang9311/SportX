@@ -5,11 +5,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.rey.material.widget.CheckBox;
 import com.rey.material.widget.RadioButton;
 import com.xiang.sportx.R;
+import com.xiang.view.MateriaDialogWidthCheckBox;
 import com.xiang.view.TwoOptionMaterialDialog;
 
 /**
@@ -17,15 +20,17 @@ import com.xiang.view.TwoOptionMaterialDialog;
  */
 public class MaterialDialogFactory {
     private static int LAYOUT_TWO_OPTION = R.layout.md_two_option;
+    private static int LAYOUT_CAN_CHECK = R.layout.md_with_checkbox;
 
     /**
      * 返回一个具有两个选项的md，但没有设置title和button，还需使用者自己设置
      * @param context
      * @param options
      * @param showRadio
+     * @param choosedIndex -1 表示不选择 ，其他从0开始
      * @return
      */
-    public static TwoOptionMaterialDialog createTwoOptionMd(Context context, String[] options, boolean showRadio){
+    public static TwoOptionMaterialDialog createTwoOptionMd(Context context, String[] options, boolean showRadio, int choosedIndex){
         final TwoOptionMaterialDialog twoOptionMaterialDialog = new TwoOptionMaterialDialog(context);
         View view = LayoutInflater.from(context).inflate(LAYOUT_TWO_OPTION, null ,false);
         LinearLayout ll_text = (LinearLayout) view.findViewById(R.id.ll_text);
@@ -60,6 +65,20 @@ public class MaterialDialogFactory {
         } else{
             ll_text.setVisibility(View.GONE);
 
+            if(choosedIndex != -1){
+                switch (choosedIndex){
+                    case 0:
+                        rb_option1.setChecked(true);
+//                        rb_option1.clearAnimation();
+                        break;
+                    case 1:
+                        rb_option2.setChecked(true);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
             try {
                 rb_option1.setText(options[0]);
                 rb_option2.setText(options[1]);
@@ -88,6 +107,28 @@ public class MaterialDialogFactory {
         twoOptionMaterialDialog.setCanceledOnTouchOutside(true);
 
         return twoOptionMaterialDialog;
+    }
+
+    public static MateriaDialogWidthCheckBox createCheckBoxMd(Context context, String content, String checkContent, boolean checked){
+        final MateriaDialogWidthCheckBox md = new MateriaDialogWidthCheckBox(context);
+        View view = LayoutInflater.from(context).inflate(LAYOUT_CAN_CHECK, null, false);
+        TextView textView = (TextView) view.findViewById(R.id.tv_content);
+        CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkBox);
+
+        textView.setText(content);
+        checkBox.setChecked(checked);
+
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                md.onCheck(isChecked);
+            }
+        });
+
+        md.setContentView(view);
+        md.setCanceledOnTouchOutside(true);
+
+        return md;
     }
 
 

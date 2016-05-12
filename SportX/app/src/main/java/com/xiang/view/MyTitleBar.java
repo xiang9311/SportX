@@ -1,5 +1,6 @@
 package com.xiang.view;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -88,6 +89,19 @@ public class MyTitleBar extends RelativeLayout {
         } else{
             iv_back.setVisibility(View.GONE);
         }
+    }
+
+    /**
+     * 设置default backbutton
+     */
+    public void setBackButtonDefault(){
+        iv_back.setVisibility(View.VISIBLE);
+        iv_back.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((Activity)context).finish();
+            }
+        });
     }
 
     /**

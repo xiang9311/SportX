@@ -136,7 +136,7 @@ public class MyDetailActivity extends BaseAppCompatActivity {
             public void onClick(View v) {
                 String[] options = new String[]{"相册", "拍照"};
                 if(md_changeavatar == null){
-                    md_changeavatar = MaterialDialogFactory.createTwoOptionMd(MyDetailActivity.this, options, false);
+                    md_changeavatar = MaterialDialogFactory.createTwoOptionMd(MyDetailActivity.this, options, false, 0);
                     md_changeavatar.setOnOptionChooseListener(new TwoOptionMaterialDialog.OnOptionChooseListener() {
                         @Override
                         public void onOptionChoose(int index) {
@@ -155,7 +155,7 @@ public class MyDetailActivity extends BaseAppCompatActivity {
             public void onClick(View v) {
                 final String[] options = new String[]{"男", "女"};
                 if(md_sex == null){
-                    md_sex = MaterialDialogFactory.createTwoOptionMd(MyDetailActivity.this, options, true);
+                    md_sex = MaterialDialogFactory.createTwoOptionMd(MyDetailActivity.this, options, true, 0);
                     md_sex.setOnOptionChooseListener(new TwoOptionMaterialDialog.OnOptionChooseListener() {
                         @Override
                         public void onOptionChoose(final int index) {
