@@ -14,6 +14,10 @@ public interface Common {
   public static final int PAO_BU_JI = 0;
   public static final int LIN_YU_FANG = 1;
 
+  // enum Sex
+  public static final int MALE = 0;
+  public static final int FEMALE = 1;
+
   public static final class RequestCommon extends
       com.google.protobuf.nano.MessageNano {
 
@@ -2090,6 +2094,356 @@ public interface Common {
             com.google.protobuf.nano.CodedInputByteBufferNano input)
         throws java.io.IOException {
       return new Comment().mergeFrom(input);
+    }
+  }
+
+  public static final class TrendBriefMessage extends
+      com.google.protobuf.nano.MessageNano {
+
+    private static volatile TrendBriefMessage[] _emptyArray;
+    public static TrendBriefMessage[] emptyArray() {
+      // Lazily initializes the empty array
+      if (_emptyArray == null) {
+        synchronized (
+            com.google.protobuf.nano.InternalNano.LAZY_INIT_LOCK) {
+          if (_emptyArray == null) {
+            _emptyArray = new TrendBriefMessage[0];
+          }
+        }
+      }
+      return _emptyArray;
+    }
+
+    // optional string lastAvatar = 1;
+    public String lastAvatar;
+
+    // optional int32 count = 2;
+    public int count;
+
+    public TrendBriefMessage() {
+      clear();
+    }
+
+    public TrendBriefMessage clear() {
+      lastAvatar = "";
+      count = 0;
+      cachedSize = -1;
+      return this;
+    }
+
+    @Override
+    public void writeTo(com.google.protobuf.nano.CodedOutputByteBufferNano output)
+        throws java.io.IOException {
+      if (!this.lastAvatar.equals("")) {
+        output.writeString(1, this.lastAvatar);
+      }
+      if (this.count != 0) {
+        output.writeInt32(2, this.count);
+      }
+      super.writeTo(output);
+    }
+
+    @Override
+    protected int computeSerializedSize() {
+      int size = super.computeSerializedSize();
+      if (!this.lastAvatar.equals("")) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeStringSize(1, this.lastAvatar);
+      }
+      if (this.count != 0) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeInt32Size(2, this.count);
+      }
+      return size;
+    }
+
+    @Override
+    public TrendBriefMessage mergeFrom(
+            com.google.protobuf.nano.CodedInputByteBufferNano input)
+        throws java.io.IOException {
+      while (true) {
+        int tag = input.readTag();
+        switch (tag) {
+          case 0:
+            return this;
+          default: {
+            if (!com.google.protobuf.nano.WireFormatNano.parseUnknownField(input, tag)) {
+              return this;
+            }
+            break;
+          }
+          case 10: {
+            this.lastAvatar = input.readString();
+            break;
+          }
+          case 16: {
+            this.count = input.readInt32();
+            break;
+          }
+        }
+      }
+    }
+
+    public static TrendBriefMessage parseFrom(byte[] data)
+        throws com.google.protobuf.nano.InvalidProtocolBufferNanoException {
+      return com.google.protobuf.nano.MessageNano.mergeFrom(new TrendBriefMessage(), data);
+    }
+
+    public static TrendBriefMessage parseFrom(
+            com.google.protobuf.nano.CodedInputByteBufferNano input)
+        throws java.io.IOException {
+      return new TrendBriefMessage().mergeFrom(input);
+    }
+  }
+
+  public static final class DetailUser extends
+      com.google.protobuf.nano.MessageNano {
+
+    private static volatile DetailUser[] _emptyArray;
+    public static DetailUser[] emptyArray() {
+      // Lazily initializes the empty array
+      if (_emptyArray == null) {
+        synchronized (
+            com.google.protobuf.nano.InternalNano.LAZY_INIT_LOCK) {
+          if (_emptyArray == null) {
+            _emptyArray = new DetailUser[0];
+          }
+        }
+      }
+      return _emptyArray;
+    }
+
+    // optional int32 userId = 1;
+    public int userId;
+
+    // optional string userName = 2;
+    public String userName;
+
+    // optional string userAvatar = 3;
+    public String userAvatar;
+
+    // optional .com.xiang.proto.Sex sex = 4;
+    public int sex;
+
+    // optional string sign = 5;
+    public String sign;
+
+    // repeated .com.xiang.proto.Trend trends = 6;
+    public Trend[] trends;
+
+    // optional bool isFollowed = 7;
+    public boolean isFollowed;
+
+    // optional int32 guanzhuCount = 8;
+    public int guanzhuCount;
+
+    // optional int32 fensiCount = 9;
+    public int fensiCount;
+
+    // optional int32 trendCount = 10;
+    public int trendCount;
+
+    public DetailUser() {
+      clear();
+    }
+
+    public DetailUser clear() {
+      userId = 0;
+      userName = "";
+      userAvatar = "";
+      sex = Common.MALE;
+      sign = "";
+      trends = Trend.emptyArray();
+      isFollowed = false;
+      guanzhuCount = 0;
+      fensiCount = 0;
+      trendCount = 0;
+      cachedSize = -1;
+      return this;
+    }
+
+    @Override
+    public void writeTo(com.google.protobuf.nano.CodedOutputByteBufferNano output)
+        throws java.io.IOException {
+      if (this.userId != 0) {
+        output.writeInt32(1, this.userId);
+      }
+      if (!this.userName.equals("")) {
+        output.writeString(2, this.userName);
+      }
+      if (!this.userAvatar.equals("")) {
+        output.writeString(3, this.userAvatar);
+      }
+      if (this.sex != Common.MALE) {
+        output.writeInt32(4, this.sex);
+      }
+      if (!this.sign.equals("")) {
+        output.writeString(5, this.sign);
+      }
+      if (this.trends != null && this.trends.length > 0) {
+        for (int i = 0; i < this.trends.length; i++) {
+          Trend element = this.trends[i];
+          if (element != null) {
+            output.writeMessage(6, element);
+          }
+        }
+      }
+      if (this.isFollowed != false) {
+        output.writeBool(7, this.isFollowed);
+      }
+      if (this.guanzhuCount != 0) {
+        output.writeInt32(8, this.guanzhuCount);
+      }
+      if (this.fensiCount != 0) {
+        output.writeInt32(9, this.fensiCount);
+      }
+      if (this.trendCount != 0) {
+        output.writeInt32(10, this.trendCount);
+      }
+      super.writeTo(output);
+    }
+
+    @Override
+    protected int computeSerializedSize() {
+      int size = super.computeSerializedSize();
+      if (this.userId != 0) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeInt32Size(1, this.userId);
+      }
+      if (!this.userName.equals("")) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeStringSize(2, this.userName);
+      }
+      if (!this.userAvatar.equals("")) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeStringSize(3, this.userAvatar);
+      }
+      if (this.sex != Common.MALE) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+          .computeInt32Size(4, this.sex);
+      }
+      if (!this.sign.equals("")) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeStringSize(5, this.sign);
+      }
+      if (this.trends != null && this.trends.length > 0) {
+        for (int i = 0; i < this.trends.length; i++) {
+          Trend element = this.trends[i];
+          if (element != null) {
+            size += com.google.protobuf.nano.CodedOutputByteBufferNano
+              .computeMessageSize(6, element);
+          }
+        }
+      }
+      if (this.isFollowed != false) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeBoolSize(7, this.isFollowed);
+      }
+      if (this.guanzhuCount != 0) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeInt32Size(8, this.guanzhuCount);
+      }
+      if (this.fensiCount != 0) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeInt32Size(9, this.fensiCount);
+      }
+      if (this.trendCount != 0) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeInt32Size(10, this.trendCount);
+      }
+      return size;
+    }
+
+    @Override
+    public DetailUser mergeFrom(
+            com.google.protobuf.nano.CodedInputByteBufferNano input)
+        throws java.io.IOException {
+      while (true) {
+        int tag = input.readTag();
+        switch (tag) {
+          case 0:
+            return this;
+          default: {
+            if (!com.google.protobuf.nano.WireFormatNano.parseUnknownField(input, tag)) {
+              return this;
+            }
+            break;
+          }
+          case 8: {
+            this.userId = input.readInt32();
+            break;
+          }
+          case 18: {
+            this.userName = input.readString();
+            break;
+          }
+          case 26: {
+            this.userAvatar = input.readString();
+            break;
+          }
+          case 32: {
+            int value = input.readInt32();
+            switch (value) {
+              case Common.MALE:
+              case Common.FEMALE:
+                this.sex = value;
+                break;
+            }
+            break;
+          }
+          case 42: {
+            this.sign = input.readString();
+            break;
+          }
+          case 50: {
+            int arrayLength = com.google.protobuf.nano.WireFormatNano
+                .getRepeatedFieldArrayLength(input, 50);
+            int i = this.trends == null ? 0 : this.trends.length;
+            Trend[] newArray =
+                new Trend[i + arrayLength];
+            if (i != 0) {
+              System.arraycopy(this.trends, 0, newArray, 0, i);
+            }
+            for (; i < newArray.length - 1; i++) {
+              newArray[i] = new Trend();
+              input.readMessage(newArray[i]);
+              input.readTag();
+            }
+            // Last one without readTag.
+            newArray[i] = new Trend();
+            input.readMessage(newArray[i]);
+            this.trends = newArray;
+            break;
+          }
+          case 56: {
+            this.isFollowed = input.readBool();
+            break;
+          }
+          case 64: {
+            this.guanzhuCount = input.readInt32();
+            break;
+          }
+          case 72: {
+            this.fensiCount = input.readInt32();
+            break;
+          }
+          case 80: {
+            this.trendCount = input.readInt32();
+            break;
+          }
+        }
+      }
+    }
+
+    public static DetailUser parseFrom(byte[] data)
+        throws com.google.protobuf.nano.InvalidProtocolBufferNanoException {
+      return com.google.protobuf.nano.MessageNano.mergeFrom(new DetailUser(), data);
+    }
+
+    public static DetailUser parseFrom(
+            com.google.protobuf.nano.CodedInputByteBufferNano input)
+        throws java.io.IOException {
+      return new DetailUser().mergeFrom(input);
     }
   }
 }

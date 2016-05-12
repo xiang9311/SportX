@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gray_background"
+    tools:context="com.xiang.sportx.MyDetailActivity">
+
+    <com.xiang.view.MyTitleBar
+        android:id="@+id/titleBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </com.xiang.view.MyTitleBar>
+
+    <RelativeLayout
+        android:id="@+id/rl_avatar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/titleBar"
+        style="@style/rl_my_item"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/selector_white_to_gray">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/text_my_detail_left"
+            android:text="头像"/>
+
+        <ImageView
+            android:id="@+id/iv_avatar"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_alignParentRight="true"
+            android:src="@mipmap/image"
+            android:scaleType="centerCrop"/>
+
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/ll_0"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_below="@+id/rl_avatar"
+        android:background="@color/lightLightGray"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ll_0"
+        style="@style/rl_my_item"
+        android:background="@drawable/selector_white_to_gray">
+
+        <TextView
+            android:id="@+id/tv_0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/text_my_detail_left"
+            android:text="昵称"/>
+
+        <TextView
+            android:id="@+id/tv_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/tv_0"
+            android:layout_marginLeft="10dp"
+            android:gravity="right"
+            style="@style/text_my_detail_right"
+            android:text="你咋不上天呢"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_sex"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rl_username"
+        android:layout_marginTop="20dp"
+        style="@style/rl_my_item"
+        android:background="@drawable/selector_white_to_gray">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/text_my_detail_left"
+            android:text="性别"/>
+
+        <TextView
+            android:id="@+id/tv_sex"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/text_my_detail_right"
+            android:text="男"/>
+
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/ll_1"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_below="@+id/rl_sex"
+        android:background="@color/lightLightGray"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_sign"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ll_1"
+        style="@style/rl_my_item"
+        android:background="@drawable/selector_white_to_gray">
+
+        <TextView
+            android:id="@+id/tv_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/text_my_detail_left"
+            android:text="个性签名"/>
+
+        <TextView
+            android:id="@+id/tv_sign"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/tv_3"
+            android:layout_marginLeft="10dp"
+            android:gravity="right"
+            style="@style/text_my_detail_right"
+            android:text="你咋不上天呢，咋啦？！"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>

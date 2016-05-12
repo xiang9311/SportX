@@ -1,7 +1,7 @@
 package com.xiang.adapter;
 
 import android.content.Context;
-import android.support.design.widget.Snackbar;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -19,7 +19,9 @@ import com.xiang.Util.SportTimeUtil;
 import com.xiang.factory.DisplayOptionsFactory;
 import com.xiang.listener.OnRclViewItemClickListener;
 import com.xiang.proto.nano.Common;
+import com.xiang.sportx.GymDetailActivity;
 import com.xiang.sportx.R;
+import com.xiang.sportx.UserDetailActivity;
 import com.xiang.view.PlaceNameSpan;
 import com.xiang.view.UserNameSpan;
 
@@ -67,6 +69,14 @@ public class TrendCommentAdapter extends BaseRecyclerAdapter<TrendCommentAdapter
         Common.Comment comment = (Common.Comment) getDataByPosition(position);
 
         imageLoader.displayImage(comment.briefUser.userAvatar, holder.iv_avatar, avatarOptions);
+        holder.iv_avatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, UserDetailActivity.class);
+                //TODO
+                context.startActivity(intent);
+            }
+        });
 
         holder.tv_username.setText(comment.briefUser.userName);
 
@@ -87,7 +97,11 @@ public class TrendCommentAdapter extends BaseRecyclerAdapter<TrendCommentAdapter
             PlaceNameSpan placeNameSpan = new PlaceNameSpan(context, new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Snackbar.make(recyclerView, comment.gymName, Snackbar.LENGTH_SHORT).show();
+//                    Snackbar.make(recyclerView, comment.gymName, Snackbar.LENGTH_SHORT).show();
+                    Intent intent = new Intent(context, GymDetailActivity.class);
+                    //TODO
+                    intent.putExtra(Constant.FROM, Constant.FROM_PLACE_IN_TREND);
+                    context.startActivity(intent);
                 }
             });
             span.setSpan(placeNameSpan, 0, comment.gymName.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
@@ -114,7 +128,10 @@ public class TrendCommentAdapter extends BaseRecyclerAdapter<TrendCommentAdapter
             UserNameSpan userNameSpan = new UserNameSpan(context, new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Snackbar.make(recyclerView, comment.toUserName, Snackbar.LENGTH_SHORT).show();
+//                    Snackbar.make(recyclerView, comment.toUserName, Snackbar.LENGTH_SHORT).show();
+                    Intent intent = new Intent(context, UserDetailActivity.class);
+                    //TODO
+                    context.startActivity(intent);
                 }
             });
             span.setSpan(userNameSpan, 0, comment.toUserName.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);

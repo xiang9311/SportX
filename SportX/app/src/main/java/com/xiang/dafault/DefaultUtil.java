@@ -10,6 +10,44 @@ import java.util.List;
  */
 public class DefaultUtil {
 
+    public static Common.DetailUser getDetailUser(){
+        String[] images = new String[]{"http://www.feizl.com/upload2007/2011_09/110907154639871.jpg",
+                "http://v1.qzone.cc/avatar/201310/03/13/18/524cfe3d23517873.jpg%21200x200.jpg",
+                "http://pic13.nipic.com/20110301/5713677_135704571127_2.jpg",
+                "http://wc.zshl.com/datashow/picb/2005/p2005348171428875.jpg",
+                "http://wc.zshl.com/datashow/picb/2005/p2005348171428875.jpg",
+                "http://www.feizl.com/upload2007/2011_09/110907154639871.jpg"};
+        String[] sign = new String[]{
+                "穿越神剧5月9日优酷华丽上线！！中美韩三国联合制作，一个美国迷妹的韩剧穿越历程！你期待的脑洞槽点与虐心齐聚，全部统统满足你！！",
+                "《我的奇妙男友》中的逗萌女明星，《何以笙箫默》里的阳光摄影师；她们是不同的性格，却是同一个人，当田净植遇上小默笙，吴倩的夏天与秋天"
+        };
+        Common.DetailUser detailUser = new Common.DetailUser();
+        detailUser.userId = 0;
+        detailUser.userName = "我就是要上天 咋啦";
+        detailUser.userAvatar = images[getRandom(6)];
+        detailUser.sex = getRandom(2);
+        detailUser.sign = sign[getRandom(2)];
+        detailUser.trends = getTrendsArray(getRandom(20));
+        detailUser.isFollowed = getRandom(3) > 1;
+        detailUser.guanzhuCount = getRandom(1000000);
+        detailUser.fensiCount = getRandom(10000000);
+        detailUser.trendCount = getRandom(1000);
+        return detailUser;
+    }
+
+    public static Common.TrendBriefMessage getTrendBriefMessage(){
+        String[] images = new String[]{"http://www.feizl.com/upload2007/2011_09/110907154639871.jpg",
+                "http://v1.qzone.cc/avatar/201310/03/13/18/524cfe3d23517873.jpg%21200x200.jpg",
+                "http://pic13.nipic.com/20110301/5713677_135704571127_2.jpg",
+                "http://wc.zshl.com/datashow/picb/2005/p2005348171428875.jpg",
+                "http://wc.zshl.com/datashow/picb/2005/p2005348171428875.jpg",
+                "http://www.feizl.com/upload2007/2011_09/110907154639871.jpg"};
+        Common.TrendBriefMessage message = new Common.TrendBriefMessage();
+        message.lastAvatar = images[getRandom(6)];
+        message.count = (getRandom(5) > 2) ? getRandom(17) : 0;
+        return message;
+    }
+
     public static List<Common.Comment> getComments(int count){
         List<Common.Comment> comments = new ArrayList<>();
         String[] coms = new String[]{"系统还提供了相关值TextAppearance_Small, TextAppearance_Large等。如有需要可在以上样式基础上修改。"
@@ -138,6 +176,38 @@ public class DefaultUtil {
             banners.add(banner);
         }
         return banners;
+    }
+
+    public static Common.Trend[] getTrendsArray(int count){
+        String[] images = new String[]{"http://www.feizl.com/upload2007/2011_09/110907154639871.jpg",
+                "http://v1.qzone.cc/avatar/201310/03/13/18/524cfe3d23517873.jpg%21200x200.jpg",
+                "http://pic13.nipic.com/20110301/5713677_135704571127_2.jpg",
+                "http://wc.zshl.com/datashow/picb/2005/p2005348171428875.jpg",
+                "http://wc.zshl.com/datashow/picb/2005/p2005348171428875.jpg",
+                "http://www.feizl.com/upload2007/2011_09/110907154639871.jpg"};
+        Common.Trend[] trends = new Common.Trend[count];
+        for(int i = 0; i < count; i ++){
+            Common.Trend trend = new Common.Trend();
+            trend.id = 0;
+            trend.briefUser = getBriefUser();
+            trend.createTime = System.currentTimeMillis() - 10000 * getRandom(8);
+            trend.gymId = 0;
+            trend.gymName = "派力司健身";
+            trend.content = "最后，如果需要设置某控件跨越多行或多列，只需将该子控件的android:layout_rowSpan或者layout_columnSpan属性设置为数值，再设置其layout_gravity属性为fill即可，前一个设置表明该控件跨越的行数或列数，后一个设置表明该控件填满所跨越的整行或整列。";
+            trend.likeCount = getRandom(100);
+            trend.commentCount = getRandom(200);
+            trend.isLiked = getRandom(2) == 1;
+            int c = getRandom(9);
+            if (c == 5 || c == 6){
+                c = 1;
+            }
+            trend.imgs = new String[c];
+            for(int j = 0 ; j < c; j ++){
+                trend.imgs[j] = images[getRandom(6)];
+            }
+            trends[i] = trend;
+        }
+        return trends;
     }
 
     public static List<Common.Trend> getTrends(int count){

@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/rl_0"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:layout_marginTop="20dp"
+        style="@style/main_padding"
+        android:background="@drawable/selector_white_to_gray">
+
+        <ImageView
+            android:id="@+id/iv_avatar"
+            android:layout_width="@dimen/avatar_in_user"
+            android:layout_height="@dimen/avatar_in_user"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/image"/>
+
+        <TextView
+            android:id="@+id/tv_username"
+            android:layout_toRightOf="@+id/iv_avatar"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="7dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_big"
+            android:textColor="@color/text_normal"
+            android:text="你咋不上天呢"/>
+
+        <ImageView
+            android:id="@+id/iv_sex"
+            android:layout_width="25dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="7dp"
+            android:padding="1dp"
+            android:scaleType="fitCenter"
+            android:layout_toRightOf="@+id/tv_username"
+            android:layout_alignTop="@+id/tv_username"
+            android:layout_alignBottom="@+id/tv_username"
+            android:src="@mipmap/male"/>
+
+        <TextView
+            android:id="@+id/tv_follow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_username"
+            android:layout_alignLeft="@+id/tv_username"
+            android:layout_marginTop="8dp"
+            android:clickable="true"
+            android:background="@drawable/selector_main_color_border"
+            android:textColor="@color/main_color"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
+            android:text="+ 关注"/>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/rl_11"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rl_0"
+        android:layout_marginTop="20dp"
+        android:background="@color/white"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:background="@drawable/selector_white_to_gray"
+            style="@style/main_padding"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_guanzhu_count"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="10000"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/text_part_title"
+                android:gravity="center"
+                android:layout_marginTop="3dp"
+                android:text="关注"/>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/padding_tb"
+            android:layout_marginBottom="@dimen/padding_tb"
+            android:background="@color/lightLightGray"/>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            style="@style/main_padding"
+            android:clickable="true"
+            android:background="@drawable/selector_white_to_gray"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_fensi_count"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="10000"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/text_part_title"
+                android:gravity="center"
+                android:layout_marginTop="3dp"
+                android:text="粉丝"/>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/padding_tb"
+            android:layout_marginBottom="@dimen/padding_tb"
+            android:background="@color/lightLightGray"/>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:background="@drawable/selector_white_to_gray"
+            style="@style/main_padding"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_trend_count"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="10000"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/text_part_title"
+                android:gravity="center"
+                android:layout_marginTop="3dp"
+                android:text="动态"/>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rl_11"
+        android:clickable="true"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/selector_white_to_gray">
+
+        <TextView
+            android:id="@+id/tv_0"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/text_part_title"
+            android:paddingTop="@dimen/padding_tb"
+            android:paddingLeft="@dimen/padding_lr"
+            android:text="签名"/>
+
+        <TextView
+            android:id="@+id/tv_sign"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_0"
+            android:textSize="@dimen/text_normal"
+            android:textColor="@color/text_light"
+            style="@style/main_padding"
+            android:text="海词词典,最权威的学习词典,专业出版相册的英文,相册翻译,相册英语怎么说等详细讲解。海词词典:学习变容易,记忆很深刻。"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rl_1"
+        android:clickable="true"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/selector_white_to_gray">
+
+        <TextView
+            android:id="@+id/tv_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/text_part_title"
+            android:paddingTop="@dimen/padding_tb"
+            android:paddingLeft="@dimen/padding_lr"
+            android:text="相册"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>

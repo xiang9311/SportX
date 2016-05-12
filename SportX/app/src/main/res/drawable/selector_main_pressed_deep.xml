@@ -2,18 +2,18 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_pressed="false">
         <shape>
-            <solid android:color="@color/main_color"/>
+            <solid android:color="@color/main_color_deep"/>
         </shape>
     </item>
 
     <item android:state_pressed="true">
         <shape>
-            <solid android:color="@color/main_color_pressed"/>
+            <solid android:color="@color/main_color_deep_pressed"/>
         </shape>
     </item>
     <item android:state_hovered="true">
         <shape>
-            <solid android:color="@color/main_color_pressed"/>
+            <solid android:color="@color/main_color_deep_pressed"/>
         </shape>
     </item>
 </selector>

@@ -222,15 +222,4 @@
         android:background="@color/white"
         android:text="附近场馆"/>
 
-    <com.github.clans.fab.FloatingActionButton
-        android:id="@+id/fab_checkin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/gym_check_button_margin_top"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="20dp"
-        android:src="@mipmap/ok"
-        app:fab_colorNormal="@color/main_color"
-        app:fab_colorPressed="@color/main_color_pressed"/>
-
 </RelativeLayout>

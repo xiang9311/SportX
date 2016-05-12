@@ -176,8 +176,4 @@ public class MainPagerActivity extends BaseAppCompatActivity {
         rb[2].setAlpha(0.4f);
         rb[index].setAlpha(1.0f);
     }
-
-    public static Common.Trend getLastClickTrend(){
-        return ((FollowFragment)fragmentList.get(1)).getLastClickTrend();
-    }
 }

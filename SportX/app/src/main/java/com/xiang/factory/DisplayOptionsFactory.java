@@ -19,8 +19,8 @@ public class DisplayOptionsFactory {
                 .showImageOnFail(R.mipmap.avatar_01) // 设置图片加载或解码过程中发生错误显示的图片
                 .resetViewBeforeLoading(false)  // default 设置图片在加载前是否重置、复位
                 .delayBeforeLoading(300)  // 下载前的延迟时间
-                .cacheInMemory(false) // default  设置下载的图片是否缓存在内存中
-                .cacheOnDisk(false) // default  设置下载的图片是否缓存在SD卡中
+                .cacheInMemory(true) // default  设置下载的图片是否缓存在内存中
+                .cacheOnDisk(true) // default  设置下载的图片是否缓存在SD卡中
                 .imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2) // default 设置图片以如何的编码方式显示
                 .bitmapConfig(Bitmap.Config.RGB_565) // default 设置图片的解码类型
                 .displayer(new FadeInBitmapDisplayer(300)) // default  还可以设置圆角图片new RoundedBitmapDisplayer(20)
@@ -38,8 +38,8 @@ public class DisplayOptionsFactory {
                 .showImageOnFail(R.mipmap.image) // 设置图片加载或解码过程中发生错误显示的图片
                 .resetViewBeforeLoading(false)  // default 设置图片在加载前是否重置、复位
                 .delayBeforeLoading(300)  // 下载前的延迟时间
-                .cacheInMemory(false) // default  设置下载的图片是否缓存在内存中
-                .cacheOnDisk(false) // default  设置下载的图片是否缓存在SD卡中
+                .cacheInMemory(true) // default  设置下载的图片是否缓存在内存中
+                .cacheOnDisk(true) // default  设置下载的图片是否缓存在SD卡中
                 .imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2) // default 设置图片以如何的编码方式显示
                 .bitmapConfig(Bitmap.Config.RGB_565) // default 设置图片的解码类型
                 .displayer(new FadeInBitmapDisplayer(300)) // default  还可以设置圆角图片new RoundedBitmapDisplayer(20)
@@ -54,8 +54,8 @@ public class DisplayOptionsFactory {
                     .showImageOnFail(R.mipmap.avatar_01) // 设置图片加载或解码过程中发生错误显示的图片
                     .resetViewBeforeLoading(false)  // default 设置图片在加载前是否重置、复位
                     .delayBeforeLoading(300)  // 下载前的延迟时间
-                    .cacheInMemory(false) // default  设置下载的图片是否缓存在内存中
-                    .cacheOnDisk(false) // default  设置下载的图片是否缓存在SD卡中
+                    .cacheInMemory(true) // default  设置下载的图片是否缓存在内存中
+                    .cacheOnDisk(true) // default  设置下载的图片是否缓存在SD卡中
                     .imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2) // default 设置图片以如何的编码方式显示
                     .bitmapConfig(Bitmap.Config.RGB_565) // default 设置图片的解码类型
                     .displayer(new FadeInBitmapDisplayer(300)) // default  还可以设置圆角图片new RoundedBitmapDisplayer(20)
@@ -67,8 +67,8 @@ public class DisplayOptionsFactory {
                 .showImageOnFail(drawable) // 设置图片加载或解码过程中发生错误显示的图片
                 .resetViewBeforeLoading(false)  // default 设置图片在加载前是否重置、复位
                 .delayBeforeLoading(300)  // 下载前的延迟时间
-                .cacheInMemory(false) // default  设置下载的图片是否缓存在内存中
-                .cacheOnDisk(false) // default  设置下载的图片是否缓存在SD卡中
+                .cacheInMemory(true) // default  设置下载的图片是否缓存在内存中
+                .cacheOnDisk(true) // default  设置下载的图片是否缓存在SD卡中
                 .imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2) // default 设置图片以如何的编码方式显示
                 .bitmapConfig(Bitmap.Config.RGB_565) // default 设置图片的解码类型
                 .displayer(new FadeInBitmapDisplayer(300)) // default  还可以设置圆角图片new RoundedBitmapDisplayer(20)
@@ -82,8 +82,8 @@ public class DisplayOptionsFactory {
                 .showImageOnFail(R.mipmap.image) // 设置图片加载或解码过程中发生错误显示的图片
                 .resetViewBeforeLoading(false)  // default 设置图片在加载前是否重置、复位
                 .delayBeforeLoading(300)  // 下载前的延迟时间
-                .cacheInMemory(false) // default  设置下载的图片是否缓存在内存中
-                .cacheOnDisk(false) // default  设置下载的图片是否缓存在SD卡中
+                .cacheInMemory(true) // default  设置下载的图片是否缓存在内存中
+                .cacheOnDisk(true) // default  设置下载的图片是否缓存在SD卡中
                 .imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2) // default 设置图片以如何的编码方式显示
                 .bitmapConfig(Bitmap.Config.RGB_565) // default 设置图片的解码类型
                 .displayer(new FadeInBitmapDisplayer(300)) // default  还可以设置圆角图片new RoundedBitmapDisplayer(20)

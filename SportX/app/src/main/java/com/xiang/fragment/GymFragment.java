@@ -17,7 +17,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.github.clans.fab.FloatingActionButton;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.xiang.Util.CardUtil;
@@ -32,8 +31,7 @@ import com.xiang.proto.nano.Common;
 import com.xiang.sportx.GymDetailActivity;
 import com.xiang.sportx.ImageAndTextActivity;
 import com.xiang.sportx.R;
-
-import link.fls.swipestack.SwipeStack;
+import com.xiang.sportx.UserDetailActivity;
 
 /**
  * Created by 祥祥 on 2016/4/26.
@@ -46,10 +44,7 @@ public class GymFragment extends Fragment {
     private TextView tv_gym_name, tv_place;
     private TextView tv_equipment_more, tv_class_more, tv_card_more;
     private TextView tv_recommend_content;
-    private FloatingActionButton fab_checkin;
     private RelativeLayout rl_gym;
-
-    private SwipeStack swipeStack_user;
 
 
     // view
@@ -93,7 +88,6 @@ public class GymFragment extends Fragment {
         tv_equipment_more = (TextView) findHeadViewById(R.id.tv_equipment_more);
         tv_class_more = (TextView) findHeadViewById(R.id.tv_course_more);
         tv_card_more = (TextView) findHeadViewById(R.id.tv_card_more);
-        fab_checkin = (FloatingActionButton) findHeadViewById(R.id.fab_checkin);
         rl_gym = (RelativeLayout) findHeadViewById(R.id.rl_gym);
 
 
@@ -229,6 +223,9 @@ public class GymFragment extends Fragment {
         adapter.setOnRclViewItemClickListener(new OnRclViewItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
+                Intent intent = new Intent(getContext(), UserDetailActivity.class);
+                //TODO
+                startActivity(intent);
             }
 
             @Override

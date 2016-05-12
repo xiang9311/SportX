@@ -33,7 +33,7 @@
         android:layout_width="@dimen/top_height"
         android:layout_height="@dimen/top_height"
         android:layout_alignParentRight="true"
-        android:padding="7dp"
+        android:padding="9dp"
         android:scaleType="fitCenter"
         android:background="@drawable/selector_main_pressed"
         android:src="@mipmap/image"/>

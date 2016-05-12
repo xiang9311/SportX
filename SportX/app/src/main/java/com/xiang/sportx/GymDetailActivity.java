@@ -49,7 +49,6 @@ public class GymDetailActivity extends BaseAppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -105,6 +104,9 @@ public class GymDetailActivity extends BaseAppCompatActivity {
         userAdapter.setOnRclViewItemClickListener(new OnRclViewItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
+                Intent intent = new Intent(GymDetailActivity.this, UserDetailActivity.class);
+                //TODO
+                startActivity(intent);
             }
 
             @Override
@@ -208,9 +210,5 @@ public class GymDetailActivity extends BaseAppCompatActivity {
 
     private View findHeadViewById(int id){
         return headView.findViewById(id);
-    }
-
-    public static Common.Trend getLastClickTrend(){
-        return trendAdapter.getLastClickTrend();
     }
 }

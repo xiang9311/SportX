@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gray_background"
+    tools:context="com.xiang.sportx.XMoneyActivity">
+
+    <com.xiang.view.MyTitleBar
+        android:id="@+id/titleBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </com.xiang.view.MyTitleBar>
+
+    <RelativeLayout
+        android:id="@+id/rl_money"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/padding_lr"
+        android:paddingRight="@dimen/padding_lr"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
+        android:layout_marginTop="15dp"
+        android:clickable="true"
+        android:background="@drawable/selector_white_to_gray"
+        android:layout_below="@+id/titleBar">
+
+        <TextView
+            android:id="@+id/tv_money"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/main_color"
+            android:layout_marginLeft="10dp"
+            android:textSize="30dp"
+            android:text="100001"/>
+
+        <ImageView
+            android:id="@+id/iv_money"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_toRightOf="@+id/tv_money"
+            android:layout_alignBottom="@+id/tv_money"
+            android:layout_alignTop="@+id/tv_0"
+            android:src="@mipmap/money"/>
+
+        <TextView
+            android:id="@+id/tv_0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/iv_money"
+            android:layout_alignBottom="@+id/tv_money"
+            android:textSize="20dp"
+            android:text="币"/>
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tv_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rl_money"
+        style="@style/main_padding"
+        android:textSize="@dimen/text_small"
+        android:textColor="@color/text_light"
+        android:text="SportX服务"/>
+
+    <LinearLayout
+        android:id="@+id/ll_0"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_1"
+        android:background="@color/white"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            style="@style/rl_money_item">
+
+            <ImageView
+                android:id="@+id/iv_0"
+                android:layout_centerHorizontal="true"
+                android:scaleType="fitCenter"
+                style="@style/image_money_item"
+                android:src="@mipmap/money"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/iv_0"
+                android:gravity="center"
+                style="@style/text_money_item"
+                android:text="积分换卡"/>
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@color/lightLightGray"/>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            style="@style/rl_money_item">
+
+            <ImageView
+                android:id="@+id/iv_1"
+                android:layout_centerHorizontal="true"
+                android:scaleType="fitCenter"
+                style="@style/image_money_item"
+                android:src="@mipmap/sportcart"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/iv_1"
+                android:gravity="center"
+                style="@style/text_money_item"
+                android:text="精选设备"/>
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@color/lightLightGray"/>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            style="@style/rl_money_item"
+            android:visibility="invisible">
+
+            <ImageView
+                android:id="@+id/iv_3"
+                android:layout_centerHorizontal="true"
+                android:scaleType="fitCenter"
+                style="@style/image_money_item"
+                android:src="@mipmap/money"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/iv_3"
+                android:gravity="center"
+                android:text="积分换卡"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

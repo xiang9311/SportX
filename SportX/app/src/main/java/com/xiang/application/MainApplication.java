@@ -25,7 +25,7 @@ public class MainApplication extends Application{
     public void onCreate() {
         super.onCreate();
 
-        File cacheDir = new File(Constant.getSDPath() + "/rabbitbooks/img/");
+        File cacheDir = new File(Constant.getSDPath() + "/SportX/img/");
 
         if (! cacheDir.exists()){
             cacheDir.mkdirs();

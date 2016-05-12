@@ -36,11 +36,6 @@ public class Constant {
     public static final String IMAGES = "images";
     public static final String CURRENT_INDEX = "current_index";
 
-    public static final int FROM_PAGER = 1;
-    public static final int FROM_USER_DETAIL = 2;
-    public static final int FROM_COLLECT = 3;
-    public static final int FROM_SEARCH = 4;
-
     public static final String HEADER_CMDID = "cmdid";
 
     public static final String HEADER_TIMESTAMP = "timestamp";
@@ -114,5 +109,12 @@ public class Constant {
     /*******************  froms  *********************/
     public static final int FROM_FOLLOW = 1;
     public static final int FROM_GYM_DETAIL = 2;
+    public static final int FROM_USER_DETAIL = 3;
+    public static final int FROM_PLACE_IN_TREND = 4;       // 从trend跳转到gym详情的时候，所加的from
+    public static final int FROM_ALBUM = 5;
+
+    /******************* max string length ***************************/
+    public static final int MAX_LENGTH_USER_NAME = 15;
+    public static final int MAX_LENGTH_SIGN = 36;
 
 }

@@ -120,6 +120,14 @@ public abstract class BaseRecyclerAdapter<VH extends RecyclerView.ViewHolder> ex
         postInvalidateRecyclerView();
     }
 
+    public void removeHeadView(){
+        if (hasHead()) {
+            this.notifyItemRemoved(0);
+            this.headViews.remove(headViews.size() - 1);
+            postInvalidateRecyclerView();
+        }
+    }
+
     public void removeFootView(){
         if (hasFoot()) {
             this.notifyItemRemoved(getItemCount() - 1);

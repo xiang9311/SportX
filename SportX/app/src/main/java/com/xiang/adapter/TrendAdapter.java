@@ -22,8 +22,12 @@ import com.xiang.Util.ViewUtil;
 import com.xiang.factory.DisplayOptionsFactory;
 import com.xiang.listener.OnRclViewItemClickListener;
 import com.xiang.proto.nano.Common;
+import com.xiang.sportx.GymDetailActivity;
+import com.xiang.sportx.ImageAndTextActivity;
 import com.xiang.sportx.R;
 import com.xiang.sportx.TrendDetailActivity;
+import com.xiang.sportx.UserDetailActivity;
+import com.xiang.transport.TrendStatic;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,11 +41,6 @@ public class TrendAdapter extends BaseRecyclerAdapter<TrendAdapter.MyViewHolder>
     private List<Common.Trend> trends = new ArrayList<>();
     private RecyclerView recyclerView;
     private int from;
-
-    private int lastClickIndex;
-    public Common.Trend getLastClickTrend(){
-        return (Common.Trend) getDataByPosition(lastClickIndex);
-    }
 
     // tools
     private ImageLoader imageLoader = ImageLoader.getInstance();
@@ -122,7 +121,25 @@ public class TrendAdapter extends BaseRecyclerAdapter<TrendAdapter.MyViewHolder>
         holder.tv_username.setText(trend.briefUser.userName);
         holder.tv_content.setText(trend.content);
         holder.tv_place.setText(trend.gymName);
+        holder.tv_place.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, GymDetailActivity.class);
+                //TODO
+                intent.putExtra(Constant.FROM, Constant.FROM_PLACE_IN_TREND);
+                context.startActivity(intent);
+            }
+        });
         holder.tv_time.setText(SportTimeUtil.getDateFromNow(trend.createTime));
+
+        holder.iv_avatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, UserDetailActivity.class);
+                //TODO
+                context.startActivity(intent);
+            }
+        });
 
         imageLoader.displayImage(trend.briefUser.userAvatar, holder.iv_avatar, avatarOption);
 
@@ -130,6 +147,16 @@ public class TrendAdapter extends BaseRecyclerAdapter<TrendAdapter.MyViewHolder>
             int i = 0;
             for(; i < trend.imgs.length; i ++){
                 imageLoader.displayImage(trend.imgs[i], holder.iv_images[i], imageOptions);
+                final int index = i;
+                holder.iv_images[i].setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(context, ImageAndTextActivity.class);
+                        intent.putExtra(Constant.IMAGES, trend.imgs);
+                        intent.putExtra(Constant.CURRENT_INDEX, index);
+                        context.startActivity(intent);
+                    }
+                });
             }
 
         } else if (trend.imgs.length == 1){
@@ -153,6 +180,14 @@ public class TrendAdapter extends BaseRecyclerAdapter<TrendAdapter.MyViewHolder>
                 @Override
                 public void onLoadingCancelled(String s, View view) {
 
+                }
+            });
+            holder.iv_big.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, ImageAndTextActivity.class);
+                    intent.putExtra(Constant.IMAGES, trend.imgs);
+                    context.startActivity(intent);
                 }
             });
         }
@@ -189,7 +224,9 @@ public class TrendAdapter extends BaseRecyclerAdapter<TrendAdapter.MyViewHolder>
         holder.rl_parent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                lastClickIndex = position;
+
+                TrendStatic.setLastTrend((Common.Trend) getDataByPosition(position));
+
                 Intent intent = new Intent(context, TrendDetailActivity.class);
                 intent.putExtra(Constant.FROM, from);
                 context.startActivity(intent);

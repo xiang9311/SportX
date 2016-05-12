@@ -159,4 +159,39 @@
         <item name="android:background">@drawable/fab_label_background</item>
         <item name="android:textColor">@color/white</item>
     </style>
+
+    <style name="text_my_detail_left">
+        <item name="android:textColor">@color/text_normal</item>
+        <item name="android:textSize">@dimen/text_normal</item>
+        <item name="android:layout_centerVertical">true</item>
+    </style>
+    <style name="text_my_detail_right">
+        <item name="android:textColor">@color/text_light</item>
+        <item name="android:textSize">@dimen/text_normal</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:layout_alignParentRight">true</item>
+    </style>
+    <style name="rl_my_item" parent="main_padding">
+        <item name="android:minHeight">50dp</item>
+        <item name="android:clickable">true</item>
+    </style>
+
+    <style name="rl_money_item">
+        <item name="android:paddingTop">18dp</item>
+        <item name="android:paddingBottom">18dp</item>
+        <item name="android:clickable">true</item>
+        <item name="android:background">@drawable/selector_white_to_gray</item>
+    </style>
+
+    <style name="image_money_item">
+        <item name="android:layout_width">45dp</item>
+        <item name="android:layout_height">45dp</item>
+    </style>
+
+    <style name="text_money_item">
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:textColor">@color/text_normal</item>
+        <item name="android:textSize">@dimen/text_small</item>
+    </style>
+
 </resources>

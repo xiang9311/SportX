@@ -37,8 +37,19 @@
         <activity
             android:name=".TrendDetailActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".ImageAndTextActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".ImageAndTextActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".UserDetailActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".MyDetailActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".UserAlbumActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".XMoneyActivity"></activity>
     </application>
 
 </manifest>

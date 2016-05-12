@@ -1,5 +1,6 @@
 package com.xiang.sportx;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,6 +22,7 @@ import com.xiang.adapter.TrendCommentAdapter;
 import com.xiang.dafault.DefaultUtil;
 import com.xiang.factory.DisplayOptionsFactory;
 import com.xiang.proto.nano.Common;
+import com.xiang.transport.TrendStatic;
 import com.xiang.view.MyTitleBar;
 
 public class TrendDetailActivity extends BaseAppCompatActivity {
@@ -103,10 +105,9 @@ public class TrendDetailActivity extends BaseAppCompatActivity {
     @Override
     protected void initData() {
         from = getIntent().getIntExtra(Constant.FROM, 0);
-        if(from == Constant.FROM_GYM_DETAIL){
-            trend = GymDetailActivity.getLastClickTrend();
-        } else if(from == Constant.FROM_FOLLOW){
-            trend = MainPagerActivity.getLastClickTrend();
+        if(from == Constant.FROM_GYM_DETAIL || from == Constant.FROM_FOLLOW || from == Constant.FROM_USER_DETAIL
+                || from == Constant.FROM_ALBUM){
+            trend = TrendStatic.getLastTrend();
         }
     }
 
@@ -167,6 +168,16 @@ public class TrendDetailActivity extends BaseAppCompatActivity {
             int i = 0;
             for(; i < trend.imgs.length; i ++){
                 imageLoader.displayImage(trend.imgs[i], iv_images[i], imageOptions);
+                final int index = i;
+                iv_images[i].setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(TrendDetailActivity.this, ImageAndTextActivity.class);
+                        intent.putExtra(Constant.IMAGES, trend.imgs);
+                        intent.putExtra(Constant.CURRENT_INDEX, index);
+                        startActivity(intent);
+                    }
+                });
             }
 
         } else if (trend.imgs.length == 1){
@@ -190,6 +201,14 @@ public class TrendDetailActivity extends BaseAppCompatActivity {
                 @Override
                 public void onLoadingCancelled(String s, View view) {
 
+                }
+            });
+            iv_big.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(TrendDetailActivity.this, ImageAndTextActivity.class);
+                    intent.putExtra(Constant.IMAGES, trend.imgs);
+                    startActivity(intent);
                 }
             });
         }

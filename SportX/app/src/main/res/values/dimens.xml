@@ -55,4 +55,7 @@
 
     <dimen name="text_user_info_size">90dp</dimen>
     <dimen name="user_image_size">70dp</dimen>
+
+    <dimen name="new_message_height">52dp</dimen>
+    <!--根据 xml 计算出来的高度-->
 </resources>
