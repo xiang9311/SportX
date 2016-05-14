@@ -139,7 +139,7 @@ public class CreateTrendActivity extends BaseAppCompatActivity {
         // 创建file存储图片
         Log.d(TAG, "absolute:" + Environment.getExternalStorageDirectory().getAbsolutePath());
         Log.d(TAG, "path:" + Environment.getExternalStorageDirectory().getPath());
-        String file_path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/TimeReader/";
+        String file_path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/SportX/";
         File file = new File(file_path, file_name);
         try{
             File folder = new File(file_path);
