@@ -20,7 +20,7 @@ public class MyTitleBar extends RelativeLayout {
     private Context context = null;
 
     private ImageView iv_back, iv_more;
-    private TextView tv_title;
+    private TextView tv_title, tv_more;
     private RelativeLayout rl_root;
 
     private View root;
@@ -53,6 +53,7 @@ public class MyTitleBar extends RelativeLayout {
         iv_more = (ImageView) root.findViewById(R.id.iv_more);
         tv_title = (TextView) root.findViewById(R.id.tv_header);
         rl_root = (RelativeLayout) root.findViewById(R.id.rv_root);
+        tv_more = (TextView) root.findViewById(R.id.tv_more);
     }
 
     /**
@@ -126,5 +127,21 @@ public class MyTitleBar extends RelativeLayout {
         } else{
             iv_more.setVisibility(View.GONE);
         }
+
+        tv_more.setVisibility(View.GONE);
+    }
+
+    /**
+     * 设置右边的文字按钮
+     * @param content
+     * @param onClickListener
+     */
+    public void setMoreTextButton(String content, OnClickListener onClickListener){
+
+        tv_more.setText(content);
+        tv_more.setOnClickListener(onClickListener);
+
+        tv_more.setVisibility(View.VISIBLE);
+        iv_more.setVisibility(View.GONE);
     }
 }

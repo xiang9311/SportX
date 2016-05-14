@@ -49,8 +49,19 @@
         <activity
             android:name=".UserAlbumActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".XMoneyActivity" android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".UserListActivity" android:theme="@style/AppTheme.NoActionBar" ></activity>
+        <activity
+            android:name=".XMoneyActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".UserListActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".SettingActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".CreateTrendActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".ChooseGymActivity"></activity>
     </application>
 
 </manifest>

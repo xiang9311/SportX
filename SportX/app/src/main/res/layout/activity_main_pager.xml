@@ -20,15 +20,6 @@
             android:layout_marginLeft="10dp"
             android:text="SportX"/>
 
-        <!--<ImageView-->
-            <!--android:id="@+id/iv_scan"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:padding="5dp"-->
-            <!--android:scaleType="centerInside"-->
-            <!--android:src="@mipmap/scan"-->
-            <!--android:layout_alignParentRight="true"/>-->
-
         <ImageView
             android:id="@+id/iv_search"
             android:layout_width="wrap_content"

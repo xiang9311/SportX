@@ -1,5 +1,6 @@
 package com.xiang.sportx;
 
+import android.content.Intent;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -7,13 +8,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 
 import com.xiang.adapter.MainPagerAdapter;
 import com.xiang.fragment.FollowFragment;
 import com.xiang.fragment.GymFragment;
 import com.xiang.fragment.UserFragment;
-import com.xiang.proto.nano.Common;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,8 @@ public class MainPagerActivity extends BaseAppCompatActivity {
 
     private ViewPager viewPager;
     private RadioButton rb_discover, rb_follow, rb_user, rb[];
+    private ImageView iv_search, iv_add_trend;
+
     private MainPagerAdapter mainPagerAdapter;
     private static List<Fragment> fragmentList;
 
@@ -42,6 +45,8 @@ public class MainPagerActivity extends BaseAppCompatActivity {
         rb_follow = (RadioButton) findViewById(R.id.radio1);
 //        rb_message = (RadioButton) findViewById(R.id.radio2);
         rb_user = (RadioButton) findViewById(R.id.radio2);
+        iv_search = (ImageView) findViewById(R.id.iv_search);
+        iv_add_trend = (ImageView) findViewById(R.id.iv_add_trend);
     }
 
     @Override
@@ -167,6 +172,22 @@ public class MainPagerActivity extends BaseAppCompatActivity {
                 Log.d("onPageSelected",""+arg0);
             }
 
+        });
+
+
+        // imageview actions
+        iv_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO search
+            }
+        });
+
+        iv_add_trend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainPagerActivity.this, CreateTrendActivity.class));
+            }
         });
     }
 

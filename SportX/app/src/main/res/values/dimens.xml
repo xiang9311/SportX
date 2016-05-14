@@ -40,6 +40,10 @@
     <dimen name="like_comment_icon_size">28dp</dimen>
     <dimen name="back_icon_size">25dp</dimen>
 
+    <!-- 发布图片 图片相关尺寸  -->
+    <dimen name="trend_upload_size">65dp</dimen>
+    <dimen name="trend_iv_margin">5dp</dimen>
+
     <dimen name="gym_intro_icon_size">31dp</dimen>
 
     <dimen name="banner_height">130dp</dimen>

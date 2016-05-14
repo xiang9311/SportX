@@ -36,6 +36,21 @@
         android:padding="9dp"
         android:scaleType="fitCenter"
         android:background="@drawable/selector_main_pressed"
+        android:visibility="gone"
         android:src="@mipmap/image"/>
+
+    <TextView
+        android:id="@+id/tv_more"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/top_height"
+        android:layout_alignParentRight="true"
+        android:padding="9dp"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_normal"
+        android:visibility="gone"
+        android:gravity="center"
+        android:clickable="true"
+        android:background="@drawable/selector_main_pressed"
+        android:text="发布" />
 
 </RelativeLayout>
