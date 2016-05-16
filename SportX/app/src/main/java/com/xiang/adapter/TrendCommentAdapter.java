@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -61,7 +62,7 @@ public class TrendCommentAdapter extends BaseRecyclerAdapter<TrendCommentAdapter
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(MyViewHolder holder, final int position) {
         if (isHeadViewOrFootView(getItemViewType(position))){
             return ;
         }
@@ -79,6 +80,20 @@ public class TrendCommentAdapter extends BaseRecyclerAdapter<TrendCommentAdapter
         });
 
         holder.tv_username.setText(comment.briefUser.userName);
+
+        holder.rl_parent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onRclViewItemClickListener.onItemClick(v, position - headViews.size());
+            }
+        });
+
+        holder.tv_content.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onRclViewItemClickListener.onItemClick(v, position - headViews.size());
+            }
+        });
 
         setCommentText(holder.tv_content, comment);
 
@@ -150,6 +165,7 @@ public class TrendCommentAdapter extends BaseRecyclerAdapter<TrendCommentAdapter
         public TextView tv_username;
         public TextView tv_content;
         public TextView tv_place_time;
+        private RelativeLayout rl_parent;
 
         public MyViewHolder(View itemView) {
             super(itemView);
@@ -157,6 +173,7 @@ public class TrendCommentAdapter extends BaseRecyclerAdapter<TrendCommentAdapter
             tv_username = (TextView) itemView.findViewById(R.id.tv_username);
             tv_content = (TextView) itemView.findViewById(R.id.tv_content);
             tv_place_time = (TextView) itemView.findViewById(R.id.tv_place_time);
+            rl_parent = (RelativeLayout) itemView.findViewById(R.id.rl_parent);
         }
     }
 }

@@ -61,7 +61,19 @@
         <activity
             android:name=".CreateTrendActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".ChooseGymActivity"></activity>
+        <activity android:name=".ChooseGymActivity" />
+        <activity android:name=".ConversationActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data
+                    android:host="com.xiang.sportx"
+                    android:pathPrefix="/conversation/"
+                    android:scheme="rong" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

@@ -7,8 +7,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -21,11 +25,17 @@ import com.xiang.Util.ViewUtil;
 import com.xiang.adapter.TrendCommentAdapter;
 import com.xiang.dafault.DefaultUtil;
 import com.xiang.factory.DisplayOptionsFactory;
+import com.xiang.listener.OnRclViewItemClickListener;
+import com.xiang.model.ChoosedGym;
 import com.xiang.proto.nano.Common;
 import com.xiang.transport.TrendStatic;
 import com.xiang.view.MyTitleBar;
 
+import java.util.List;
+
 public class TrendDetailActivity extends BaseAppCompatActivity {
+
+    private static final int CODE_CHOOSE_GYM = 1;
 
     private MyTitleBar titleBar;
     private RecyclerView recyclerView;
@@ -33,7 +43,7 @@ public class TrendDetailActivity extends BaseAppCompatActivity {
 
     // headview 相关内容
     private ImageView iv_avatar;
-    private TextView tv_username;
+    private TextView tv_username, tv_gym_name, tv_send;
     private TextView tv_content;
     private ImageView iv_big;         // 单张 大图
     private ImageView iv_images[];  // 最多9张的小图
@@ -42,6 +52,8 @@ public class TrendDetailActivity extends BaseAppCompatActivity {
     private ImageView iv_comment, iv_like;
     private TextView tv_comment_count, tv_like_count;
     private GridLayout gv_images;
+    private RelativeLayout rl_choose_gym, rl_comment_panel;
+    private EditText et_comment_text;
 
     // adapter
     private TrendCommentAdapter adapter;
@@ -53,6 +65,9 @@ public class TrendDetailActivity extends BaseAppCompatActivity {
 
     // data
     private Common.Trend trend;
+    private List<Common.Comment> comments = DefaultUtil.getComments(10);
+    private boolean commentToTrend = true;   // false的话则是回复评论
+    private Common.BriefUser toBriefUser;
     private int from = 0;
 
     @Override
@@ -67,6 +82,11 @@ public class TrendDetailActivity extends BaseAppCompatActivity {
 
         titleBar = (MyTitleBar) findViewById(R.id.titleBar);
         recyclerView = (RecyclerView) findViewById(R.id.rv_comment);
+        rl_choose_gym = (RelativeLayout) findViewById(R.id.rl_choose_gym);
+        rl_comment_panel = (RelativeLayout) findViewById(R.id.rl_comment_panel);
+        tv_gym_name = (TextView) findViewById(R.id.tv_gym_name);
+        tv_send = (TextView) findViewById(R.id.tv_send);
+        et_comment_text = (EditText) findViewById(R.id.et_comment_text);
 
         headView = LayoutInflater.from(this).inflate(R.layout.listitem_trend_follow, null ,false);
         initHeadView();
@@ -123,16 +143,81 @@ public class TrendDetailActivity extends BaseAppCompatActivity {
         });
         titleBar.setMoreButton(0, false, null);
 
+        rl_choose_gym.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(TrendDetailActivity.this, ChooseGymActivity.class);
+                startActivityForResult(intent, CODE_CHOOSE_GYM);
+            }
+        });
 
-        adapter = new TrendCommentAdapter(this, DefaultUtil.getComments(10), recyclerView);
+        tv_send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO comment
+            }
+        });
+
+
+
+        adapter = new TrendCommentAdapter(this, comments, recyclerView);
         adapter.addHeadView(headView);
+        ((RelativeLayout) headView.findViewById(R.id.rl_parent)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showCommentPanel(true, null);
+            }
+        });
+        adapter.setOnRclViewItemClickListener(new OnRclViewItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                showCommentPanel(false, comments.get(position).briefUser);
+            }
+
+            @Override
+            public void OnItemLongClick(View view, int position) {
+
+            }
+        });
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
 
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(linearLayoutManager);
 
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == RecyclerView.SCROLL_STATE_DRAGGING){
+                    if(rl_comment_panel.getVisibility() != View.GONE){
+                        Animation animation = AnimationUtils.loadAnimation(TrendDetailActivity.this, R.anim.jump_out);
+                        rl_comment_panel.clearAnimation();
+                        rl_comment_panel.startAnimation(animation);
+                        rl_comment_panel.setVisibility(View.GONE);
+                    }
+                }
+            }
+        });
+
         configHeadView();
     }
+
+    private void showCommentPanel(boolean isCommentToTrend, Common.BriefUser briefUser) {
+        Animation animation = AnimationUtils.loadAnimation(this, R.anim.jump_in);
+
+        rl_comment_panel.clearAnimation();
+        rl_comment_panel.setVisibility(View.VISIBLE);
+        rl_comment_panel.startAnimation(animation);
+
+        this.commentToTrend = isCommentToTrend;
+        this.toBriefUser = briefUser;
+        if(isCommentToTrend){
+            et_comment_text.setHint("评论");
+        } else{
+            et_comment_text.setHint("回复 " + briefUser.userName);
+        }
+    }
+
 
     private void configHeadView() {
         int count = trend.imgs.length;
@@ -242,5 +327,18 @@ public class TrendDetailActivity extends BaseAppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK){
+            switch (requestCode){
+                case CODE_CHOOSE_GYM:
+                    ChoosedGym choosedGym = (ChoosedGym) data.getSerializableExtra(ChooseGymActivity.CHOOSED_GYM);
+                    tv_gym_name.setText(choosedGym.getGymName());
+                    break;
+            }
+        }
     }
 }

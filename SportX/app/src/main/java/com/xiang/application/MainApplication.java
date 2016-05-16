@@ -16,6 +16,8 @@ import com.xiang.Util.Constant;
 
 import java.io.File;
 
+import io.rong.imkit.RongIM;
+
 /**
  * Created by 祥祥 on 2016/4/18.
  */
@@ -54,6 +56,8 @@ public class MainApplication extends Application{
                 .build();
 
         ImageLoader.getInstance().init(configuration);
+
+        RongIM.init(this);
 
     }
 

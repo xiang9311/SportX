@@ -87,13 +87,13 @@
                 style="@style/main_tab_bottom"
                 android:text="关注" />
 
-            <!--<RadioButton-->
-                <!--android:id="@+id/radio2"-->
-                <!--style="@style/main_tab_bottom"-->
-                <!--android:text="消息" />-->
-
             <RadioButton
                 android:id="@+id/radio2"
+                style="@style/main_tab_bottom"
+                android:text="消息" />
+
+            <RadioButton
+                android:id="@+id/radio3"
                 style="@style/main_tab_bottom"
                 android:text="我" />
 

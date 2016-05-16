@@ -29,7 +29,6 @@ import me.drakeet.materialdialog.MaterialDialog;
 public class CreateTrendActivity extends BaseAppCompatActivity {
 
     private static final String TAG = "CreateTrendActivity";
-    public static final String CHOOSED_GYM = "choosedgym";
 
     private MyTitleBar myTitleBar;
     private FlowLayout fl_images;
@@ -211,7 +210,7 @@ public class CreateTrendActivity extends BaseAppCompatActivity {
                 break;
 
             case CODE_CHOOSE_GYM:
-                ChoosedGym choosedGym = (ChoosedGym) data.getSerializableExtra(CHOOSED_GYM);
+                ChoosedGym choosedGym = (ChoosedGym) data.getSerializableExtra(ChooseGymActivity.CHOOSED_GYM);
                 tv_gymname.setText(choosedGym.getGymName());
                 break;
 

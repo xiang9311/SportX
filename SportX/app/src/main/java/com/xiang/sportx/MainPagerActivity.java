@@ -3,6 +3,7 @@ package com.xiang.sportx;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -14,17 +15,22 @@ import android.widget.RadioButton;
 import com.xiang.adapter.MainPagerAdapter;
 import com.xiang.fragment.FollowFragment;
 import com.xiang.fragment.GymFragment;
+import com.xiang.fragment.MessageFragment;
 import com.xiang.fragment.UserFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import io.rong.imkit.RongIM;
+import io.rong.imlib.RongIMClient;
+import io.rong.imlib.model.UserInfo;
+
 public class MainPagerActivity extends BaseAppCompatActivity {
 
-    private final int SectionFragmentCOUNT = 3;
+    private final int SectionFragmentCOUNT = 4;
 
     private ViewPager viewPager;
-    private RadioButton rb_discover, rb_follow, rb_user, rb[];
+    private RadioButton rb_discover, rb_follow, rb_user, rb[], rb_message;
     private ImageView iv_search, iv_add_trend;
 
     private MainPagerAdapter mainPagerAdapter;
@@ -34,6 +40,46 @@ public class MainPagerActivity extends BaseAppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // 连接融云
+        connectRongyun();
+
+        // 设置融云信息提供者
+        setUserInfoProvider();
+    }
+
+    private void setUserInfoProvider() {
+        RongIM.setUserInfoProvider(new RongIM.UserInfoProvider() {
+            @Override
+            public UserInfo getUserInfo(String s) {
+                if(s.equals("10010")){
+                    Uri uri = Uri.parse("http://img5.duitang.com/uploads/item/201410/26/20141026133942_YsYim.thumb.224_0.jpeg");
+                    return new UserInfo("10010", "我是10010", uri);
+                }
+                Uri uri = Uri.parse("http://www.ld12.com/upimg358/allimg/c150708/14363445264S30-205R2.jpg");
+                return new UserInfo("10086", "我是10086", uri);
+            }
+        }, true);
+    }
+
+    private void connectRongyun() {
+        String token = "0/oss9GvSdsSiwYvqC/TRUWWGOlHE2HxqANt1yJQKDraEzUj7+/DUdLRwfqrIaD8ibNPxZQVAmh9wtgA9+DfqQ==";
+        RongIM.connect(token, new RongIMClient.ConnectCallback() {
+            @Override
+            public void onTokenIncorrect() {
+                Log.d("rongyun", "onTokenIncorrect");
+            }
+
+            @Override
+            public void onSuccess(String s) {
+                // log
+                Log.d("rongyun", "connect success");
+            }
+
+            @Override
+            public void onError(RongIMClient.ErrorCode errorCode) {
+                Log.d("rongyun", "onError" + errorCode.getMessage());
+            }
+        });
     }
 
     @Override
@@ -43,8 +89,8 @@ public class MainPagerActivity extends BaseAppCompatActivity {
         viewPager = (ViewPager) findViewById(R.id.vp_main);
         rb_discover = (RadioButton) findViewById(R.id.radio0);
         rb_follow = (RadioButton) findViewById(R.id.radio1);
-//        rb_message = (RadioButton) findViewById(R.id.radio2);
-        rb_user = (RadioButton) findViewById(R.id.radio2);
+        rb_message = (RadioButton) findViewById(R.id.radio2);
+        rb_user = (RadioButton) findViewById(R.id.radio3);
         iv_search = (ImageView) findViewById(R.id.iv_search);
         iv_add_trend = (ImageView) findViewById(R.id.iv_add_trend);
     }
@@ -65,11 +111,11 @@ public class MainPagerActivity extends BaseAppCompatActivity {
         followFragment.setArguments(followBundle);
         fragmentList.add(followFragment);
 
-//        MessageFragment messageFragment = new MessageFragment();
-//        Bundle messageBundler = new Bundle();
-//        messageBundler.putInt("type", 0);
-//        messageFragment.setArguments(messageBundler);
-//        fragmentList.add(messageFragment);
+        MessageFragment messageFragment = new MessageFragment();
+        Bundle messageBundler = new Bundle();
+        messageBundler.putInt("type", 0);
+        messageFragment.setArguments(messageBundler);
+        fragmentList.add(messageFragment);
 
         UserFragment userFragment = new UserFragment();
         Bundle userBundle = new Bundle();
@@ -94,24 +140,26 @@ public class MainPagerActivity extends BaseAppCompatActivity {
         drawable_campass.setBounds(rect);
         Drawable drawable_feed = getResources().getDrawable(R.mipmap.feed);
         drawable_feed.setBounds(rect);
-//        Drawable drawable_message = getResources().getDrawable(R.mipmap.message);
-//        drawable_message.setBounds(rect);
+        Drawable drawable_message = getResources().getDrawable(R.mipmap.chat);
+        drawable_message.setBounds(rect);
         Drawable drawable_user = getResources().getDrawable(R.mipmap.user);
         drawable_user.setBounds(rect);
 
         rb_discover.setCompoundDrawables(null, drawable_campass, null, null);
         rb_follow.setCompoundDrawables(null, drawable_feed, null, null);
-//        rb_message.setCompoundDrawables(null, drawable_message, null, null);
+        rb_message.setCompoundDrawables(null, drawable_message, null, null);
         rb_user.setCompoundDrawables(null, drawable_user, null, null);
 
 
         rb = new RadioButton[SectionFragmentCOUNT];
         rb[0] = rb_discover;
         rb[1] = rb_follow;
-        rb[2] = rb_user;
+        rb[2] = rb_message;
+        rb[3] = rb_user;
 
         rb[1].setAlpha(0.4f);
         rb[2].setAlpha(0.4f);
+        rb[3].setAlpha(0.4f);
 
         rb_discover.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -128,6 +176,13 @@ public class MainPagerActivity extends BaseAppCompatActivity {
             }
         });
         rb_user.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                resetRbs(3);
+                viewPager.setCurrentItem(3, false);
+            }
+        });
+        rb_message.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
                 resetRbs(2);
@@ -195,6 +250,7 @@ public class MainPagerActivity extends BaseAppCompatActivity {
         rb[0].setAlpha(0.4f);
         rb[1].setAlpha(0.4f);
         rb[2].setAlpha(0.4f);
+        rb[3].setAlpha(0.4f);
         rb[index].setAlpha(1.0f);
     }
 }

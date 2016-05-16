@@ -17,6 +17,8 @@ import java.util.List;
 
 public class ChooseGymActivity extends BaseAppCompatActivity {
 
+    public static final String CHOOSED_GYM = "choosedgym";
+
     private MyTitleBar titleBar;
     private RecyclerView rv_gyms;
 
@@ -58,7 +60,7 @@ public class ChooseGymActivity extends BaseAppCompatActivity {
                 Intent intent = new Intent();
                 Common.BriefGym briefGym = briefGyms.get(position);
                 ChoosedGym choosedGym = new ChoosedGym(briefGym.id, briefGym.gymName);
-                intent.putExtra(CreateTrendActivity.CHOOSED_GYM, choosedGym);
+                intent.putExtra(CHOOSED_GYM, choosedGym);
                 setResult(RESULT_OK, intent);
                 finish();
             }
