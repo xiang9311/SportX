@@ -182,8 +182,8 @@ public class GymDetailActivity extends BaseAppCompatActivity {
 
         // 设置器材内容
         StringBuilder sb_equip = new StringBuilder();
-        for(int i = 0; i < detailGym.equipments.length; i ++){
-            sb_equip.append(detailGym.equipments[i].name);
+        for(int i = 0; i < detailGym.briefGym.equipments.length; i ++){
+            sb_equip.append(detailGym.briefGym.equipments[i].name);
             sb_equip.append(" ");
         }
         tv_equipment_more.setText(sb_equip.toString());

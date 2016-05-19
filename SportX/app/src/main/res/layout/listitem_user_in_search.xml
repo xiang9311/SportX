@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:id="@+id/rl_parent"
+        style="@style/main_padding"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:background="@drawable/selector_white_to_gray">
+
+        <ImageView
+            android:id="@+id/iv_avatar"
+            android:layout_width="@dimen/avatar_in_search"
+            android:layout_height="@dimen/avatar_in_search"
+            android:src="@mipmap/image"
+            android:scaleType="centerCrop"/>
+
+        <TextView
+            android:id="@+id/tv_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/iv_avatar"
+            android:layout_marginLeft="8dp"
+            style="@style/text_user_name_in_follow"
+            android:text="这里是用户名"/>
+
+        <TextView
+            android:id="@+id/tv_sign"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/iv_avatar"
+            android:layout_alignLeft="@+id/tv_username"
+            android:layout_below="@+id/tv_username"
+            android:layout_marginTop="3dp"
+            android:textSize="@dimen/text_smaller"
+            android:textColor="@color/text_light"
+            android:text="这里是签名"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_alignLeft="@+id/tv_username"
+            android:layout_marginTop="5dp"
+            android:layout_below="@+id/tv_sign">
+
+            <ImageView
+                android:id="@+id/iv_image0"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_weight="1"
+                android:src="@mipmap/image"
+                android:scaleType="centerCrop"/>
+
+            <ImageView
+                android:id="@+id/iv_image1"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_weight="1"
+                android:src="@mipmap/image"
+                android:layout_marginLeft="3dp"
+                android:scaleType="centerCrop"/>
+
+            <ImageView
+                android:id="@+id/iv_image2"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_weight="1"
+                android:src="@mipmap/image"
+                android:layout_marginLeft="3dp"
+                android:scaleType="centerCrop"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/lightLightGray"/>
+
+</LinearLayout>

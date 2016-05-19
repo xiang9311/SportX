@@ -1,5 +1,6 @@
 package com.xiang.fragment;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,7 +9,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.xiang.Util.UserStatic;
+import com.xiang.factory.MaterialDialogFactory;
+import com.xiang.sportx.LoginActivity;
 import com.xiang.sportx.R;
+import com.xiang.sportx.RegisterActivity;
+import com.xiang.view.TwoOptionMaterialDialog;
 
 import io.rong.imkit.fragment.ConversationListFragment;
 import io.rong.imlib.model.Conversation;
@@ -19,7 +25,7 @@ import io.rong.imlib.model.Conversation;
 public class MessageFragment extends BaseFragment {
 
     private View mView;
-
+    private TwoOptionMaterialDialog md_login_register;
 
     @Override
     protected void onInitFragment() {
@@ -32,8 +38,25 @@ public class MessageFragment extends BaseFragment {
     }
 
     private void initMessage() {
-
-
+        if ( ! UserStatic.logged){
+            if(md_login_register == null){
+                String[] options = new String[]{"登录", "注册"};
+                md_login_register = MaterialDialogFactory.createTwoOptionMd(getContext(), options, false, 0, true);
+                md_login_register.setOnOptionChooseListener(new TwoOptionMaterialDialog.OnOptionChooseListener() {
+                    @Override
+                    public void onOptionChoose(int index) {
+                        if(index == 0){
+                            startActivity(new Intent(getContext(), LoginActivity.class));
+                        } else{
+                            startActivity(new Intent(getContext(), RegisterActivity.class));
+                        }
+                    }
+                });
+                md_login_register.setTitle("您还未登录");
+                md_login_register.setCanceledOnTouchOutside(true);
+            }
+            md_login_register.show();
+        }
     }
 
     @Nullable

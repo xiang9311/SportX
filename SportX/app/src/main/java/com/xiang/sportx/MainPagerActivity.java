@@ -1,16 +1,15 @@
 package com.xiang.sportx;
 
 import android.content.Intent;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.RadioButton;
+import android.widget.RelativeLayout;
 
 import com.xiang.adapter.MainPagerAdapter;
 import com.xiang.fragment.FollowFragment;
@@ -30,7 +29,7 @@ public class MainPagerActivity extends BaseAppCompatActivity {
     private final int SectionFragmentCOUNT = 4;
 
     private ViewPager viewPager;
-    private RadioButton rb_discover, rb_follow, rb_user, rb[], rb_message;
+    private RelativeLayout rl_discover, rl_follow, rl_user, rl[], rl_chat;
     private ImageView iv_search, iv_add_trend;
 
     private MainPagerAdapter mainPagerAdapter;
@@ -51,7 +50,7 @@ public class MainPagerActivity extends BaseAppCompatActivity {
         RongIM.setUserInfoProvider(new RongIM.UserInfoProvider() {
             @Override
             public UserInfo getUserInfo(String s) {
-                if(s.equals("10010")){
+                if (s.equals("10010")) {
                     Uri uri = Uri.parse("http://img5.duitang.com/uploads/item/201410/26/20141026133942_YsYim.thumb.224_0.jpeg");
                     return new UserInfo("10010", "我是10010", uri);
                 }
@@ -87,10 +86,10 @@ public class MainPagerActivity extends BaseAppCompatActivity {
         setContentView(R.layout.activity_main_pager);
 
         viewPager = (ViewPager) findViewById(R.id.vp_main);
-        rb_discover = (RadioButton) findViewById(R.id.radio0);
-        rb_follow = (RadioButton) findViewById(R.id.radio1);
-        rb_message = (RadioButton) findViewById(R.id.radio2);
-        rb_user = (RadioButton) findViewById(R.id.radio3);
+        rl_discover = (RelativeLayout) findViewById(R.id.rl_discover);
+        rl_follow = (RelativeLayout) findViewById(R.id.rl_follow);
+        rl_chat = (RelativeLayout) findViewById(R.id.rl_chat);
+        rl_user = (RelativeLayout) findViewById(R.id.rl_user);
         iv_search = (ImageView) findViewById(R.id.iv_search);
         iv_add_trend = (ImageView) findViewById(R.id.iv_add_trend);
     }
@@ -123,7 +122,7 @@ public class MainPagerActivity extends BaseAppCompatActivity {
         userFragment.setArguments(userBundle);
         fragmentList.add(userFragment);
 
-        Log.d("on fragment init","on fragment 全部初始化");
+        Log.d("on fragment init", "on fragment 全部初始化");
 
         mainPagerAdapter = new MainPagerAdapter(getSupportFragmentManager(), fragmentList);
     }
@@ -133,62 +132,45 @@ public class MainPagerActivity extends BaseAppCompatActivity {
         viewPager.setOffscreenPageLimit(4);        // 缓存的page数量
         viewPager.setAdapter(mainPagerAdapter);
 
-        // drawables
-        int size = (int) getResources().getDimension(R.dimen.bottom_image_size);
-        Rect rect = new Rect(0,0, size, size);
-        Drawable drawable_campass = getResources().getDrawable(R.mipmap.compass);
-        drawable_campass.setBounds(rect);
-        Drawable drawable_feed = getResources().getDrawable(R.mipmap.feed);
-        drawable_feed.setBounds(rect);
-        Drawable drawable_message = getResources().getDrawable(R.mipmap.chat);
-        drawable_message.setBounds(rect);
-        Drawable drawable_user = getResources().getDrawable(R.mipmap.user);
-        drawable_user.setBounds(rect);
+        rl = new RelativeLayout[SectionFragmentCOUNT];
+        rl[0] = rl_discover;
+        rl[1] = rl_follow;
+        rl[2] = rl_chat;
+        rl[3] = rl_user;
 
-        rb_discover.setCompoundDrawables(null, drawable_campass, null, null);
-        rb_follow.setCompoundDrawables(null, drawable_feed, null, null);
-        rb_message.setCompoundDrawables(null, drawable_message, null, null);
-        rb_user.setCompoundDrawables(null, drawable_user, null, null);
+        rl[1].setAlpha(0.4f);
+        rl[2].setAlpha(0.4f);
+        rl[3].setAlpha(0.4f);
 
-
-        rb = new RadioButton[SectionFragmentCOUNT];
-        rb[0] = rb_discover;
-        rb[1] = rb_follow;
-        rb[2] = rb_message;
-        rb[3] = rb_user;
-
-        rb[1].setAlpha(0.4f);
-        rb[2].setAlpha(0.4f);
-        rb[3].setAlpha(0.4f);
-
-        rb_discover.setOnClickListener(new View.OnClickListener() {
+        rl_discover.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
                 resetRbs(0);
                 viewPager.setCurrentItem(0, false);
             }
         });
-        rb_follow.setOnClickListener(new View.OnClickListener() {
+        rl_follow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
                 resetRbs(1);
                 viewPager.setCurrentItem(1, false);
             }
         });
-        rb_user.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View arg0) {
-                resetRbs(3);
-                viewPager.setCurrentItem(3, false);
-            }
-        });
-        rb_message.setOnClickListener(new View.OnClickListener() {
+        rl_chat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
                 resetRbs(2);
                 viewPager.setCurrentItem(2, false);
             }
         });
+        rl_user.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                resetRbs(3);
+                viewPager.setCurrentItem(3, false);
+            }
+        });
+
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener(){
 
@@ -210,12 +192,12 @@ public class MainPagerActivity extends BaseAppCompatActivity {
                 int current = viewPager.getCurrentItem();    //当前会变化
                 int next = arg0;
                 if(current == next && current < SectionFragmentCOUNT - 1){
-                    rb[current+1].setAlpha(arg1*0.6f+0.4f);
-                    rb[current].setAlpha((1-arg1)*0.6f+0.4f);
+                    rl[current+1].setAlpha(arg1*0.6f+0.4f);
+                    rl[current].setAlpha((1-arg1)*0.6f+0.4f);
                 }
                 else if(current > next){
-                    rb[current].setAlpha(arg1*0.6f+0.4f);
-                    rb[next].setAlpha((1-arg1)*0.6f+0.4f);
+                    rl[current].setAlpha(arg1*0.6f+0.4f);
+                    rl[next].setAlpha((1-arg1)*0.6f+0.4f);
                 }
                 else{
 //					Log.d(TAG,"不能往右划了");
@@ -234,7 +216,7 @@ public class MainPagerActivity extends BaseAppCompatActivity {
         iv_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO search
+                startActivity(new Intent(MainPagerActivity.this, SearchActivity.class));
             }
         });
 
@@ -247,10 +229,19 @@ public class MainPagerActivity extends BaseAppCompatActivity {
     }
 
     private void resetRbs(int index){
-        rb[0].setAlpha(0.4f);
-        rb[1].setAlpha(0.4f);
-        rb[2].setAlpha(0.4f);
-        rb[3].setAlpha(0.4f);
-        rb[index].setAlpha(1.0f);
+        rl[0].setAlpha(0.4f);
+        rl[1].setAlpha(0.4f);
+        rl[2].setAlpha(0.4f);
+        rl[3].setAlpha(0.4f);
+        rl[index].setAlpha(1.0f);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            moveTaskToBack(false);
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

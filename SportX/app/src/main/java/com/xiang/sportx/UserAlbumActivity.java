@@ -1,5 +1,6 @@
 package com.xiang.sportx;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -50,7 +51,7 @@ public class UserAlbumActivity extends BaseAppCompatActivity {
         titleBar.setMoreButton(R.mipmap.message, true, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO
+                startActivity(new Intent(UserAlbumActivity.this, CommentMessageActivity.class));
             }
         });
 

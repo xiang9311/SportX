@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:background="@color/white"
+        style="@style/main_padding">
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/et_code"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:met_baseColor="@color/main_color"
+            app:met_primaryColor="@color/main_color"
+            android:inputType="number"
+            app:met_floatingLabel="highlight"
+            app:met_floatingLabelText="验证码"
+            android:layout_marginLeft="@dimen/match_parent_margin"
+            android:layout_marginRight="@dimen/match_parent_margin"
+            android:hint="验证码"
+            android:layout_toRightOf="@+id/tv_0"/>
+
+    </RelativeLayout>
+
+    <com.dd.processbutton.iml.ActionProcessButton
+        android:id="@+id/apb_verify_code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/match_parent_margin"
+        android:layout_marginRight="@dimen/match_parent_margin"
+        android:layout_marginTop="120dp"
+        android:textColor="@color/white"
+        android:text="验证手机号"
+        app:pb_colorComplete="@color/main_color"
+        app:pb_colorNormal="@color/main_color"
+        app:pb_colorPressed="@color/main_color_pressed"
+        app:pb_textComplete="验证成功"
+        app:pb_textProgress="正在请求"
+        app:pb_textError="重新验证"/>
+
+</LinearLayout>

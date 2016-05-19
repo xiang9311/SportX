@@ -2,7 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="71dp">  <!--这个长度根据图片高度和上下边距计算出来-->
+    android:layout_height="66dp">  <!--这个长度根据图片高度和上下边距计算出来-->
 
     <RelativeLayout
         android:id="@+id/rl_out"
@@ -14,8 +14,8 @@
 
         <ImageView
             android:id="@+id/iv_avatar"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:src="@mipmap/image"
             android:scaleType="centerCrop"/>
 

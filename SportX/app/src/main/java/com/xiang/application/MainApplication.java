@@ -16,6 +16,7 @@ import com.xiang.Util.Constant;
 
 import java.io.File;
 
+import cn.smssdk.SMSSDK;
 import io.rong.imkit.RongIM;
 
 /**
@@ -58,6 +59,8 @@ public class MainApplication extends Application{
         ImageLoader.getInstance().init(configuration);
 
         RongIM.init(this);
+
+        SMSSDK.initSDK(this, "12ce9d19c6a94", "9831ef6e5a61a915c5a1b9f75a589db5");
 
     }
 

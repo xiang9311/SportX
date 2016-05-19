@@ -23,14 +23,27 @@ public class MaterialDialogFactory {
     private static int LAYOUT_CAN_CHECK = R.layout.md_with_checkbox;
 
     /**
+     *
+     * @param context
+     * @param options
+     * @param showRadio
+     * @param choosedIndex
+     * @return
+     */
+    public static TwoOptionMaterialDialog createTwoOptionMd(Context context, String[] options, boolean showRadio, int choosedIndex) {
+        return createTwoOptionMd(context, options, showRadio, choosedIndex, false);
+    }
+
+    /**
      * 返回一个具有两个选项的md，但没有设置title和button，还需使用者自己设置
      * @param context
      * @param options
      * @param showRadio
      * @param choosedIndex -1 表示不选择 ，其他从0开始
+     * @param firstPrimary 第一个选项是否改变颜色
      * @return
      */
-    public static TwoOptionMaterialDialog createTwoOptionMd(Context context, String[] options, boolean showRadio, int choosedIndex){
+    public static TwoOptionMaterialDialog createTwoOptionMd(Context context, String[] options, boolean showRadio, int choosedIndex, boolean firstPrimary){
         final TwoOptionMaterialDialog twoOptionMaterialDialog = new TwoOptionMaterialDialog(context);
         View view = LayoutInflater.from(context).inflate(LAYOUT_TWO_OPTION, null ,false);
         LinearLayout ll_text = (LinearLayout) view.findViewById(R.id.ll_text);
@@ -39,6 +52,11 @@ public class MaterialDialogFactory {
         final RadioButton rb_option2 = (RadioButton) view.findViewById(R.id.rb_option2);
         TextView tv_option1 = (TextView) view.findViewById(R.id.tv_option1);
         TextView tv_option2 = (TextView) view.findViewById(R.id.tv_option2);
+
+        if(firstPrimary){
+            tv_option1.setTextColor(context.getResources().getColor(R.color.primary_button_color));
+            rb_option1.setTextColor(context.getResources().getColor(R.color.primary_button_color));
+        }
 
         if(! showRadio) {
             ll_radio.setVisibility(View.GONE);

@@ -22,6 +22,8 @@ import com.xiang.factory.DisplayOptionsFactory;
 import com.xiang.proto.nano.Common;
 import com.xiang.view.MyTitleBar;
 
+import io.rong.imkit.RongIM;
+
 public class UserDetailActivity extends BaseAppCompatActivity {
 
     private RecyclerView rv_trend;
@@ -31,7 +33,7 @@ public class UserDetailActivity extends BaseAppCompatActivity {
     // headview中的内容
     private ImageView iv_avatar;
     private TextView tv_username;
-    private TextView tv_follow;       // 关注的按钮
+    private TextView tv_follow, tv_chat;       // 关注的按钮
     private TextView tv_sign;         // 签名
     private ImageView iv_sex;
     private TextView tv_guanzhu_count, tv_fensi_count, tv_trend_count;
@@ -68,6 +70,7 @@ public class UserDetailActivity extends BaseAppCompatActivity {
         iv_avatar = (ImageView) findHeadViewById(R.id.iv_avatar);
         tv_username = (TextView) findHeadViewById(R.id.tv_username);
         tv_follow = (TextView) findHeadViewById(R.id.tv_follow);
+        tv_chat = (TextView) findHeadViewById(R.id.tv_chat);
         tv_sign = (TextView) findHeadViewById(R.id.tv_sign);
         iv_sex = (ImageView) findHeadViewById(R.id.iv_sex);
         tv_guanzhu_count = (TextView) findHeadViewById(R.id.tv_guanzhu_count);
@@ -139,6 +142,14 @@ public class UserDetailActivity extends BaseAppCompatActivity {
             @Override
             public void onClick(View v) {
                 Snackbar.make(rv_trend, "操作成功", Snackbar.LENGTH_SHORT).show();
+            }
+        });
+        tv_chat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //启动会话界面
+                if (RongIM.getInstance() != null)
+                    RongIM.getInstance().startPrivateChat(UserDetailActivity.this, "10010", "title显示在哪里？");
             }
         });
 

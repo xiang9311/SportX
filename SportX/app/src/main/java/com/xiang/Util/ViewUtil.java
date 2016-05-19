@@ -138,6 +138,10 @@ public class ViewUtil {
         return (int) (spValue * fontScale + 0.5f);
     }
 
+    public static int sp2dp(Context context, float spValue){
+        return px2dp(context, sp2px(context, spValue));
+    }
+
 
 }
 

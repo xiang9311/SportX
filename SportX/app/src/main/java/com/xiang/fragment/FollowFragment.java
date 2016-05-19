@@ -1,5 +1,6 @@
 package com.xiang.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -22,6 +23,7 @@ import com.xiang.adapter.TrendAdapter;
 import com.xiang.dafault.DefaultUtil;
 import com.xiang.factory.DisplayOptionsFactory;
 import com.xiang.proto.nano.Common;
+import com.xiang.sportx.CommentMessageActivity;
 import com.xiang.sportx.R;
 
 import java.util.List;
@@ -75,16 +77,17 @@ public class FollowFragment extends BaseFragment implements SwipeRefreshLayout.O
         layoutParams.width = ViewUtil.getWindowWidth(getContext());
         headView.setLayoutParams(layoutParams);
 
-        TextView tv_count = (TextView) headView.findViewById(R.id.tv_message);
-        RelativeLayout rl_parent = (RelativeLayout) headView.findViewById(R.id.rl_parent);
-        ImageView iv_avatar = (ImageView) headView.findViewById(R.id.iv_avatar);
+        tv_messageCount = (TextView) headView.findViewById(R.id.tv_message);
+        rl_messageCount_parent = (RelativeLayout) headView.findViewById(R.id.rl_parent);
+        iv_message_avatar = (ImageView) headView.findViewById(R.id.iv_avatar);
 
-        tv_count.setText(message.count + "条新消息");
-        imageLoader.displayImage(message.lastAvatar, iv_avatar, avatarOptions);
-        rl_parent.setOnClickListener(new View.OnClickListener() {
+        tv_messageCount.setText(message.count + "条新消息");
+        imageLoader.displayImage(message.lastAvatar, iv_message_avatar, avatarOptions);
+        rl_messageCount_parent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                trendAdapter.removeFootView();
+                trendAdapter.removeHeadView();
+                startActivity(new Intent(getContext(), CommentMessageActivity.class));
             }
         });
     }

@@ -128,6 +128,8 @@ public class TrendDetailActivity extends BaseAppCompatActivity {
         if(from == Constant.FROM_GYM_DETAIL || from == Constant.FROM_FOLLOW || from == Constant.FROM_USER_DETAIL
                 || from == Constant.FROM_ALBUM){
             trend = TrendStatic.getLastTrend();
+        } else if(from == Constant.FROM_COMMENT_MESSAGE){
+            trend = DefaultUtil.getTrends(1).get(0);
         }
     }
 
@@ -203,11 +205,14 @@ public class TrendDetailActivity extends BaseAppCompatActivity {
     }
 
     private void showCommentPanel(boolean isCommentToTrend, Common.BriefUser briefUser) {
-        Animation animation = AnimationUtils.loadAnimation(this, R.anim.jump_in);
 
-        rl_comment_panel.clearAnimation();
-        rl_comment_panel.setVisibility(View.VISIBLE);
-        rl_comment_panel.startAnimation(animation);
+        if (rl_comment_panel.getVisibility() != View.VISIBLE) {
+            Animation animation = AnimationUtils.loadAnimation(this, R.anim.jump_in);
+
+            rl_comment_panel.clearAnimation();
+            rl_comment_panel.setVisibility(View.VISIBLE);
+            rl_comment_panel.startAnimation(animation);
+        }
 
         this.commentToTrend = isCommentToTrend;
         this.toBriefUser = briefUser;

@@ -27,10 +27,10 @@ import java.util.List;
 public class GymItemAdapter extends BaseRecyclerAdapter<GymItemAdapter.MyViewHolder> {
 
     private Context context;
-    private List<Common.DetailGym> gyms;
+    private List<Common.BriefGym> gyms;
     private RecyclerView recyclerView;
 
-    public GymItemAdapter(Context context, List<Common.DetailGym> gyms, RecyclerView recyclerView) {
+    public GymItemAdapter(Context context, List<Common.BriefGym> gyms, RecyclerView recyclerView) {
         super(context, gyms, recyclerView);
         this.context = context;
         this.gyms = gyms;
@@ -69,10 +69,10 @@ public class GymItemAdapter extends BaseRecyclerAdapter<GymItemAdapter.MyViewHol
             return ;
         }
 
-        Common.DetailGym detailGym = (Common.DetailGym) getDataByPosition(position);
+        Common.BriefGym briefGym = (Common.BriefGym) getDataByPosition(position);
 
-        holder.tv_gym_name.setText(detailGym.briefGym.gymName);
-        holder.tv_place.setText(detailGym.briefGym.place);
+        holder.tv_gym_name.setText(briefGym.gymName);
+        holder.tv_place.setText(briefGym.place);
 
         holder.ll_parent.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,10 +84,10 @@ public class GymItemAdapter extends BaseRecyclerAdapter<GymItemAdapter.MyViewHol
         });
 
         holder.flowLayout.removeAllViews();
-        for (int i = 0; i < detailGym.equipments.length; i ++){
+        for (int i = 0; i < briefGym.equipments.length; i ++){
             View iconView = LayoutInflater.from(context).inflate(R.layout.view_equment_icon, null);
             ImageView imageView = (ImageView) iconView.findViewById(R.id.iv_icon);
-            imageView.setImageDrawable(context.getResources().getDrawable(GymIconUtil.getIconId(detailGym.equipments[i].equipmentType)));
+            imageView.setImageDrawable(context.getResources().getDrawable(GymIconUtil.getIconId(briefGym.equipments[i].equipmentType)));
             int size = (int) context.getResources().getDimension(R.dimen.gym_equipment_icon);
             FlowLayout.LayoutParams layoutParams = new FlowLayout.LayoutParams(size, size);
             if(i != 0){
@@ -96,8 +96,8 @@ public class GymItemAdapter extends BaseRecyclerAdapter<GymItemAdapter.MyViewHol
             holder.flowLayout.addView(iconView, layoutParams);
         }
 
-        for (int i = 0; i < holder.imageViews.length && i < detailGym.briefGym.gymCover.length; i ++){
-            imageLoader.displayImage(detailGym.briefGym.gymCover[i], holder.imageViews[i]);
+        for (int i = 0; i < holder.imageViews.length && i < briefGym.gymCover.length; i ++){
+            imageLoader.displayImage(briefGym.gymCover[i], holder.imageViews[i]);
         }
 
     }

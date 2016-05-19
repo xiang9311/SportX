@@ -106,6 +106,16 @@ public class MyTitleBar extends RelativeLayout {
     }
 
     /**
+     * 只设置default
+     * @param title
+     */
+    public void setDefault(String title){
+        setTitle(title);
+        setBackButtonDefault();
+        setMoreButton(0, false, null);
+    }
+
+    /**
      *
      * @param colorId
      */

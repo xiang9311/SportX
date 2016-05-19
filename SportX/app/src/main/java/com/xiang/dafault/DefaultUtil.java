@@ -10,6 +10,26 @@ import java.util.List;
  */
 public class DefaultUtil {
 
+    public static List<Common.SearchedUser> getSearchedUsers(int count) {
+        String[] images = new String[]{"http://www.feizl.com/upload2007/2011_09/110907154639871.jpg",
+                "http://v1.qzone.cc/avatar/201310/03/13/18/524cfe3d23517873.jpg%21200x200.jpg",
+                "http://pic13.nipic.com/20110301/5713677_135704571127_2.jpg",
+                "http://wc.zshl.com/datashow/picb/2005/p2005348171428875.jpg",
+                "http://wc.zshl.com/datashow/picb/2005/p2005348171428875.jpg",
+                "http://www.feizl.com/upload2007/2011_09/110907154639871.jpg"};
+        List<Common.SearchedUser> searchedUsers = new ArrayList<>();
+        for (int i = 0; i < count; i ++){
+            Common.SearchedUser searchedUser = new Common.SearchedUser();
+            searchedUser.userId = 0;
+            searchedUser.userName = "我就要上天";
+            searchedUser.sign = "听说你要上天，我带你吧。";
+            searchedUser.userAvatar = images[getRandom(6)];
+            searchedUser.images = new String[]{images[getRandom(6)], images[getRandom(6)], images[getRandom(6)]};
+            searchedUsers.add(searchedUser);
+        }
+        return searchedUsers;
+    }
+
     public static Common.DetailUser getDetailUser(){
         String[] images = new String[]{"http://www.feizl.com/upload2007/2011_09/110907154639871.jpg",
                 "http://v1.qzone.cc/avatar/201310/03/13/18/524cfe3d23517873.jpg%21200x200.jpg",
@@ -85,6 +105,7 @@ public class DefaultUtil {
                     , gymcover[getRandom(3)], gymcover[getRandom(3)], gymcover[getRandom(3)]};
             gym.place = "海淀区海淀黄庄4号楼2503";
             gym.isCoop = getRandom(2) == 1;
+            gym.equipments = getEquipments(6);
             gyms.add(gym);
         }
         return gyms;
@@ -101,7 +122,6 @@ public class DefaultUtil {
     public static Common.DetailGym getDetailGym(){
         Common.DetailGym detailGym = new Common.DetailGym();
         detailGym.briefGym = getGyms(1).get(0);
-        detailGym.equipments = getEquipments(6);
         detailGym.courses = getCourse(4);
         detailGym.gymCards = getGymCard(3);
         return detailGym;

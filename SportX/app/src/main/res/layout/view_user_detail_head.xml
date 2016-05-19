@@ -7,9 +7,9 @@
         android:id="@+id/rl_0"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clickable="true"
         android:layout_marginTop="20dp"
         style="@style/main_padding"
+        android:clickable="true"
         android:background="@drawable/selector_white_to_gray">
 
         <ImageView
@@ -35,7 +35,7 @@
             android:layout_width="25dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="7dp"
-            android:padding="1dp"
+            android:padding="3dp"
             android:scaleType="fitCenter"
             android:layout_toRightOf="@+id/tv_username"
             android:layout_alignTop="@+id/tv_username"
@@ -57,6 +57,23 @@
             android:paddingTop="6dp"
             android:paddingBottom="6dp"
             android:text="+ 关注"/>
+
+        <TextView
+            android:id="@+id/tv_chat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_username"
+            android:layout_toRightOf="@+id/tv_follow"
+            android:layout_alignTop="@+id/tv_follow"
+            android:layout_marginLeft="8dp"
+            android:clickable="true"
+            android:background="@drawable/selector_green_to_green_pressed"
+            android:textColor="@color/white"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
+            android:text="发消息"/>
 
     </RelativeLayout>
 

@@ -36,6 +36,7 @@ public class Constant {
     public static final String IMAGES = "images";
     public static final String CURRENT_INDEX = "current_index";
     public static final String SP_AUTO_SHOW_MONEY_DIALOG = "sp_auto_show_money_dialog";
+    public static final String SP_KEYWORDS = "sp_keywords";
 
     public static final String HEADER_CMDID = "cmdid";
 
@@ -113,6 +114,7 @@ public class Constant {
     public static final int FROM_USER_DETAIL = 3;
     public static final int FROM_PLACE_IN_TREND = 4;       // 从trend跳转到gym详情的时候，所加的from
     public static final int FROM_ALBUM = 5;
+    public static final int FROM_COMMENT_MESSAGE = 6;
 
     /******************* max string length ***************************/
     public static final int MAX_LENGTH_USER_NAME = 15;

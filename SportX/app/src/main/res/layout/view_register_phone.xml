@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:background="@color/white"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/rl_choose_code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80dp"
+        android:layout_marginRight="@dimen/match_parent_margin"
+        android:layout_marginLeft="@dimen/match_parent_margin"
+        android:clickable="true"
+        android:background="@drawable/selector_white_to_gray"
+        style="@style/main_padding">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="国家或地区"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/main_color"
+            android:layout_alignParentRight="true"
+            android:text="中国大陆"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_input_phone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:background="@color/white"
+        style="@style/main_padding">
+
+        <TextView
+            android:id="@+id/tv_0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/match_parent_margin"
+            android:text="+86"/>
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/et_phone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:met_baseColor="@color/main_color"
+            app:met_primaryColor="@color/main_color"
+            android:inputType="number"
+            app:met_floatingLabel="highlight"
+            app:met_floatingLabelText="手机号"
+            android:hint="手机号"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="@dimen/match_parent_margin"
+            android:layout_toRightOf="@+id/tv_0"/>
+
+    </RelativeLayout>
+
+    <com.dd.processbutton.iml.ActionProcessButton
+        android:id="@+id/apb_get_code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/match_parent_margin"
+        android:layout_marginRight="@dimen/match_parent_margin"
+        android:layout_marginTop="120dp"
+        android:textColor="@color/white"
+        android:text="获取验证码"
+        app:pb_colorComplete="@color/main_color"
+        app:pb_colorNormal="@color/main_color"
+        app:pb_colorPressed="@color/main_color_pressed"
+        app:pb_textComplete="获取成功"
+        app:pb_textProgress="正在获取"/>
+
+</LinearLayout>

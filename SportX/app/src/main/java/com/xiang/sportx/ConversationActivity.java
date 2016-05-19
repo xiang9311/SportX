@@ -1,5 +1,6 @@
 package com.xiang.sportx;
 
+import android.net.Uri;
 import android.os.Bundle;
 
 import com.xiang.view.MyTitleBar;
@@ -7,6 +8,10 @@ import com.xiang.view.MyTitleBar;
 public class ConversationActivity extends BaseAppCompatActivity {
 
     private MyTitleBar myTitleBar;
+
+    // data
+    private String chatUserid;
+    private String userName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,6 +24,9 @@ public class ConversationActivity extends BaseAppCompatActivity {
         setContentView(R.layout.activity_conversation);
 
         myTitleBar = (MyTitleBar) findViewById(R.id.titleBar);
+        Uri uri = getIntent().getData();
+        userName = uri.getQueryParameter("title");
+        chatUserid = uri.getQueryParameter("targetId");
     }
 
     @Override
@@ -28,7 +36,7 @@ public class ConversationActivity extends BaseAppCompatActivity {
 
     @Override
     protected void configView() {
-        myTitleBar.setTitle("");
+        myTitleBar.setTitle(userName);
         myTitleBar.setBackButtonDefault();
         myTitleBar.setMoreButton(0, false, null);
     }

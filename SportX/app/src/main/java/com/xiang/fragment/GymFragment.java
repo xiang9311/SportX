@@ -123,7 +123,7 @@ public class GymFragment extends Fragment {
     }
 
     private void initGymList() {
-        gymItemAdapter = new GymItemAdapter(getContext(), DefaultUtil.getDetailGyms(10), rv_gyms);
+        gymItemAdapter = new GymItemAdapter(getContext(), DefaultUtil.getGyms(10), rv_gyms);
 
         // add head view
         gymItemAdapter.addHeadView(headerView);
@@ -166,8 +166,8 @@ public class GymFragment extends Fragment {
 
         // 设置器材内容
         StringBuilder sb_equip = new StringBuilder();
-        for(int i = 0; i < detailGym.equipments.length; i ++){
-            sb_equip.append(detailGym.equipments[i].name);
+        for(int i = 0; i < detailGym.briefGym.equipments.length; i ++){
+            sb_equip.append(detailGym.briefGym.equipments[i].name);
             sb_equip.append(" ");
         }
         tv_equipment_more.setText(sb_equip.toString());

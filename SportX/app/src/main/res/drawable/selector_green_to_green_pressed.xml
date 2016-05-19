@@ -8,13 +8,13 @@
     </item>
     <item android:state_pressed="true">
         <shape>
-            <solid android:color="@color/primary_button_color"/>
+            <solid android:color="@color/primary_button_color_pressed"/>
             <corners android:radius="@dimen/radius"/>
         </shape>
     </item>
     <item android:state_focused="true">
         <shape>
-            <solid android:color="@color/primary_button_color"/>
+            <solid android:color="@color/primary_button_color_pressed"/>
             <corners android:radius="@dimen/radius"/>
         </shape>
     </item>

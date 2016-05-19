@@ -6,6 +6,7 @@
     <color name="red">#FF1020</color>
     <color name="colorOpcity">#33AAAAAA</color>
     <color name="gray_background">#EFEFEF</color>
+    <color name="gray_background_deep">#E0E0E0</color>
 
     <color name="white">#FFFFFF</color>
     <color name="white_pressed">#EDEDED</color>
@@ -27,8 +28,8 @@
     <color name="float_button_color">#2bb8aa</color>
     <color name="float_button_color_pressed">#1ba89a</color>
 
-    <color name="primary_button_color">#2bb8aa</color>
-    <color name="primary_button_color_pressed">#1ba89a</color>
+    <color name="primary_button_color">#44b549</color>
+    <color name="primary_button_color_pressed">#30a030</color>
 
     <!-- text -->
     <color name="text_normal">#444444</color>
@@ -37,5 +38,11 @@
     <color name="text_lightest">#AAAAAA</color>
 
     <color name="text_high_light">#3b589e</color>
+
+    <!-- color for hot -->
+    <color name="hot1">#ed1c24</color>
+    <color name="hot2">#ff7f27</color>
+    <color name="hot3">#fff201</color>
+    <color name="hot_normal">#BBBBBB</color>
 
 </resources>
