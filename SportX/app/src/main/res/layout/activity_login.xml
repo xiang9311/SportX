@@ -45,11 +45,45 @@
         android:hint="密码"
         android:layout_toRightOf="@+id/tv_0"/>
 
+    <RelativeLayout
+        android:id="@+id/rl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="@dimen/match_parent_margin"
+        android:layout_marginRight="@dimen/match_parent_margin"
+        android:layout_below="@+id/met_password">
+
+        <com.rey.material.widget.CheckBox
+            android:id="@+id/cb_auto_login"
+            style="@style/Material.Drawable.CheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="自动登录"
+            android:gravity="center_vertical"
+            app:cbd_strokeColor="@color/main_color"
+            app:cbd_tickColor="@color/white"/>
+
+        <com.rey.material.widget.CheckBox
+            android:id="@+id/cb_remember_password"
+            style="@style/Material.Drawable.CheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_alignParentRight="true"
+            android:text="记住密码"
+            android:gravity="center_vertical"
+            app:cbd_strokeColor="@color/main_color"
+            app:cbd_tickColor="@color/white"/>
+
+    </RelativeLayout>
+
     <com.dd.processbutton.iml.ActionProcessButton
         android:id="@+id/apb_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/met_password"
+        android:layout_below="@+id/rl"
         android:layout_marginLeft="@dimen/match_parent_margin"
         android:layout_marginRight="@dimen/match_parent_margin"
         android:layout_marginTop="40dp"

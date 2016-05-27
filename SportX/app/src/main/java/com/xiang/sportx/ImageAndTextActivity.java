@@ -4,8 +4,6 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -13,17 +11,18 @@ import com.xiang.Util.ArrayUtil;
 import com.xiang.Util.Constant;
 import com.xiang.adapter.ImageViewAdapter;
 import com.xiang.factory.DisplayOptionsFactory;
-import com.xiang.view.MyTitleBar;
+import com.xiang.view.TouchImageView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import me.relex.circleindicator.CircleIndicator;
 
 public class ImageAndTextActivity extends BaseAppCompatActivity {
 
     // views
     private ViewPager viewPager;
-    private MyTitleBar titleBar;
-    private TextView tv_count;
+    private CircleIndicator ci_images;
 
 
     private List<View> views = new ArrayList<>();
@@ -37,6 +36,7 @@ public class ImageAndTextActivity extends BaseAppCompatActivity {
 
     // data
     private int currentindex = 0;
+    private boolean showIndicator = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,35 +48,31 @@ public class ImageAndTextActivity extends BaseAppCompatActivity {
         setContentView(R.layout.activity_image_and_text);
 
         viewPager = (ViewPager) findViewById(R.id.vp_image_text);
-        titleBar = (MyTitleBar) findViewById(R.id.titleBar);
-        titleBar.setTitleBackgroundColor(R.color.black);
-        titleBar.setBackButtomBackgroundColor(R.color.black);
-        tv_count = (TextView) findViewById(R.id.tv_count);
+        ci_images = (CircleIndicator) findViewById(R.id.ci_images);
     }
 
     @Override
     protected void initData() {
-//        imageUrls.addAll();
         currentindex = getIntent().getIntExtra(Constant.CURRENT_INDEX, 0);
         String[] images = getIntent().getStringArrayExtra(Constant.IMAGES);
+        showIndicator = getIntent().getBooleanExtra(Constant.SHOW_INDICATOR, true);
         imageUrls.addAll(ArrayUtil.Array2List(images));
     }
 
     @Override
     protected void configView() {
-        titleBar.setBackButton(R.mipmap.back, true, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-        titleBar.setTitle("");
-        titleBar.setMoreButton(0, false, null);
-
 
         for(String url:imageUrls){
             View view = LayoutInflater.from(this).inflate(R.layout.view_image, null);
-            ImageView iv_image = (ImageView) view.findViewById(R.id.iv_image);
+            TouchImageView iv_image = (TouchImageView) view.findViewById(R.id.iv_image);
+            iv_image.setMaxZoom(2.0f);
+            iv_image.setMinZoom(1.0f);
+            iv_image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });
             imageLoader.displayImage(url, iv_image, coverOptions);
             views.add(view);
         }
@@ -84,32 +80,11 @@ public class ImageAndTextActivity extends BaseAppCompatActivity {
         imageViewAdapter = new ImageViewAdapter(views);
         viewPager.setAdapter(imageViewAdapter);
 
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            private int currentPage = 0;
-
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                currentPage = position;
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-                if (state == 0) {  // 0是滑完了
-                    setCurrentIndex(currentPage);
-                }
-            }
-        });
+        ci_images.setViewPager(viewPager);
 
         viewPager.setCurrentItem(currentindex);
-        setCurrentIndex(currentindex);
+
+        ci_images.setVisibility(showIndicator ? View.VISIBLE: View.GONE);
     }
 
-    private void setCurrentIndex(int index){
-        tv_count.setText((index + 1) + "/" + imageUrls.size());
-    }
 }

@@ -18,18 +18,30 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Interpolator;
-import android.widget.Scroller;
 import android.widget.TextView;
 
 import com.dd.processbutton.iml.ActionProcessButton;
+import com.qiniu.android.http.ResponseInfo;
+import com.qiniu.android.storage.UpCompletionHandler;
+import com.qiniu.android.storage.UploadManager;
 import com.rengwuxian.materialedittext.MaterialEditText;
+import com.sea_monster.common.Md5;
+import com.xiang.Util.Constant;
 import com.xiang.Util.StringUtil;
 import com.xiang.base.BaseHandler;
 import com.xiang.factory.MaterialDialogFactory;
+import com.xiang.proto.nano.Common;
+import com.xiang.proto.pilot.nano.Pilot;
+import com.xiang.proto.pilot.nano.Token;
+import com.xiang.request.RequestUtil;
+import com.xiang.request.UrlUtil;
+import com.xiang.thread.GetQiniuTokenThread;
 import com.xiang.view.MyTitleBar;
 import com.xiang.view.TwoOptionMaterialDialog;
 
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -71,6 +83,12 @@ public class RegisterActivity extends BaseAppCompatActivity {
     private String avatar_key = "";
     private Uri imageUri;
     private String file_name;
+    private int sex = Common.MALE;
+
+    private String qiniuToken = "";
+    private String bucketName = "";
+
+    private Bitmap avatarBitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,7 +151,6 @@ public class RegisterActivity extends BaseAppCompatActivity {
         titleBar.setDefault("注册--获取验证码");
         viewPager.setOffscreenPageLimit(3);
         viewPager.setAdapter(new RegisterPagerAdapter(getSupportFragmentManager()));
-//        viewPager.setPageTransformer(true, new ScaleInOutTransformer());
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -159,6 +176,8 @@ public class RegisterActivity extends BaseAppCompatActivity {
         ci_register.setViewPager(viewPager);
 
         mHandler = new MyHandler(this, null);
+
+        getQiniuToken();
 
         initSMS();
     }
@@ -234,8 +253,34 @@ public class RegisterActivity extends BaseAppCompatActivity {
         apb_verifycode.setProgress(50);
     }
 
-    private void doRegiste(){
+    private void getQiniuToken(){
+        Token.Request11001 request11001 = new Token.Request11001();
+        request11001.common = RequestUtil.getProtoCommon(11001, System.currentTimeMillis());
+        new GetQiniuTokenThread(mHandler, request11001).start();
+    }
 
+    private void doRegiste(){
+        apb_register.setMode(ActionProcessButton.Mode.ENDLESS);
+        apb_register.setProgress(50);
+        met_username.setEnabled(false);
+        met_password.setEnabled(false);
+        civ_avatar.setEnabled(false);
+        tv_sex.setEnabled(false);
+        new RegisterThread().start();
+    }
+
+    public static boolean checkUserName(String userName) {
+        String regex = "([a-z]|[A-Z]|[0-9]|[\\u4e00-\\u9fa5])+";
+        Pattern p = Pattern.compile(regex);
+        Matcher m = p.matcher(userName);
+        return m.matches();
+    }
+
+    public static boolean checkPassword(String password) {
+        String regex = "^[0-9a-zA-Z]{6,16}";
+        Pattern p = Pattern.compile(regex);
+        Matcher m = p.matcher(password);
+        return m.matches();
     }
 
     private void startChoosePhoto(){
@@ -320,39 +365,77 @@ public class RegisterActivity extends BaseAppCompatActivity {
                 // 解析成Bitmap
                 Bitmap bitmap = data.getParcelableExtra("data");
                 civ_avatar.setImageBitmap(bitmap);
-//                uploadBitmap(bitmap);
+                if (avatarBitmap != null && !avatarBitmap.isRecycled()){
+                    avatarBitmap.recycle();
+                }
+                avatarBitmap = bitmap;
                 break;
 
         }
     }
 
-//    /**
-//     * 上传图片
-//     * @param bitmap
-//     */
-//    private void uploadBitmap(Bitmap bitmap){
-//
-//        if (StringUtil.isNullOrEmpty(qiniuToken)){
-//            sendToast("正在获取配置信息，请稍后重试");
-//            return ;
-//        }
-//
-//        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-//        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, outputStream);
-//        UploadManager uploadManager = new UploadManager();
-//        byte[] data = outputStream.toByteArray();
-//        uploadManager.put(data, StringUtil.generatorQiniuKey(), qiniuToken, new UpCompletionHandler() {
-//            @Override
-//            public void complete(String key, ResponseInfo responseInfo, JSONObject jsonObject) {
-//                avatar_key = key;
-//            }
-//        }, null);              // option可以尝试使用，高级策略
-//        try{
-//            outputStream.close();
-//        } catch (Exception e){
-//
-//        }
-//    }
+    /**
+     * 上传图片
+     * @param bitmap
+     */
+    private void uploadBitmap(Bitmap bitmap){
+
+        if(bitmap == null || bitmap.isRecycled()){
+            sendToast("头像还未选择或已被系统回收，请重新选择");
+            return;
+        }
+
+        if (StringUtil.isNullOrEmpty(qiniuToken)){
+            sendToast("正在获取配置信息，请稍后重试");
+            getQiniuToken();
+            return ;
+        }
+
+        if (sms_status != STATUS_VERIFY_SUC && ! Constant.DEBUG){ //TODO debug是不用验证手机号
+            sendToast("手机号还未验证");
+            return ;
+        }
+
+        String username = met_username.getText().toString();
+
+        if(!StringUtil.isNotEmpty(username)){
+            sendToast("用户名不能为空");
+            return;
+        }
+
+        if(!checkUserName(username) || username.length() > 20){
+            sendToast("用户名不合法");
+            return;
+        }
+
+        String password = met_password.getText().toString();
+        if(!StringUtil.isNotEmpty(password)){
+            sendToast("密码不能为空");
+            return;
+        }
+
+        if(!checkPassword(password)){
+            sendToast("密码只能有字母和数字组成，且长度在6-16位");
+            return;
+        }
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, outputStream);
+        UploadManager uploadManager = new UploadManager();
+        byte[] data = outputStream.toByteArray();
+        uploadManager.put(data, StringUtil.generatorQiniuKey(), qiniuToken, new UpCompletionHandler() {
+            @Override
+            public void complete(String key, ResponseInfo responseInfo, JSONObject jsonObject) {
+                avatar_key = key;
+                doRegiste();
+            }
+        }, null);              // option可以尝试使用，高级策略
+        try{
+            outputStream.close();
+        } catch (Exception e){
+
+        }
+    }
 
     // tools
     private EventHandler eventHandler;
@@ -406,6 +489,8 @@ public class RegisterActivity extends BaseAppCompatActivity {
     private static final int KEY_UPDATE_BUTTON = 201;
     private static final int KEY_UPDATE_BUTTON_ERROR = 202;
     private static final int KEY_UPDATE_BUTTON_FINISH = 203;
+    private static final int KEY_PHONE_CAN_USE = 301;
+    private static final int KEY_PHONE_CANNOT_USE = 302;
 
     class MyHandler extends BaseHandler{
 
@@ -455,13 +540,11 @@ public class RegisterActivity extends BaseAppCompatActivity {
                     break;
 
                 case KEY_REGISTER_SUC:
-//                    String phone = et_phone.getText().toString();
-//                    String password = et_password.getText().toString();
-//                    Intent intent = new Intent();
-//                    intent.putExtra(Constant.PHONE, phone);
-//                    intent.putExtra(Constant.PASSWORD, password);
-//                    setResult(RESULT_OK, intent);
-//                    finish();
+                    Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                    intent.putExtra(Constant.PHONE, met_phone.getText().toString());
+                    intent.putExtra(Constant.PASSWORD, met_password.getText().toString());
+                    startActivity(intent);
+                    finish();
                     break;
 
                 // 发送验证码相关
@@ -482,12 +565,24 @@ public class RegisterActivity extends BaseAppCompatActivity {
                     break;
                 case KEY_UPDATE_BUTTON_FINISH:
                     if(sms_status != STATUS_VERIFY_SUC) {
-//                        apb_send_message.setText("OK");
-//                        et_phone.setEnabled(true);
-//                        et_verify.setEnabled(true);
                         sms_status = STATUS_START;
                         sendToastLong("如果您尝试多次未收到验证码，请通过“合作”与我们联系。");
                     }
+                    break;
+
+                case KEY_GET_QINIU_TOKEN_SUC:
+                    Token.Response11001.Data data = (Token.Response11001.Data) msg.obj;
+                    qiniuToken = data.qiniuToken;
+                    bucketName = data.bucketName;
+                    break;
+
+                case KEY_PHONE_CAN_USE:
+                    getCode();
+                    break;
+
+                case KEY_PHONE_CANNOT_USE:
+                    sendToast("手机号码已经注册");
+                    apb_getcode.setProgress(0);
                     break;
             }
         }
@@ -524,7 +619,9 @@ public class RegisterActivity extends BaseAppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     //
-                    getCode();
+                    if (met_phone.getText().toString().length() > 8) {
+                        new VerifyPhoneThread().start();
+                    }
                 }
             });
 
@@ -556,6 +653,8 @@ public class RegisterActivity extends BaseAppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
             View view = LayoutInflater.from(RegisterActivity.this).inflate(R.layout.view_register_userinfo, null);
+            met_username = (MaterialEditText) view.findViewById(R.id.et_user_name);
+            met_password = (MaterialEditText) view.findViewById(R.id.et_password);
             apb_register = (ActionProcessButton) view.findViewById(R.id.apb_registe);
             tv_sex = (TextView) view.findViewById(R.id.tv_select_sex);
             civ_avatar = (CircleImageView) view.findViewById(R.id.civ_choose_avatar);
@@ -588,15 +687,17 @@ public class RegisterActivity extends BaseAppCompatActivity {
             tv_sex.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (chooseSexDialog == null){
-                        chooseSexDialog = MaterialDialogFactory.createTwoOptionMd(RegisterActivity.this, new String[]{"男","女"}, true, 0);
+                    if (chooseSexDialog == null) {
+                        chooseSexDialog = MaterialDialogFactory.createTwoOptionMd(RegisterActivity.this, new String[]{"男", "女"}, true, 0);
                         chooseSexDialog.setOnOptionChooseListener(new TwoOptionMaterialDialog.OnOptionChooseListener() {
                             @Override
                             public void onOptionChoose(int index) {
-                                if (index == 0){
+                                if (index == 0) {
                                     tv_sex.setText("性别：男");
+                                    sex = Common.MALE;
                                 } else if (index == 1) {
                                     tv_sex.setText("性别：女");
+                                    sex = Common.FEMALE;
                                 } else {
 
                                 }
@@ -610,39 +711,135 @@ public class RegisterActivity extends BaseAppCompatActivity {
                 }
             });
 
+            apb_register.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // 上传成功后会自动注册
+                    uploadBitmap(avatarBitmap);
+                }
+            });
+
             return view;
         }
     }
 
-    public class FixedSpeedScroller extends Scroller {
-        private int mDuration = 500;
-
-        public FixedSpeedScroller(Context context) {
-            super(context);
-        }
-
-        public FixedSpeedScroller(Context context, Interpolator interpolator) {
-            super(context, interpolator);
-        }
-
+    class RegisterThread extends Thread{
         @Override
-        public void startScroll(int startX, int startY, int dx, int dy, int duration) {
-            // Ignore received duration, use fixed one instead
-            super.startScroll(startX, startY, dx, dy, mDuration);
-        }
+        public void run() {
+            super.run();
+            long currentMills = System.currentTimeMillis();
+            int cmdid = 10001;
+            Pilot.Request10001 request = new Pilot.Request10001();
+            Pilot.Request10001.Params params = new Pilot.Request10001.Params();
+            Common.RequestCommon common = RequestUtil.getProtoCommon(cmdid, currentMills);
+            request.common = common;
+            request.params = params;
 
-        @Override
-        public void startScroll(int startX, int startY, int dx, int dy) {
-            // Ignore received duration, use fixed one instead
-            super.startScroll(startX, startY, dx, dy, mDuration);
-        }
+            params.avatarKey = avatar_key;
+            params.bucketName = bucketName;
+            params.phone = met_phone.getText().toString();
+            params.username = met_username.getText().toString();
+            params.password = Md5.encode(met_password.getText().toString()).toUpperCase();
+            params.sex = sex;
 
-        public void setmDuration(int time) {
-            mDuration = time;
-        }
+            byte[] result = RequestUtil.postWithProtobuf(request, UrlUtil.URL_REGISTER, cmdid, currentMills);
+            if (null != result){
+                // 加载成功
+                try{
+                    Pilot.Response10001 response = Pilot.Response10001.parseFrom(result);
 
-        public int getmDuration() {
-            return mDuration;
+                    if (response.common != null){
+                        if(response.common.code == 0){
+                            Message msg = Message.obtain();
+                            msg.what = KEY_REGISTER_SUC;
+                            mHandler.sendMessage(msg);
+                        } else{
+                            // code is not 0, find error
+                            Message msg = Message.obtain();
+                            msg.what = BaseHandler.KEY_ERROR;
+                            msg.obj = response.common.message;
+                            mHandler.sendMessage(msg);
+                        }
+                    } else {
+                        Message msg = Message.obtain();
+                        msg.what = BaseHandler.KEY_ERROR;
+                        msg.obj = "数据错误";
+                        mHandler.sendMessage(msg);
+                    }
+
+                } catch (Exception e){
+                    Message msg = Message.obtain();
+                    msg.what = BaseHandler.KEY_PARSE_ERROR;
+                    mHandler.sendMessage(msg);
+                    e.printStackTrace();
+                }
+            } else {
+                // 加载失败
+                Message msg = Message.obtain();
+                msg.what = BaseHandler.KEY_NO_RES;
+                mHandler.sendMessage(msg);
+            }
         }
     }
+
+    class VerifyPhoneThread extends Thread{
+        @Override
+        public void run() {
+            super.run();
+            long currentMills = System.currentTimeMillis();
+            int cmdid = 10016;
+            Pilot.Request10016 request = new Pilot.Request10016();
+            Pilot.Request10016.Params params = new Pilot.Request10016.Params();
+            Common.RequestCommon common = RequestUtil.getProtoCommon(cmdid, currentMills);
+            request.common = common;
+            request.params = params;
+
+            params.phone = met_phone.getText().toString();
+
+            byte[] result = RequestUtil.postWithProtobuf(request, UrlUtil.URL_VERIFY_PHONE_CAN_USE, cmdid, currentMills);
+            if (null != result){
+                // 加载成功
+                try{
+                    Pilot.Response10016 response = Pilot.Response10016.parseFrom(result);
+
+                    if (response.common != null){
+                        if(response.common.code == 0){
+                            if(response.data.canUser) {
+                                Message msg = Message.obtain();
+                                msg.what = KEY_PHONE_CAN_USE;
+                                mHandler.sendMessage(msg);
+                            } else{
+                                Message msg = Message.obtain();
+                                msg.what = KEY_PHONE_CANNOT_USE;
+                                mHandler.sendMessage(msg);
+                            }
+                        } else{
+                            // code is not 0, find error
+                            Message msg = Message.obtain();
+                            msg.what = BaseHandler.KEY_ERROR;
+                            msg.obj = response.common.message;
+                            mHandler.sendMessage(msg);
+                        }
+                    } else {
+                        Message msg = Message.obtain();
+                        msg.what = BaseHandler.KEY_ERROR;
+                        msg.obj = "数据错误";
+                        mHandler.sendMessage(msg);
+                    }
+
+                } catch (Exception e){
+                    Message msg = Message.obtain();
+                    msg.what = BaseHandler.KEY_PARSE_ERROR;
+                    mHandler.sendMessage(msg);
+                    e.printStackTrace();
+                }
+            } else {
+                // 加载失败
+                Message msg = Message.obtain();
+                msg.what = BaseHandler.KEY_NO_RES;
+                mHandler.sendMessage(msg);
+            }
+        }
+    }
+
 }

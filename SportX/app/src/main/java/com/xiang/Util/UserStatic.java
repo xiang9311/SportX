@@ -1,5 +1,7 @@
 package com.xiang.Util;
 
+import com.xiang.proto.nano.Common;
+
 /**
  * Created by 祥祥 on 2016/3/22.
  */
@@ -32,9 +34,35 @@ public class UserStatic {
      * 用户的id
      */
     public static int userId = -1;
+    /**
+     * 用户的id
+     */
+    public static String userKey = "";
 
     /**
      * 是否已经登录
      */
     public static boolean logged = false;
+    /**
+     * 聊天的token
+     */
+    public static String rongyunToken = "";
+
+    /**
+     * 签名
+     */
+    public static String sign = "";
+    /**
+     * 性别
+     */
+    public static int sex = 0;
+
+    public static boolean isMale(){
+        return sex == Common.MALE;
+    }
+
+    public static String getSex(){
+        return (sex == Common.MALE) ? "男" : "女";
+    }
+
 }

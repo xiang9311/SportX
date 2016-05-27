@@ -154,4 +154,8 @@ public class MyTitleBar extends RelativeLayout {
         tv_more.setVisibility(View.VISIBLE);
         iv_more.setVisibility(View.GONE);
     }
+
+    public void setMoreTextButtonEnable(boolean enable){
+        tv_more.setEnabled(enable);
+    }
 }

@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:textSize="@dimen/text_big"
             android:textColor="@color/text_normal"
-            android:text="你咋不上天呢"/>
+            android:text="未登录"/>
 
         <TextView
             android:id="@+id/tv_user_sign"
@@ -41,8 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/text_small"
-            android:textColor="@color/text_light"
-            android:text="你咋不上天呢"/>
+            android:textColor="@color/text_light"/>
         
     </RelativeLayout>
 

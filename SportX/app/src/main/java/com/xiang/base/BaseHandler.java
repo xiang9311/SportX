@@ -26,6 +26,31 @@ public class BaseHandler extends Handler {
     public static final int KEY_NO_RES = 2002;
     public static final int KEY_PARSE_ERROR = 2003;
 
+    /**
+     * 获取七牛token成功是发送该消息
+     */
+    public static final int KEY_GET_QINIU_TOKEN_SUC = 3001;
+    /**
+     * 给trend 点赞
+     */
+    public static final int KEY_LIKE_TREND = 3002;
+    /**
+     * 给trend 取消点赞
+     */
+    public static final int KEY_UNLIKE_TREND = 3003;
+    /**
+     * 获取用户的trend
+     */
+    public static final int KEY_GET_TREND_LIST_SUC = 3004;
+    /**
+     * 获取用户粉丝
+     */
+    public static final int KEY_GET_FENSI_SUC = 3005;
+    /**
+     * 获取用户关注
+     */
+    public static final int KEY_GET_GUANZHU_SUC = 3006;
+
     @Override
     public void handleMessage(Message msg) {
         super.handleMessage(msg);
@@ -51,7 +76,7 @@ public class BaseHandler extends Handler {
                 break;
             case KEY_NO_RES:
                 if (context != null){
-                    Toast.makeText(context, "请检查网络连接", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "网络连接失败或服务器出错", Toast.LENGTH_SHORT).show();
                 }
                 if (mSwipeRefreshLayout != null){
                     mSwipeRefreshLayout.setRefreshing(false);

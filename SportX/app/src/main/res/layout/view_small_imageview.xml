@@ -11,7 +11,7 @@
         android:id="@+id/iv_image"
         android:layout_width="@dimen/trend_upload_size"
         android:layout_height="@dimen/trend_upload_size"
-        android:scaleType="fitCenter"
+        android:scaleType="centerCrop"
         android:src="@mipmap/add"/>
 
 </RelativeLayout>

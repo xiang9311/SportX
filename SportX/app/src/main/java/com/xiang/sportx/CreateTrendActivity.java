@@ -1,11 +1,14 @@
 package com.xiang.sportx;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Message;
 import android.provider.MediaStore;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,15 +17,32 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.qiniu.android.http.ResponseInfo;
+import com.qiniu.android.storage.UpCompletionHandler;
+import com.qiniu.android.storage.UploadManager;
 import com.wefika.flowlayout.FlowLayout;
+import com.xiang.Util.BitmapUtil;
+import com.xiang.Util.StringUtil;
+import com.xiang.base.BaseHandler;
 import com.xiang.factory.MaterialDialogFactory;
 import com.xiang.model.ChoosedGym;
+import com.xiang.proto.nano.Common;
+import com.xiang.proto.pilot.nano.Token;
+import com.xiang.proto.trend.nano.Trend;
+import com.xiang.request.RequestUtil;
+import com.xiang.request.UrlUtil;
+import com.xiang.thread.GetQiniuTokenThread;
 import com.xiang.view.MyTitleBar;
 import com.xiang.view.TwoOptionMaterialDialog;
 
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import me.drakeet.materialdialog.MaterialDialog;
 
@@ -44,11 +64,19 @@ public class CreateTrendActivity extends BaseAppCompatActivity {
     private final int CODE_PHOTO = 1;
     private final int CODE_PHOTO_CROP = 2;
     private final int CODE_CHOOSE_GYM = 3;
+    private int imageSize = 0;
+    private static final int MAX_COUNT = 9;
+    private List<String> avatar_key = new ArrayList<>();
     private Uri imageUri;
     private String file_name;
-    private int imageSize = 0;
+    private String qiniuToken = "";
+    private String bucketName = "";
+    private List<Uri> imageUris = new ArrayList<>();
+    private int uploadedCount = 0;
+    private boolean isCreateing = false;
 
-    private static final int MAX_COUNT = 9;
+    //data
+    private ChoosedGym choosedGym;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +108,14 @@ public class CreateTrendActivity extends BaseAppCompatActivity {
         myTitleBar.setMoreTextButton("发布", new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO fabu
+                if (et_content.getText().toString().length() > 0 || imageUris.size() > 0) {
+                    // 上传完成后自动发布
+                    uploadBitmap();
+                    myTitleBar.setMoreTextButtonEnable(false);
+                    isCreateing = true;
+                } else {
+                    sendToast("还未编辑内容");
+                }
             }
         });
 
@@ -119,8 +154,16 @@ public class CreateTrendActivity extends BaseAppCompatActivity {
                 startActivityForResult(intent, CODE_CHOOSE_GYM);
             }
         });
+
+        mHandler = new MyHandler(this, null);
+        getQiniuToken();
     }
 
+    private void getQiniuToken(){
+        Token.Request11001 request11001 = new Token.Request11001();
+        request11001.common = RequestUtil.getProtoCommon(11001, System.currentTimeMillis());
+        new GetQiniuTokenThread(mHandler, request11001).start();
+    }
 
     private void startChoosePhoto(){
         Intent openAlbumIntent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -161,21 +204,21 @@ public class CreateTrendActivity extends BaseAppCompatActivity {
         startActivityForResult(intent, CODE_CAPTURE);
     }
 
-    private void startPhotoCrop(Uri uri){
-        Intent intent = new Intent("com.android.camera.action.CROP");
-        intent.setDataAndType(uri, "image/*");
-        intent.putExtra("crop", "true");
-
-        // 宽高比
-        intent.putExtra("aspectX", 1);
-        intent.putExtra("aspectY", 1);
-
-        intent.putExtra("outputX", 300);
-        intent.putExtra("outputY", 300);
-        intent.putExtra("return-data", true);
-        intent.putExtra("noFaceDetection", true);
-        startActivityForResult(intent, CODE_PHOTO_CROP);
-    }
+//    private void startPhotoCrop(Uri uri){
+//        Intent intent = new Intent("com.android.camera.action.CROP");
+//        intent.setDataAndType(uri, "image/*");
+//        intent.putExtra("crop", "true");
+//
+//        // 宽高比
+//        intent.putExtra("aspectX", 1);
+//        intent.putExtra("aspectY", 1);
+//
+//        intent.putExtra("outputX", 300);
+//        intent.putExtra("outputY", 300);
+//        intent.putExtra("return-data", true);
+//        intent.putExtra("noFaceDetection", true);
+//        startActivityForResult(intent, CODE_PHOTO_CROP);
+//    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -190,34 +233,48 @@ public class CreateTrendActivity extends BaseAppCompatActivity {
 
         switch (requestCode){
             case CODE_CAPTURE:
-                startPhotoCrop(imageUri);
+                imageUris.add(imageUri);
+                addImageView2FlowLayout(imageUri);
                 break;
             case CODE_PHOTO:
                 try{
                     imageUri = data.getData();
-                    startPhotoCrop(imageUri);
+                    imageUris.add(imageUri);
+                    addImageView2FlowLayout(imageUri);
                 }catch (Exception e){
                     e.printStackTrace();
                 }
                 break;
-            case CODE_PHOTO_CROP:
-                // 解析成Bitmap
-                Bitmap bitmap = data.getParcelableExtra("data");
-                addImageView2FlowLayout(bitmap);
+//            case CODE_PHOTO_CROP:
+//                // 解析成Bitmap
+//                Bitmap bitmap = data.getParcelableExtra("data");
+//                addImageView2FlowLayout(bitmap);
 //                civ_choose_avatar.setImageBitmap(bitmap);
 //                uploadBitmap(bitmap);
-                //TODO upload?
-                break;
+//                break;
 
             case CODE_CHOOSE_GYM:
-                ChoosedGym choosedGym = (ChoosedGym) data.getSerializableExtra(ChooseGymActivity.CHOOSED_GYM);
+                choosedGym = (ChoosedGym) data.getSerializableExtra(ChooseGymActivity.CHOOSED_GYM);
                 tv_gymname.setText(choosedGym.getGymName());
                 break;
 
         }
     }
 
+    private void addImageView2FlowLayout(Uri bitmapUri) {
+        try {
+            Bitmap bitmap = null;
+            bitmap = BitmapUtil.getCompressedImage(this, bitmapUri, true);
+            addImageView2FlowLayout(bitmap);
+        } catch(NullPointerException e) {
+            sendToast("未找到图片，可能由于机型问题，请联系我们解决。");
+        }
+    }
+
     private void addImageView2FlowLayout(Bitmap bitmap){
+
+        addBitmapToRecycle(bitmap);
+
         View view = LayoutInflater.from(this).inflate(R.layout.view_small_imageview, null);
 
         int size = (int) getResources().getDimension(R.dimen.trend_upload_size);
@@ -241,60 +298,189 @@ public class CreateTrendActivity extends BaseAppCompatActivity {
         }
     }
 
-//    /**
-//     * 上传图片
-//     * @param bitmap
-//     */
-//    private void uploadBitmap(Bitmap bitmap){
-//
-//        if (StringUtil.isNullOrEmpty(qiniuToken)){
-//            sendToast("正在获取配置信息，请稍后重试");
-//            return ;
-//        }
-//
-//        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-//        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, outputStream);
-//        UploadManager uploadManager = new UploadManager();
-//        byte[] data = outputStream.toByteArray();
-//        uploadManager.put(data, StringUtil.generatorQiniuKey(), qiniuToken, new UpCompletionHandler() {
-//            @Override
-//            public void complete(String key, ResponseInfo responseInfo, JSONObject jsonObject) {
-//                avatar_key = key;
-//            }
-//        }, null);              // option可以尝试使用，高级策略
-//        try{
-//            outputStream.close();
-//        } catch (Exception e){
-//
-//        }
-//    }
+    /**
+     * 上传图片
+     */
+    private void uploadBitmap(){
 
+        if(imageUris.size() == 0){
+            // 如果没有图片，直接发布
+            mHandler.sendEmptyMessage(KEY_START_CREATE_TREND);
+            return;
+        }
+
+        if (StringUtil.isNullOrEmpty(qiniuToken)){
+            sendToast("正在获取配置信息，请稍后重试");
+            getQiniuToken();
+            myTitleBar.setMoreTextButtonEnable(true);
+            return ;
+        }
+
+        /**
+         * 通过handle机制，一张一张上传
+         */
+        startUploadBitmap(0);
+    }
+
+    private void startUploadBitmap(int index){
+        final Bitmap bitmap;
+        bitmap = BitmapUtil.getCompressedImage(this, imageUris.get(index), false);
+        addBitmapToRecycle(bitmap);
+
+        String thisKey = StringUtil.generatorTrendKey();
+        avatar_key.add(thisKey);
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, outputStream);
+        UploadManager uploadManager = new UploadManager();
+        byte[] data = outputStream.toByteArray();
+        uploadManager.put(data, thisKey, qiniuToken, new UpCompletionHandler() {
+            @Override
+            public void complete(String key, ResponseInfo responseInfo, JSONObject jsonObject) {
+                uploadedCount ++;
+                bitmap.recycle();
+                System.gc();
+                mHandler.sendEmptyMessage(KEY_UPLOAD_IMAGE);
+            }
+        }, null);              // option可以尝试使用，高级策略
+        try {
+            outputStream.close();
+        } catch (Exception e) {
+
+        }
+    }
+
+    private MyHandler mHandler;
+    private final int KEY_UPLOAD_IMAGE = 101;
+    private final int KEY_START_CREATE_TREND = 102;
+    private final int KEY_TREND_CREATE_SUC = 103;
+    class MyHandler extends BaseHandler {
+
+        public MyHandler(Context context, SwipeRefreshLayout mSwipeRefreshLayout) {
+            super(context, mSwipeRefreshLayout);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+                case KEY_GET_QINIU_TOKEN_SUC:
+                    Token.Response11001.Data data = (Token.Response11001.Data) msg.obj;
+                    qiniuToken = data.qiniuToken;
+                    bucketName = data.bucketName;
+                    break;
+                case KEY_UPLOAD_IMAGE:
+                    CreateTrendActivity.this.sendToast("已上传：" + uploadedCount + "/" + imageUris.size());
+                    if(uploadedCount == imageUris.size()){
+                        sendEmptyMessage(KEY_START_CREATE_TREND);
+                    } else {
+                        startUploadBitmap(uploadedCount);
+                    }
+                    break;
+                case KEY_START_CREATE_TREND:
+                    CreateTrendActivity.this.sendToast("开始发布信息");
+                    new CreateTrendThrad().start();
+                    break;
+                case KEY_TREND_CREATE_SUC:
+                    CreateTrendActivity.this.sendToast("发布成功");
+                    finish();
+                    isCreateing = false;
+                    break;
+            }
+        }
+    }
 
     @Override
     public void onBackPressed() {
-        if(!et_content.getText().toString().equals("") || imageSize > 0){
-            //
-            if(md_quit == null){
-                md_quit = new MaterialDialog(this);
-                md_quit.setMessage("退出编辑？");
-                md_quit.setPositiveButton("取消", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        md_quit.dismiss();
-                    }
-                });
-                md_quit.setNegativeButton("退出", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        finish();
-                    }
-                });
-                md_quit.setCanceledOnTouchOutside(true);
+        if ( ! isCreateing) {
+            if (!et_content.getText().toString().equals("") || imageSize > 0) {
+                //
+                if (md_quit == null) {
+                    md_quit = new MaterialDialog(this);
+                    md_quit.setMessage("退出编辑？");
+                    md_quit.setPositiveButton("取消", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            md_quit.dismiss();
+                        }
+                    });
+                    md_quit.setNegativeButton("退出", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            finish();
+                        }
+                    });
+                    md_quit.setCanceledOnTouchOutside(true);
+                }
+
+                md_quit.show();
+            } else {
+                super.onBackPressed();
+            }
+        } else{
+            sendToast("正在创建动态，请稍等");
+        }
+    }
+
+    class CreateTrendThrad extends Thread{
+        @Override
+        public void run() {
+            super.run();
+            long currentMills = System.currentTimeMillis();
+            int cmdid = 12001;
+            Trend.Request12001 request = new Trend.Request12001();
+            Trend.Request12001.Params params = new Trend.Request12001.Params();
+            Common.RequestCommon common = RequestUtil.getProtoCommon(cmdid, currentMills);
+            request.common = common;
+            request.params = params;
+
+            params.bucketName = bucketName;
+            params.content = et_content.getText().toString();
+            if (choosedGym != null){
+                params.gymId = choosedGym.getGymId();
+            }
+            params.imageKeys = new String[avatar_key.size()];
+            for(int i = 0; i < avatar_key.size(); i ++){
+                params.imageKeys[i] = avatar_key.get(i);
             }
 
-            md_quit.show();
-        } else {
-            super.onBackPressed();
+            byte[] result = RequestUtil.postWithProtobuf(request, UrlUtil.URL_CREATE_TREND, cmdid, currentMills);
+            if (null != result){
+                // 加载成功
+                try{
+                    Trend.Response12001 response = Trend.Response12001.parseFrom(result);
+
+                    if (response.common != null){
+                        if(response.common.code == 0){
+                            Message msg = Message.obtain();
+                            msg.what = KEY_TREND_CREATE_SUC;
+                            mHandler.sendMessage(msg);
+                        } else{
+                            // code is not 0, find error
+                            Message msg = Message.obtain();
+                            msg.what = BaseHandler.KEY_ERROR;
+                            msg.obj = response.common.message;
+                            mHandler.sendMessage(msg);
+                        }
+                    } else {
+                        Message msg = Message.obtain();
+                        msg.what = BaseHandler.KEY_ERROR;
+                        msg.obj = "数据错误";
+                        mHandler.sendMessage(msg);
+                    }
+
+                } catch (Exception e){
+                    Message msg = Message.obtain();
+                    msg.what = BaseHandler.KEY_PARSE_ERROR;
+                    mHandler.sendMessage(msg);
+                    e.printStackTrace();
+                }
+            } else {
+                // 加载失败
+                Message msg = Message.obtain();
+                msg.what = BaseHandler.KEY_NO_RES;
+                mHandler.sendMessage(msg);
+            }
         }
     }
 }

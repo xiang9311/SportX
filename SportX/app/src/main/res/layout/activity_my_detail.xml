@@ -67,8 +67,7 @@
             android:layout_toRightOf="@+id/tv_0"
             android:layout_marginLeft="10dp"
             android:gravity="right"
-            style="@style/text_my_detail_right"
-            android:text="你咋不上天呢"/>
+            style="@style/text_my_detail_right"/>
 
     </RelativeLayout>
 
@@ -125,8 +124,7 @@
             android:layout_toRightOf="@+id/tv_3"
             android:layout_marginLeft="10dp"
             android:gravity="right"
-            style="@style/text_my_detail_right"
-            android:text="你咋不上天呢，咋啦？！"/>
+            style="@style/text_my_detail_right"/>
 
     </RelativeLayout>
 

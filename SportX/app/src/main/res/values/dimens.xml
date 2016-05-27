@@ -11,6 +11,7 @@
 
     <!-- text size-->
     <dimen name="text_normal">15sp</dimen>
+    <dimen name="text_small_14">14sp</dimen>
     <dimen name="text_small">13sp</dimen>
     <dimen name="text_smaller">12sp</dimen>
     <dimen name="text_smallest">11sp</dimen>
@@ -64,5 +65,6 @@
     <dimen name="user_image_size">70dp</dimen>
 
     <dimen name="new_message_height">52dp</dimen>
+    <dimen name="more_bottom_height">40dp</dimen>
     <!--根据 xml 计算出来的高度-->
 </resources>

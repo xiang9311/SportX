@@ -21,6 +21,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.xiang.Util.CardUtil;
 import com.xiang.Util.Constant;
+import com.xiang.Util.SportXIntent;
 import com.xiang.adapter.GymItemAdapter;
 import com.xiang.adapter.UserInGymAdapter;
 import com.xiang.base.BaseHandler;
@@ -31,7 +32,6 @@ import com.xiang.proto.nano.Common;
 import com.xiang.sportx.GymDetailActivity;
 import com.xiang.sportx.ImageAndTextActivity;
 import com.xiang.sportx.R;
-import com.xiang.sportx.UserDetailActivity;
 
 /**
  * Created by 祥祥 on 2016/4/26.
@@ -223,9 +223,7 @@ public class GymFragment extends Fragment {
         adapter.setOnRclViewItemClickListener(new OnRclViewItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Intent intent = new Intent(getContext(), UserDetailActivity.class);
-                //TODO
-                startActivity(intent);
+                SportXIntent.gotoUserDetail(getContext(), 7, "这个是测试的");
             }
 
             @Override

@@ -17,12 +17,12 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.xiang.Util.Constant;
 import com.xiang.Util.SportTimeUtil;
+import com.xiang.Util.SportXIntent;
 import com.xiang.factory.DisplayOptionsFactory;
 import com.xiang.listener.OnRclViewItemClickListener;
 import com.xiang.proto.nano.Common;
 import com.xiang.sportx.GymDetailActivity;
 import com.xiang.sportx.R;
-import com.xiang.sportx.UserDetailActivity;
 import com.xiang.view.PlaceNameSpan;
 import com.xiang.view.UserNameSpan;
 
@@ -67,15 +67,13 @@ public class TrendCommentAdapter extends BaseRecyclerAdapter<TrendCommentAdapter
             return ;
         }
 
-        Common.Comment comment = (Common.Comment) getDataByPosition(position);
+        final Common.Comment comment = (Common.Comment) getDataByPosition(position);
 
         imageLoader.displayImage(comment.briefUser.userAvatar, holder.iv_avatar, avatarOptions);
         holder.iv_avatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, UserDetailActivity.class);
-                //TODO
-                context.startActivity(intent);
+                SportXIntent.gotoUserDetail(context, comment.briefUser.userId, comment.briefUser.userName);
             }
         });
 
@@ -138,20 +136,17 @@ public class TrendCommentAdapter extends BaseRecyclerAdapter<TrendCommentAdapter
         tv_content.setText("");
         if (comment.toUserid != 0 && comment.toUserName != null && !comment.toUserName.equals("")){
             //
-            tv_content.append("回复：");
+            tv_content.append("回复 ");
             SpannableString span = new SpannableString(comment.toUserName);
             UserNameSpan userNameSpan = new UserNameSpan(context, new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    Snackbar.make(recyclerView, comment.toUserName, Snackbar.LENGTH_SHORT).show();
-                    Intent intent = new Intent(context, UserDetailActivity.class);
-                    //TODO
-                    context.startActivity(intent);
+                    SportXIntent.gotoUserDetail(context, comment.toUserid, comment.toUserName);
                 }
             });
             span.setSpan(userNameSpan, 0, comment.toUserName.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
             tv_content.append(span);
-            tv_content.append(" ");
+            tv_content.append(" ：");
             tv_content.append(comment.commentContent);
         } else{
             tv_content.setText(comment.commentContent);

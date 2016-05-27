@@ -1,15 +1,27 @@
 package com.xiang.sportx;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Message;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 
+import com.xiang.Util.ArrayUtil;
 import com.xiang.Util.Constant;
+import com.xiang.Util.UserStatic;
 import com.xiang.adapter.TrendAdapter;
-import com.xiang.dafault.DefaultUtil;
+import com.xiang.base.BaseHandler;
+import com.xiang.proto.nano.Common;
+import com.xiang.proto.pilot.nano.Pilot;
+import com.xiang.thread.GetTrendThread;
 import com.xiang.view.MyTitleBar;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserAlbumActivity extends BaseAppCompatActivity {
 
@@ -18,6 +30,10 @@ public class UserAlbumActivity extends BaseAppCompatActivity {
 
     // adapter
     private TrendAdapter adapter;
+
+    // data
+    private List<Common.Trend> trends = new ArrayList<>();
+    private int pageIndex = 0;
 
     // tools
 
@@ -55,10 +71,72 @@ public class UserAlbumActivity extends BaseAppCompatActivity {
             }
         });
 
-        adapter = new TrendAdapter(this, DefaultUtil.getTrends(20), rv_album, Constant.FROM_ALBUM);
+        adapter = new TrendAdapter(this, trends, rv_album, Constant.FROM_ALBUM);
         LinearLayoutManager manager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
 
         rv_album.setAdapter(adapter);
         rv_album.setLayoutManager(manager);
+
+        rv_album.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                if ( ! adapter.canLoadingMore()) {
+                    return;
+                }
+
+                int lastVisibleItem = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastVisibleItemPosition();
+                int totalItemCount = recyclerView.getLayoutManager().getItemCount();
+                //lastVisibleItem >= totalItemCount - 1 表示剩下1个item自动加载，各位自由选择
+                // dy>0 表示向下滑动
+                if (lastVisibleItem >= totalItemCount - 1 && dy > 0) {
+                    if (adapter.isLoadingMore()) {
+                        Log.d("isloadingmore", "ignore manually update!");
+                    } else {
+                        adapter.setLoadingMore(true);
+                        new GetTrendThread(mHandler, pageIndex, UserStatic.userId).start();
+                    }
+                }
+            }
+        });
+
+        mHandler = new MyHandler(this, null);
+
+        new GetTrendThread(mHandler, pageIndex, UserStatic.userId).start();
     }
+
+    private MyHandler mHandler;
+    class MyHandler extends BaseHandler{
+
+        public MyHandler(Context context, SwipeRefreshLayout mSwipeRefreshLayout) {
+            super(context, mSwipeRefreshLayout);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+                case KEY_GET_TREND_LIST_SUC:
+                    Pilot.Response10005.Data data = (Pilot.Response10005.Data) msg.obj;
+
+                    int lastSize = trends.size();
+                    trends.addAll(ArrayUtil.Array2List(data.trends));
+
+                    if (data.maxCountPerPage > data.trends.length){
+                        // 不能加载更多了
+                        adapter.setCannotLoadingMore();
+                    }
+
+                    if (data.trends.length > 0){
+                        adapter.notifyItemRangeInserted(adapter.getHeadViewSize() + lastSize, data.trends.length);
+                    }
+
+                    pageIndex ++;
+
+                    break;
+            }
+        }
+    }
+
 }

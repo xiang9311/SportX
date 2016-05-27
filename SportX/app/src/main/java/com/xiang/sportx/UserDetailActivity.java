@@ -1,10 +1,14 @@
 package com.xiang.sportx;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Message;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -12,15 +16,26 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.protobuf.nano.InvalidProtocolBufferNanoException;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.xiang.Util.ArrayUtil;
 import com.xiang.Util.Constant;
+import com.xiang.Util.SportXIntent;
+import com.xiang.Util.UserInfoUtil;
 import com.xiang.adapter.TrendAdapter;
-import com.xiang.dafault.DefaultUtil;
+import com.xiang.base.BaseHandler;
+import com.xiang.database.helper.BriefUserHelper;
 import com.xiang.factory.DisplayOptionsFactory;
 import com.xiang.proto.nano.Common;
+import com.xiang.proto.pilot.nano.Pilot;
+import com.xiang.request.RequestUtil;
+import com.xiang.request.UrlUtil;
+import com.xiang.thread.GetTrendThread;
 import com.xiang.view.MyTitleBar;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import io.rong.imkit.RongIM;
 
@@ -40,14 +55,19 @@ public class UserDetailActivity extends BaseAppCompatActivity {
     private LinearLayout ll_guanzhu, ll_fensi;
 
     // adapter
-    private static TrendAdapter trendAdapter;
+    private TrendAdapter trendAdapter;
 
     // tools
     private ImageLoader imageLoader = ImageLoader.getInstance();
     private DisplayImageOptions displayImageOptions = DisplayOptionsFactory.createNormalImageOption();
 
     // data
-    private Common.DetailUser detailUser = DefaultUtil.getDetailUser();
+    private Common.DetailUser detailUser;
+    private List<Common.Trend> trends = new ArrayList<>();
+    private int userId = 0;
+    private String userName = "";
+
+    private int pageIndex = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +106,8 @@ public class UserDetailActivity extends BaseAppCompatActivity {
 
     @Override
     protected void initData() {
-
+        userId = getIntent().getIntExtra(Constant.USER_ID, 0);
+        userName = getIntent().getStringExtra(Constant.USER_NAME);
     }
 
     @Override
@@ -101,15 +122,20 @@ public class UserDetailActivity extends BaseAppCompatActivity {
         titleBar.setTitle("个人详情");
         titleBar.setMoreButton(0, false, null);
 
-        // headview
-        configHeadView();
+        tv_username.setText(userName);
 
-        trendAdapter = new TrendAdapter(this, ArrayUtil.Array2List(detailUser.trends), rv_trend, Constant.FROM_USER_DETAIL);
+        // headview
+//        configHeadView();
+
+        trendAdapter = new TrendAdapter(this, trends, rv_trend, Constant.FROM_USER_DETAIL);
         trendAdapter.addHeadView(headerView);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-
         rv_trend.setAdapter(trendAdapter);
         rv_trend.setLayoutManager(layoutManager);
+
+        mHandler = new MyHandler(this, null);
+
+        new GetUserDetailThread().start();
     }
 
     private void configHeadView() {
@@ -141,7 +167,7 @@ public class UserDetailActivity extends BaseAppCompatActivity {
         tv_follow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Snackbar.make(rv_trend, "操作成功", Snackbar.LENGTH_SHORT).show();
+                new GuanzhuThread(!detailUser.isFollowed).start();
             }
         });
         tv_chat.setOnClickListener(new View.OnClickListener() {
@@ -149,23 +175,234 @@ public class UserDetailActivity extends BaseAppCompatActivity {
             public void onClick(View v) {
                 //启动会话界面
                 if (RongIM.getInstance() != null)
-                    RongIM.getInstance().startPrivateChat(UserDetailActivity.this, "10010", "title显示在哪里？");
+                    RongIM.getInstance().startPrivateChat(UserDetailActivity.this, userId+"", userName);
             }
         });
 
         ll_guanzhu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(UserDetailActivity.this, UserListActivity.class));
+                SportXIntent.gotoUserListActivity(UserDetailActivity.this, userId, userName, Constant.FIND_GUANZHU);
             }
         });
 
         ll_fensi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(UserDetailActivity.this, UserListActivity.class));
+                SportXIntent.gotoUserListActivity(UserDetailActivity.this, userId, userName, Constant.FIND_FENSI);
             }
         });
+
+        rv_trend.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (!trendAdapter.canLoadingMore()) {
+                    return;
+                }
+
+                int lastVisibleItem = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastVisibleItemPosition();
+                int totalItemCount = recyclerView.getLayoutManager().getItemCount();
+                //lastVisibleItem >= totalItemCount - 1 表示剩下1个item自动加载，各位自由选择
+                // dy>0 表示向下滑动
+                if (lastVisibleItem >= totalItemCount - 1 && dy > 0) {
+                    if (trendAdapter.isLoadingMore()) {
+                        Log.d("isloadingmore", "ignore manually update!");
+                    } else {
+                        trendAdapter.setLoadingMore(true);
+                        new GetTrendThread(mHandler, pageIndex, userId).start();
+                    }
+                }
+            }
+        });
+
+        iv_avatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String[] images = new String[]{detailUser.userAvatar};
+                Intent intent = new Intent(UserDetailActivity.this, ImageAndTextActivity.class);
+                intent.putExtra(Constant.IMAGES, images);
+                intent.putExtra(Constant.SHOW_INDICATOR, false);
+                startActivity(intent);
+            }
+        });
+    }
+
+    private MyHandler mHandler;
+    private static final int KEY_GUANZHU_SUC = 101;
+    private static final int KEY_CANCLE_GUANZHU_SUC = 102;
+    private static final int KEY_GET_USER_DETAIL_SUC = 103;
+
+    class MyHandler extends BaseHandler{
+
+        public MyHandler(Context context, SwipeRefreshLayout mSwipeRefreshLayout) {
+            super(context, mSwipeRefreshLayout);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+                case KEY_GUANZHU_SUC:
+                    Snackbar.make(rv_trend, "关注成功", Snackbar.LENGTH_SHORT).show();
+                    tv_follow.setText("取消关注");
+                    detailUser.isFollowed = true;
+                    break;
+                case KEY_CANCLE_GUANZHU_SUC:
+                    Snackbar.make(rv_trend, "取消成功", Snackbar.LENGTH_SHORT).show();
+                    tv_follow.setText("+ 关注");
+                    detailUser.isFollowed = false;
+                    break;
+                case KEY_GET_USER_DETAIL_SUC:
+                    configHeadView();
+                    int lastSize = trends.size();
+                    trends.addAll(ArrayUtil.Array2List(detailUser.trends));
+                    if (detailUser.trendMaxCountPerPage > detailUser.trends.length){
+                        // 不能加载更多了
+                        trendAdapter.setCannotLoadingMore();
+                    }
+                    if(lastSize < trends.size()) {
+                        trendAdapter.notifyDataSetChanged();
+                    }
+                    pageIndex ++;
+
+                    UserInfoUtil.updateSavedUserInfo(detailUser.userId, detailUser.userName, detailUser.userAvatar, new BriefUserHelper(UserDetailActivity.this));
+
+                    break;
+
+                case KEY_GET_TREND_LIST_SUC:
+                    Pilot.Response10005.Data data = (Pilot.Response10005.Data) msg.obj;
+                    if (data.maxCountPerPage > data.trends.length){
+                        // 不能加载更多了
+                        trendAdapter.setCannotLoadingMore();
+                    }
+                    int lastSize0 = trends.size();
+                    trends.addAll(ArrayUtil.Array2List(data.trends));
+                    if(lastSize0 < trends.size()) {
+                        trendAdapter.notifyItemRangeInserted(lastSize0 + trendAdapter.getHeadViewSize(), data.trends.length);
+                    }
+                    pageIndex ++;
+                    break;
+            }
+        }
+    }
+
+    class GetUserDetailThread extends Thread{
+        @Override
+        public void run() {
+            super.run();
+            long currentMills = System.currentTimeMillis();
+            int cmdid = 10012;
+            Pilot.Request10012 request = new Pilot.Request10012();
+            Pilot.Request10012.Params params = new Pilot.Request10012.Params();
+            Common.RequestCommon common = RequestUtil.getProtoCommon(cmdid, currentMills);
+            request.common = common;
+            request.params = params;
+
+            params.userId = userId;
+
+            byte[] result = RequestUtil.postWithProtobuf(request, UrlUtil.URL_GET_USER_DETAIL, cmdid, currentMills);
+            if (null != result){
+                // 加载成功
+                try{
+                    Pilot.Response10012 response = Pilot.Response10012.parseFrom(result);
+
+                    if (response.common != null){
+                        if(response.common.code == 0){
+
+                            detailUser = response.data.detailUser;
+
+                            Message msg = Message.obtain();
+                            msg.what = KEY_GET_USER_DETAIL_SUC;
+                            mHandler.sendMessage(msg);
+                        } else{
+                            // code is not 0, find error
+                            Message msg = Message.obtain();
+                            msg.what = BaseHandler.KEY_ERROR;
+                            msg.obj = response.common.message;
+                            mHandler.sendMessage(msg);
+                        }
+                    } else {
+                        Message msg = Message.obtain();
+                        msg.what = BaseHandler.KEY_ERROR;
+                        msg.obj = "数据错误";
+                        mHandler.sendMessage(msg);
+                    }
+
+                } catch (InvalidProtocolBufferNanoException e){
+                    Message msg = Message.obtain();
+                    msg.what = BaseHandler.KEY_PARSE_ERROR;
+                    mHandler.sendMessage(msg);
+                    e.printStackTrace();
+                }
+            } else {
+                // 加载失败
+                Message msg = Message.obtain();
+                msg.what = BaseHandler.KEY_NO_RES;
+                mHandler.sendMessage(msg);
+            }
+        }
+    }
+
+    class GuanzhuThread extends Thread{
+        private boolean action_guanzhu = true;
+        public GuanzhuThread(boolean action_guanzhu){
+            this.action_guanzhu = action_guanzhu;
+        }
+
+        @Override
+        public void run() {
+            super.run();
+
+            long currentMills = System.currentTimeMillis();
+            int cmdid = 10011;
+            Pilot.Request10011 request = new Pilot.Request10011();
+            Pilot.Request10011.Params params = new Pilot.Request10011.Params();
+            Common.RequestCommon common = RequestUtil.getProtoCommon(cmdid, currentMills);
+            request.common = common;
+            request.params = params;
+
+            params.toUserId = userId;
+            params.isFollow = action_guanzhu;
+
+            byte[] result = RequestUtil.postWithProtobuf(request, UrlUtil.URL_GUANZHU_USER, cmdid, currentMills);
+            if (null != result){
+                // 加载成功
+                try{
+                    Pilot.Response10011 response = Pilot.Response10011.parseFrom(result);
+
+                    if (response.common != null){
+                        if(response.common.code == 0){
+                            Message msg = Message.obtain();
+                            msg.what = action_guanzhu ? KEY_GUANZHU_SUC : KEY_CANCLE_GUANZHU_SUC;
+                            mHandler.sendMessage(msg);
+                        } else{
+                            // code is not 0, find error
+                            Message msg = Message.obtain();
+                            msg.what = BaseHandler.KEY_ERROR;
+                            msg.obj = response.common.message;
+                            mHandler.sendMessage(msg);
+                        }
+                    } else {
+                        Message msg = Message.obtain();
+                        msg.what = BaseHandler.KEY_ERROR;
+                        msg.obj = "数据错误";
+                        mHandler.sendMessage(msg);
+                    }
+
+                } catch (InvalidProtocolBufferNanoException e){
+                    Message msg = Message.obtain();
+                    msg.what = BaseHandler.KEY_PARSE_ERROR;
+                    mHandler.sendMessage(msg);
+                    e.printStackTrace();
+                }
+            } else {
+                // 加载失败
+                Message msg = Message.obtain();
+                msg.what = BaseHandler.KEY_NO_RES;
+                mHandler.sendMessage(msg);
+            }
+        }
     }
 
 }

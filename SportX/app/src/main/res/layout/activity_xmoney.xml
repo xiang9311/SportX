@@ -33,7 +33,7 @@
             android:textColor="@color/main_color"
             android:layout_marginLeft="10dp"
             android:textSize="30dp"
-            android:text="10"/>
+            android:text=" "/>
 
         <ImageView
             android:id="@+id/iv_money"

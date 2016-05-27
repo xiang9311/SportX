@@ -1,7 +1,6 @@
 package com.xiang.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,11 +11,11 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.xiang.Util.SportXIntent;
 import com.xiang.Util.ViewUtil;
 import com.xiang.factory.DisplayOptionsFactory;
 import com.xiang.proto.nano.Common;
 import com.xiang.sportx.R;
-import com.xiang.sportx.UserDetailActivity;
 
 import java.util.List;
 
@@ -72,13 +71,13 @@ public class UserItemAdapter extends RecyclerView.Adapter<UserItemAdapter.MyView
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        Common.BriefUser briefUser = briefUsers.get(position);
+        final Common.BriefUser briefUser = briefUsers.get(position);
 
         holder.tv_username.setText(briefUser.userName);
         holder.rl_content.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                context.startActivity(new Intent(context, UserDetailActivity.class));
+                SportXIntent.gotoUserDetail(context, briefUser.userId, briefUser.userName);
             }
         });
         imageLoader.displayImage(briefUser.userAvatar, holder.iv_avatar, displayImageOptions);

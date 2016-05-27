@@ -26,17 +26,28 @@ public class Constant {
     public static final String DATA_INDEX = "data_index";
     public static final String FROM = "from";
     public static final String USER_NAME = "user_name";
+    public static final String FIND_WHAT = "find_what";
     public static final String LOGIN_USER_NAME = "login_user_name";
     public static final String PASSWORD = "password";
     public static final String PHONE = "phone";
     public static final String REMEMBER = "remember";
     public static final String AUTO_LOGIN = "autologin";
+    public static final String NOT_LOG = "not_log";
     public static final String CKECKED = "checked";
     public static final String LAST_CHECKED_TIME = "last_checked_time";
     public static final String IMAGES = "images";
     public static final String CURRENT_INDEX = "current_index";
+    public static final String TREND_ID = "trend_id";
+    public static final String SHOW_INDICATOR = "show_indicator";
+
+    /*****************************  以下是 sp 的字段  **********************************/
+
     public static final String SP_AUTO_SHOW_MONEY_DIALOG = "sp_auto_show_money_dialog";
     public static final String SP_KEYWORDS = "sp_keywords";
+    public static final String SP_NEW_COMMENT_MESSAGE = "sp_new_comment_message";
+
+    public static final int FIND_FENSI = 0;
+    public static final int FIND_GUANZHU = 1;
 
     public static final String HEADER_CMDID = "cmdid";
 
@@ -106,7 +117,11 @@ public class Constant {
      */
     public static final int ARTICLE_IMAGE = 3;
 
-
+    /**
+     * recycler与swiprefresh嵌套，或者有加载更多的时候，在数据加载后，会执行加载动画效果，这时如果用户滑动页面，就会崩溃
+     * 解决办法：数据加载后延迟屏蔽recyclerview若干毫秒
+     */
+    public static final int RECYCLERVIEW_REFRESH_DELAY = 500;
 
     /*******************  froms  *********************/
     public static final int FROM_FOLLOW = 1;
@@ -115,9 +130,16 @@ public class Constant {
     public static final int FROM_PLACE_IN_TREND = 4;       // 从trend跳转到gym详情的时候，所加的from
     public static final int FROM_ALBUM = 5;
     public static final int FROM_COMMENT_MESSAGE = 6;
+    public static final int FROM_LAUNCH = 7;
 
     /******************* max string length ***************************/
     public static final int MAX_LENGTH_USER_NAME = 15;
     public static final int MAX_LENGTH_SIGN = 36;
+
+    /**********************************  广播 *************************************/
+    public static final String BROADCAST_UPDATE_USERINFO = "b_update_userinfo";
+    public static final String BROADCAST_NEW_COMMENT_MESSAGE = "b_new_comment_message";
+    public static final String BROADCAST_GOTO_MESSAGE_ACTIVITY = "b_goto_message_activity";
+
 
 }

@@ -2,7 +2,13 @@ package com.xiang.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.RelativeLayout;
+
+import com.xiang.Util.ViewUtil;
+import com.xiang.sportx.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +19,8 @@ import java.util.List;
  */
 public abstract class BaseRecyclerAdapter<VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH>{
 
+    public static final int MAX_ID = 9999999;
+
     public Context context;
     public RecyclerView recyclerView;
     public List data;
@@ -21,9 +29,14 @@ public abstract class BaseRecyclerAdapter<VH extends RecyclerView.ViewHolder> ex
     // headview
     public List<View> headViews;
     public List<View> footViews;
+    private View loadingMoreView;
+    private RelativeLayout rl_loading, rl_loaded;
 
     public int headMaxSize = 10;
     public int footMaxSize = 10;
+
+    private boolean isLoadingMore = false;
+    private boolean canLoadingMore = true;
 
     public BaseRecyclerAdapter(Context context, List data, final RecyclerView recyclerView) {
         headViews = new ArrayList<>();
@@ -33,6 +46,18 @@ public abstract class BaseRecyclerAdapter<VH extends RecyclerView.ViewHolder> ex
         this.recyclerView = recyclerView;
         this.data = data;
 
+        loadingMoreView = LayoutInflater.from(context).inflate(R.layout.view_loadding_more, null);
+        ViewGroup.LayoutParams layoutParams = loadingMoreView.getLayoutParams();
+        if(null == layoutParams) {
+            layoutParams = new ViewGroup.LayoutParams(ViewUtil.getWindowWidth(context), (int) context.getResources().getDimension(R.dimen.more_bottom_height));
+        }
+        layoutParams.width = ViewUtil.getWindowWidth(context);
+        loadingMoreView.setLayoutParams(layoutParams);
+
+        rl_loading = (RelativeLayout) loadingMoreView.findViewById(R.id.rl_loading);
+        rl_loaded = (RelativeLayout) loadingMoreView.findViewById(R.id.rl_complete);
+
+        footViews.add(loadingMoreView);
     }
 
     /**
@@ -86,8 +111,10 @@ public abstract class BaseRecyclerAdapter<VH extends RecyclerView.ViewHolder> ex
             return ;
         }
 
+        int lastSize = this.headViews.size();
         this.headViews.add(headView);
-        postInvalidateRecyclerView();
+//        postInvalidateRecyclerView();
+        notifyItemRangeInserted(lastSize, 1);
     }
 
     public void addHeadView(View headView, int position){
@@ -100,39 +127,22 @@ public abstract class BaseRecyclerAdapter<VH extends RecyclerView.ViewHolder> ex
         postInvalidateRecyclerView();
     }
 
-    public void addFootView(View footView){
-
-        if(this.footViews.size() >= headMaxSize){
-            return ;
-        }
-
-        this.footViews.add(footView);
-        postInvalidateRecyclerView();
-    }
-
-    public void addFootView(View footView, int position){
-
-        if(this.footViews.size() >= headMaxSize){
-            return ;
-        }
-
-        this.footViews.add(position, footView);
-        postInvalidateRecyclerView();
-    }
+//    public void addFootView(View footView){
+//
+//        if(this.footViews.size() >= headMaxSize){
+//            return ;
+//        }
+//
+//        this.footViews.add(footView);
+//        postInvalidateRecyclerView();
+//    }
 
     public void removeHeadView(){
         if (hasHead()) {
             this.notifyItemRemoved(0);
             this.headViews.remove(headViews.size() - 1);
-            postInvalidateRecyclerView();
-        }
-    }
-
-    public void removeFootView(){
-        if (hasFoot()) {
-            this.notifyItemRemoved(getItemCount() - 1);
-            this.footViews.remove(footViews.size() - 1);
-            postInvalidateRecyclerView();
+//            postInvalidateRecyclerView();
+            notifyItemRemoved(headViews.size());
         }
     }
 
@@ -169,6 +179,13 @@ public abstract class BaseRecyclerAdapter<VH extends RecyclerView.ViewHolder> ex
         }
     }
 
+    public int getHeadViewSize(){
+        if (headViews == null){
+            return 0;
+        }
+        return headViews.size();
+    }
+
     public View getHeadViewByType(int type){
         try {
             return headViews.get(type - 1);
@@ -185,4 +202,33 @@ public abstract class BaseRecyclerAdapter<VH extends RecyclerView.ViewHolder> ex
         }
     }
 
+    public void setLoadingMore(boolean loadingMore){
+        isLoadingMore = loadingMore;
+        rl_loaded.setVisibility(View.GONE);
+        if (loadingMore) {
+            rl_loading.setVisibility(View.VISIBLE);
+        } else{
+            rl_loading.setVisibility(View.GONE);
+        }
+    }
+
+    public void setCannotLoadingMore(){
+        canLoadingMore = false;
+        rl_loading.setVisibility(View.GONE);
+        rl_loaded.setVisibility(View.VISIBLE);
+    }
+
+    public void setCanLoadingMore(){
+        canLoadingMore = true;
+        rl_loading.setVisibility(View.VISIBLE);
+        rl_loaded.setVisibility(View.GONE);
+    }
+
+    public boolean canLoadingMore() {
+        return canLoadingMore;
+    }
+
+    public boolean isLoadingMore() {
+        return isLoadingMore;
+    }
 }

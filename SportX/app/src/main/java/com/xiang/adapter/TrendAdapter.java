@@ -17,7 +17,9 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.xiang.Util.Constant;
+import com.xiang.Util.ImageUtil;
 import com.xiang.Util.SportTimeUtil;
+import com.xiang.Util.SportXIntent;
 import com.xiang.Util.ViewUtil;
 import com.xiang.factory.DisplayOptionsFactory;
 import com.xiang.listener.OnRclViewItemClickListener;
@@ -26,7 +28,6 @@ import com.xiang.sportx.GymDetailActivity;
 import com.xiang.sportx.ImageAndTextActivity;
 import com.xiang.sportx.R;
 import com.xiang.sportx.TrendDetailActivity;
-import com.xiang.sportx.UserDetailActivity;
 import com.xiang.transport.TrendStatic;
 
 import java.util.ArrayList;
@@ -53,11 +54,50 @@ public class TrendAdapter extends BaseRecyclerAdapter<TrendAdapter.MyViewHolder>
         this.trends = trends;
         this.recyclerView = recyclerView;
         this.from = from;
+
     }
+
+//    @Override
+//    public long getItemId(int position) {
+//        if (position >= (getHeadViewSize() + trends.size())){
+//            return MAX_ID - (position - (getHeadViewSize() + trends.size()));
+//        } else{
+//            return position;
+//        }
+//    }
 
     private OnRclViewItemClickListener onRclViewItemClickListener;
     public void setOnRclViewItemClickListener(OnRclViewItemClickListener onRclViewItemClickListener) {
         this.onRclViewItemClickListener = onRclViewItemClickListener;
+    }
+
+    /**
+     * 点赞的监听接口
+     */
+    public interface OnLikeItemClickListener{
+        public abstract void itemLikeClick(int dataIndex, boolean isLike);
+    }
+    private OnLikeItemClickListener onLikeItemClickListener;
+    public void setOnLikeItemClickListener(OnLikeItemClickListener onLikeItemClickListener) {
+        this.onLikeItemClickListener = onLikeItemClickListener;
+    }
+
+    /**
+     *
+     * @param dataIndex 数据的index，不是view的index
+     */
+    public void notifyItemLikeChanged(int dataIndex){
+        MyViewHolder holder = (MyViewHolder) recyclerView.findViewHolderForAdapterPosition(dataIndex + headViews.size());
+        if (holder == null){
+            return ;
+        }
+        Common.Trend trend = trends.get(dataIndex);
+        if(trend.isLiked){
+            holder.iv_like.setImageDrawable(context.getResources().getDrawable(R.mipmap.liked));
+        } else{
+            holder.iv_like.setImageDrawable(context.getResources().getDrawable(R.mipmap.like));
+        }
+        holder.tv_like_count.setText(trend.likeCount + "");
     }
 
     /**
@@ -119,8 +159,18 @@ public class TrendAdapter extends BaseRecyclerAdapter<TrendAdapter.MyViewHolder>
 
         final Common.Trend trend = (Common.Trend) getDataByPosition(position);
         holder.tv_username.setText(trend.briefUser.userName);
-        holder.tv_content.setText(trend.content);
-        holder.tv_place.setText(trend.gymName);
+        if(trend.content == null || trend.content.equals("")){
+            holder.tv_content.setVisibility(View.GONE);
+        }else {
+            holder.tv_content.setVisibility(View.VISIBLE);
+            holder.tv_content.setText(trend.content);
+        }
+        if(trend.gymName == null || trend.gymName.equals("")){
+            holder.tv_place.setVisibility(View.GONE);
+        }else {
+            holder.tv_place.setVisibility(View.VISIBLE);
+            holder.tv_place.setText(trend.gymName);
+        }
         holder.tv_place.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -135,9 +185,7 @@ public class TrendAdapter extends BaseRecyclerAdapter<TrendAdapter.MyViewHolder>
         holder.iv_avatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, UserDetailActivity.class);
-                //TODO
-                context.startActivity(intent);
+                SportXIntent.gotoUserDetail(context, trend.briefUser.userId, trend.briefUser.userName);
             }
         });
 
@@ -146,7 +194,7 @@ public class TrendAdapter extends BaseRecyclerAdapter<TrendAdapter.MyViewHolder>
         if (trend.imgs.length > 1){
             int i = 0;
             for(; i < trend.imgs.length; i ++){
-                imageLoader.displayImage(trend.imgs[i], holder.iv_images[i], imageOptions);
+                imageLoader.displayImage(ImageUtil.getSmallImageUrl(trend.imgs[i]), holder.iv_images[i], imageOptions);
                 final int index = i;
                 holder.iv_images[i].setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -204,20 +252,9 @@ public class TrendAdapter extends BaseRecyclerAdapter<TrendAdapter.MyViewHolder>
         holder.iv_like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if(trend.isLiked){
-                    trend.likeCount = trend.likeCount - 1;
-                } else{
-                    trend.likeCount = trend.likeCount + 1;
+                if (onLikeItemClickListener != null){
+                    onLikeItemClickListener.itemLikeClick(position - headViews.size(), !trend.isLiked);
                 }
-                trend.isLiked = !trend.isLiked;
-
-                if(trend.isLiked){
-                    holder.iv_like.setImageDrawable(context.getResources().getDrawable(R.mipmap.liked));
-                } else{
-                    holder.iv_like.setImageDrawable(context.getResources().getDrawable(R.mipmap.like));
-                }
-                holder.tv_like_count.setText(trend.likeCount + "");
             }
         });
 

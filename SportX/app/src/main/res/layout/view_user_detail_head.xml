@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:textSize="@dimen/text_big"
             android:textColor="@color/text_normal"
-            android:text="你咋不上天呢"/>
+            android:text=""/>
 
         <ImageView
             android:id="@+id/iv_sex"
@@ -101,7 +101,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="10000"/>
+                android:text=""/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -135,7 +135,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="10000"/>
+                android:text=""/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -168,7 +168,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="10000"/>
+                android:text=""/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -198,6 +198,7 @@
             android:layout_height="wrap_content"
             style="@style/text_part_title"
             android:paddingTop="@dimen/padding_tb"
+            android:paddingBottom="3dp"
             android:paddingLeft="@dimen/padding_lr"
             android:text="签名"/>
 
@@ -208,8 +209,7 @@
             android:layout_below="@+id/tv_0"
             android:textSize="@dimen/text_normal"
             android:textColor="@color/text_light"
-            style="@style/main_padding"
-            android:text="海词词典,最权威的学习词典,专业出版相册的英文,相册翻译,相册英语怎么说等详细讲解。海词词典:学习变容易,记忆很深刻。"/>
+            style="@style/main_padding" />
 
     </RelativeLayout>
 
@@ -227,6 +227,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/text_part_title"
+            android:paddingBottom="3dp"
             android:paddingTop="@dimen/padding_tb"
             android:paddingLeft="@dimen/padding_lr"
             android:text="相册"/>

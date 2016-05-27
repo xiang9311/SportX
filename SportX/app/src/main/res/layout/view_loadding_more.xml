@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:gravity="center_horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:id="@+id/rl_loading"
+        android:gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:padding="8dp"
+        android:layout_height="wrap_content">
+
+        <com.rey.material.widget.ProgressView
+            android:id="@+id/pv"
+            android:layout_width="250dp"
+            android:layout_height="24dp"
+            android:layout_centerVertical="true"
+            app:pv_autostart="true"
+            app:pv_circular="false"
+            app:pv_progressStyle="@style/Material.Drawable.CircularProgress"
+            app:lpd_strokeColor="@color/main_color"
+            app:lpd_strokeColors="@array/process_colors"
+            app:lpd_strokeSize="2dp"
+            app:lpd_transformDuration="1000"
+            app:pv_progressMode="indeterminate"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_complete"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:padding="5dp"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:textColor="@color/text_lighter"
+            android:textSize="@dimen/text_normal"
+            android:gravity="center"
+            android:layout_centerHorizontal="true"
+            android:text="已加载全部"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>

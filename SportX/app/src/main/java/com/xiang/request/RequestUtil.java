@@ -114,7 +114,7 @@ public class RequestUtil {
 		request.platform = 0;
 		request.timestamp = timestamp;
 		request.userid = UserStatic.userId;
-		request.userkey = "123456";
+		request.userkey = UserStatic.userKey;
 		request.version = "1.0.0";
 		return request;
 	}

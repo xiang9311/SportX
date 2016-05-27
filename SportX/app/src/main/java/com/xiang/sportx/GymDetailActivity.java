@@ -14,6 +14,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.xiang.Util.ArrayUtil;
 import com.xiang.Util.CardUtil;
 import com.xiang.Util.Constant;
+import com.xiang.Util.SportXIntent;
 import com.xiang.adapter.GymImageAdapter;
 import com.xiang.adapter.TrendAdapter;
 import com.xiang.adapter.UserInGymAdapter;
@@ -104,9 +105,7 @@ public class GymDetailActivity extends BaseAppCompatActivity {
         userAdapter.setOnRclViewItemClickListener(new OnRclViewItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Intent intent = new Intent(GymDetailActivity.this, UserDetailActivity.class);
-                //TODO
-                startActivity(intent);
+                SportXIntent.gotoUserDetail(GymDetailActivity.this, 7, "这个是测试");
             }
 
             @Override

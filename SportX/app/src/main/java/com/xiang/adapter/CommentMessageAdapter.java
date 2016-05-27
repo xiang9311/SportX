@@ -52,7 +52,7 @@ public class CommentMessageAdapter extends BaseRecyclerAdapter<CommentMessageAda
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
-        Common.CommentMessage commentMessage = messageList.get(position);
+        Common.CommentMessage commentMessage = messageList.get(position - headViews.size());
 
         holder.tv_content.setText(commentMessage.messageContent);
         holder.tv_time.setText(SportTimeUtil.getDateFromNow(commentMessage.createTime));
@@ -62,7 +62,7 @@ public class CommentMessageAdapter extends BaseRecyclerAdapter<CommentMessageAda
             @Override
             public void onClick(View v) {
                 if (onRclViewItemClickListener != null) {
-                    onRclViewItemClickListener.onItemClick(v, position);
+                    onRclViewItemClickListener.onItemClick(v, position - headViews.size());
                 }
             }
         });
@@ -70,7 +70,7 @@ public class CommentMessageAdapter extends BaseRecyclerAdapter<CommentMessageAda
             @Override
             public boolean onLongClick(View v) {
                 if (onRclViewItemClickListener != null) {
-                    onRclViewItemClickListener.OnItemLongClick(v, position);
+                    onRclViewItemClickListener.OnItemLongClick(v, position - headViews.size());
                 }
                 return false;
             }

@@ -20,10 +20,17 @@
     <color name="lightLighterGray">#F0F0F0</color>
     <color name="main_color">#4e4e5f</color>
     <color name="main_color_pressed">#414150</color>
+    <color name="main_color_light">#606080</color>
     <color name="main_color_deep">#393949</color>
     <color name="main_color_deep_pressed">#313140</color>
     <color name="main_color_opcity">#994e4e5f</color>
     <color name="action_icon_color">#063f4f</color>
+
+    <array name="process_colors">
+        <item>@color/main_color</item>
+        <item>@color/colorAccent</item>
+        <item>@color/colorPrimary</item>
+    </array>
 
     <color name="float_button_color">#2bb8aa</color>
     <color name="float_button_color_pressed">#1ba89a</color>

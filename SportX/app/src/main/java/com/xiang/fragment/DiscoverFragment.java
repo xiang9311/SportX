@@ -15,9 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.karumi.dividers.DividerBuilder;
-import com.karumi.dividers.DividerItemDecoration;
-import com.karumi.dividers.Layer;
+
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.xiang.Util.ViewUtil;
@@ -97,9 +95,8 @@ public class DiscoverFragment extends Fragment implements SwipeRefreshLayout.OnR
         // Create a drawable for your divider
         Drawable drawable = getResources().getDrawable(R.drawable.white_divider);
         // Create a DividerItemDecoration instance with a single layer and add it to your recycler view
-        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(new Layer(DividerBuilder.get().with(drawable).build()));
-
-        rv_feed.addItemDecoration(itemDecoration);
+//        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(new Layer(DividerBuilder.get().with(drawable).build()));
+//        rv_feed.addItemDecoration(itemDecoration);
         rv_feed.setAdapter(feedAdapter);
         rv_feed.setLayoutManager(gridLayoutManager);
     }
@@ -168,9 +165,9 @@ public class DiscoverFragment extends Fragment implements SwipeRefreshLayout.OnR
         Drawable drawable = getResources().getDrawable(R.drawable.white_divider);
 
         // Create a DividerItemDecoration instance with a single layer and add it to your recycler view
-        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(new Layer(DividerBuilder.get().with(drawable).build()));
+//        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(new Layer(DividerBuilder.get().with(drawable).build()));
 
-        rv_prefer_trend.addItemDecoration(itemDecoration);
+//        rv_prefer_trend.addItemDecoration(itemDecoration);
 
         rv_prefer_trend.setAdapter(preferRecyclerAdapter);
         rv_prefer_trend.setLayoutManager(gridLayoutManager);

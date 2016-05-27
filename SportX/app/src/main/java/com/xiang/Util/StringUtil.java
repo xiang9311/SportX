@@ -30,4 +30,21 @@ public class StringUtil {
         sb.append(".jpg");
         return sb.toString();
     }
+
+    public static String generatorTrendKey(){
+        StringBuilder sb = new StringBuilder("01" + SportTimeUtil.getCurrentFileName());
+        for(int i = 0; i < 8; i ++){
+            sb.append(characters[((int) (Math.random() * count))]);
+        }
+        sb.append(".jpg");
+        return sb.toString();
+    }
+
+    public static boolean isNotEmpty(String s){
+        if(s == null || s.equals("")){
+            return false;
+        }
+
+        return true;
+    }
 }

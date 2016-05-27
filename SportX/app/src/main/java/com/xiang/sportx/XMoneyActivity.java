@@ -1,12 +1,22 @@
 package com.xiang.sportx;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Message;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import com.google.protobuf.nano.InvalidProtocolBufferNanoException;
 import com.xiang.Util.Constant;
+import com.xiang.base.BaseHandler;
 import com.xiang.factory.MaterialDialogFactory;
+import com.xiang.proto.nano.Common;
+import com.xiang.proto.pilot.nano.Pilot;
+import com.xiang.request.RequestUtil;
+import com.xiang.request.UrlUtil;
 import com.xiang.view.MateriaDialogWidthCheckBox;
 import com.xiang.view.MyTitleBar;
 
@@ -19,6 +29,7 @@ public class XMoneyActivity extends BaseAppCompatActivity {
 
     private MaterialDialog md_no_card, md_no_shop;
     private MateriaDialogWidthCheckBox md_money;
+    private TextView tv_money;
 
     // tools
     private SharedPreferences sp;
@@ -36,6 +47,7 @@ public class XMoneyActivity extends BaseAppCompatActivity {
         rl_card = (RelativeLayout) findViewById(R.id.rl_card);
         rl_shop = (RelativeLayout) findViewById(R.id.rl_shop);
         rl_money = (RelativeLayout) findViewById(R.id.rl_money);
+        tv_money = (TextView) findViewById(R.id.tv_money);
     }
 
     @Override
@@ -103,6 +115,10 @@ public class XMoneyActivity extends BaseAppCompatActivity {
         if (sp.getBoolean(Constant.SP_AUTO_SHOW_MONEY_DIALOG, true)){
             showMdMoney();
         }
+
+        mHandler = new MyHandler(this, null);
+
+        new GetMyMoneyThread().start();
     }
 
     private void showMdMoney(){
@@ -126,5 +142,81 @@ public class XMoneyActivity extends BaseAppCompatActivity {
             md_money.setCanceledOnTouchOutside(true);
         }
         md_money.show();
+    }
+
+
+    private MyHandler mHandler;
+    private final int KEY_GET_MONEY_SUC = 101;
+
+    class MyHandler extends BaseHandler{
+
+        public MyHandler(Context context, SwipeRefreshLayout mSwipeRefreshLayout) {
+            super(context, mSwipeRefreshLayout);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+                case KEY_GET_MONEY_SUC:
+                    int money = msg.arg1;
+                    tv_money.setText(""+money);
+                    break;
+            }
+        }
+    }
+
+    class GetMyMoneyThread extends Thread{
+        @Override
+        public void run() {
+            super.run();
+            long currentMills = System.currentTimeMillis();
+            int cmdid = 10008;
+            Pilot.Request10008 request = new Pilot.Request10008();
+            Pilot.Request10008.Params params = new Pilot.Request10008.Params();
+            Common.RequestCommon common = RequestUtil.getProtoCommon(cmdid, currentMills);
+            request.common = common;
+            request.params = params;
+
+
+            byte[] result = RequestUtil.postWithProtobuf(request, UrlUtil.URL_GET_MY_XMONEY, cmdid, currentMills);
+            if (null != result){
+                // 加载成功
+                try{
+                    Pilot.Response10008 response = Pilot.Response10008.parseFrom(result);
+
+                    if (response.common != null){
+                        if(response.common.code == 0){
+                            Message msg = Message.obtain();
+                            msg.what = KEY_GET_MONEY_SUC;
+                            msg.arg1 = response.data.count;
+                            mHandler.sendMessage(msg);
+                        } else{
+                            // code is not 0, find error
+                            Message msg = Message.obtain();
+                            msg.what = BaseHandler.KEY_ERROR;
+                            msg.obj = response.common.message;
+                            mHandler.sendMessage(msg);
+                        }
+                    } else {
+                        Message msg = Message.obtain();
+                        msg.what = BaseHandler.KEY_ERROR;
+                        msg.obj = "数据错误";
+                        mHandler.sendMessage(msg);
+                    }
+
+                } catch (InvalidProtocolBufferNanoException e){
+                    Message msg = Message.obtain();
+                    msg.what = BaseHandler.KEY_PARSE_ERROR;
+                    mHandler.sendMessage(msg);
+                    e.printStackTrace();
+                }
+            } else {
+                // 加载失败
+                Message msg = Message.obtain();
+                msg.what = BaseHandler.KEY_NO_RES;
+                mHandler.sendMessage(msg);
+            }
+        }
     }
 }

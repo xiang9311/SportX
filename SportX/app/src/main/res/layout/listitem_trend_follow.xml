@@ -21,7 +21,7 @@
 
         <LinearLayout
             android:layout_toRightOf="@+id/iv_follow_avatar"
-            android:layout_marginLeft="5dp"
+            android:layout_marginLeft="7dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -123,23 +123,26 @@
                 android:id="@+id/tv_place"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
+                android:layout_marginTop="4dp"
                 android:textColor="@color/text_high_light"
                 android:textSize="@dimen/text_smaller"
                 android:text="三里屯乐乐建设房"/>
 
-            <TextView
-                android:id="@+id/tv_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
-                android:textColor="@color/text_light"
-                android:textSize="@dimen/text_smaller"
-                android:text="3小时前"/>
+
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp">
+
+                <TextView
+                    android:id="@+id/tv_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:textColor="@color/text_light"
+                    android:textSize="@dimen/text_smaller"
+                    android:text="3小时前"/>
 
                 <ImageView
                     android:id="@+id/iv_like"

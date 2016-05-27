@@ -64,7 +64,7 @@
 
     <style name="text_user_name_in_follow">
         <item name="android:textColor">@color/main_color</item>
-        <item name="android:textSize">@dimen/text_small</item>
+        <item name="android:textSize">@dimen/text_small_14</item>
     </style>
 
     <style name="text_content">

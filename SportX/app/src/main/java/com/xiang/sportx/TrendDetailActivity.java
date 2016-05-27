@@ -1,10 +1,14 @@
 package com.xiang.sportx;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Message;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
@@ -15,22 +19,30 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.protobuf.nano.InvalidProtocolBufferNanoException;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.xiang.Util.ArrayUtil;
 import com.xiang.Util.Constant;
 import com.xiang.Util.SportTimeUtil;
 import com.xiang.Util.ViewUtil;
+import com.xiang.Util.WindowUtil;
 import com.xiang.adapter.TrendCommentAdapter;
-import com.xiang.dafault.DefaultUtil;
+import com.xiang.base.BaseHandler;
 import com.xiang.factory.DisplayOptionsFactory;
 import com.xiang.listener.OnRclViewItemClickListener;
 import com.xiang.model.ChoosedGym;
 import com.xiang.proto.nano.Common;
+import com.xiang.proto.trend.nano.Trend;
+import com.xiang.request.RequestUtil;
+import com.xiang.request.UrlUtil;
+import com.xiang.thread.LikeTrendThread;
 import com.xiang.transport.TrendStatic;
 import com.xiang.view.MyTitleBar;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TrendDetailActivity extends BaseAppCompatActivity {
@@ -65,10 +77,17 @@ public class TrendDetailActivity extends BaseAppCompatActivity {
 
     // data
     private Common.Trend trend;
-    private List<Common.Comment> comments = DefaultUtil.getComments(10);
+    private List<Common.Comment> comments = new ArrayList<>();
     private boolean commentToTrend = true;   // false的话则是回复评论
     private Common.BriefUser toBriefUser;
+    private int toCommentId;
     private int from = 0;
+
+    private int comment_index = 0;
+    private int maxCountPerPage = 0;
+    private boolean refresh = true;
+    private ChoosedGym choosedGym;
+    private boolean canLoadingMore = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,12 +148,10 @@ public class TrendDetailActivity extends BaseAppCompatActivity {
                 || from == Constant.FROM_ALBUM){
             trend = TrendStatic.getLastTrend();
         } else if(from == Constant.FROM_COMMENT_MESSAGE){
-            trend = DefaultUtil.getTrends(1).get(0);
+            int trendId = getIntent().getIntExtra(Constant.TREND_ID, 0);
+            configViewLater = true;
+            new GetTrendByIdThread(trendId).start();
         }
-    }
-
-    @Override
-    protected void configView() {
 
         titleBar.setTitle("动态详情");
         titleBar.setBackButton(R.mipmap.back, true, new View.OnClickListener() {
@@ -145,6 +162,11 @@ public class TrendDetailActivity extends BaseAppCompatActivity {
         });
         titleBar.setMoreButton(0, false, null);
 
+        mHandler = new MyHandler(this, null);
+    }
+
+    @Override
+    protected void configView() {
         rl_choose_gym.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -156,24 +178,33 @@ public class TrendDetailActivity extends BaseAppCompatActivity {
         tv_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO comment
+                if (et_comment_text.getText().toString().equals("")){
+                    sendToast("您还未输入内容");
+                    return;
+                }
+
+                new CommentThread().start();
+                Animation animation = AnimationUtils.loadAnimation(TrendDetailActivity.this, R.anim.jump_out);
+                rl_comment_panel.clearAnimation();
+                rl_comment_panel.startAnimation(animation);
+                rl_comment_panel.setVisibility(View.GONE);
+                WindowUtil.hideInputMethod(TrendDetailActivity.this);
             }
         });
 
 
-
         adapter = new TrendCommentAdapter(this, comments, recyclerView);
         adapter.addHeadView(headView);
-        ((RelativeLayout) headView.findViewById(R.id.rl_parent)).setOnClickListener(new View.OnClickListener() {
+        headView.findViewById(R.id.rl_parent).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showCommentPanel(true, null);
+                showCommentPanel(true, null, 0);
             }
         });
         adapter.setOnRclViewItemClickListener(new OnRclViewItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                showCommentPanel(false, comments.get(position).briefUser);
+                showCommentPanel(false, comments.get(position).briefUser, comments.get(position).commentId);
             }
 
             @Override
@@ -190,8 +221,8 @@ public class TrendDetailActivity extends BaseAppCompatActivity {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                if (newState == RecyclerView.SCROLL_STATE_DRAGGING){
-                    if(rl_comment_panel.getVisibility() != View.GONE){
+                if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    if (rl_comment_panel.getVisibility() != View.GONE) {
                         Animation animation = AnimationUtils.loadAnimation(TrendDetailActivity.this, R.anim.jump_out);
                         rl_comment_panel.clearAnimation();
                         rl_comment_panel.startAnimation(animation);
@@ -199,12 +230,36 @@ public class TrendDetailActivity extends BaseAppCompatActivity {
                     }
                 }
             }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                if (!canLoadingMore) {
+                    return;
+                }
+
+                int lastVisibleItem = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastVisibleItemPosition();
+                int totalItemCount = recyclerView.getLayoutManager().getItemCount();
+                //lastVisibleItem >= totalItemCount - 1 表示剩下1个item自动加载，各位自由选择
+                // dy>0 表示向下滑动
+                if (lastVisibleItem >= totalItemCount - 1 && dy > 0) {
+                    if (adapter.isLoadingMore()) {
+                        Log.d("isloadingmore", "ignore manually update!");
+                    } else {
+                        adapter.setLoadingMore(true);
+                        new GetCommentThread().start();
+                    }
+                }
+            }
         });
 
         configHeadView();
+
+        new GetCommentThread().start();
     }
 
-    private void showCommentPanel(boolean isCommentToTrend, Common.BriefUser briefUser) {
+    private void showCommentPanel(boolean isCommentToTrend, Common.BriefUser briefUser, int toCommentId) {
 
         if (rl_comment_panel.getVisibility() != View.VISIBLE) {
             Animation animation = AnimationUtils.loadAnimation(this, R.anim.jump_in);
@@ -216,6 +271,7 @@ public class TrendDetailActivity extends BaseAppCompatActivity {
 
         this.commentToTrend = isCommentToTrend;
         this.toBriefUser = briefUser;
+        this.toCommentId = toCommentId;
         if(isCommentToTrend){
             et_comment_text.setHint("评论");
         } else{
@@ -248,8 +304,16 @@ public class TrendDetailActivity extends BaseAppCompatActivity {
         }
 
         tv_username.setText(trend.briefUser.userName);
-        tv_content.setText(trend.content);
-        tv_place.setText(trend.gymName);
+        if(trend.content == null || trend.content.equals("")){
+            tv_content.setVisibility(View.GONE);
+        }else {
+            tv_content.setText(trend.content);
+        }
+        if(trend.gymName == null || trend.gymName.equals("")){
+            tv_place.setVisibility(View.GONE);
+        } else {
+            tv_place.setText(trend.gymName);
+        }
         tv_time.setText(SportTimeUtil.getDateFromNow(trend.createTime));
 
         imageLoader.displayImage(trend.briefUser.userAvatar, iv_avatar, options);
@@ -303,6 +367,17 @@ public class TrendDetailActivity extends BaseAppCompatActivity {
             });
         }
 
+        configLikeAndCommentCount();
+
+        iv_like.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new LikeTrendThread(mHandler, trend.id, !trend.isLiked, 0).start();
+            }
+        });
+    }
+
+    private void configLikeAndCommentCount(){
         tv_like_count.setText(trend.likeCount + "");
         tv_comment_count.setText(trend.commentCount + "");
 
@@ -311,27 +386,6 @@ public class TrendDetailActivity extends BaseAppCompatActivity {
         } else{
             iv_like.setImageDrawable(getResources().getDrawable(R.mipmap.like));
         }
-
-        iv_like.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if(trend.isLiked){
-                    trend.likeCount = trend.likeCount - 1;
-                } else{
-                    trend.likeCount = trend.likeCount + 1;
-                }
-                trend.isLiked = !trend.isLiked;
-
-                if(trend.isLiked){
-                    iv_like.setImageDrawable(getResources().getDrawable(R.mipmap.liked));
-                } else{
-                    iv_like.setImageDrawable(getResources().getDrawable(R.mipmap.like));
-                }
-                tv_like_count.setText(trend.likeCount + "");
-            }
-        });
-
     }
 
     @Override
@@ -343,6 +397,264 @@ public class TrendDetailActivity extends BaseAppCompatActivity {
                     ChoosedGym choosedGym = (ChoosedGym) data.getSerializableExtra(ChooseGymActivity.CHOOSED_GYM);
                     tv_gym_name.setText(choosedGym.getGymName());
                     break;
+            }
+        }
+    }
+
+    private MyHandler mHandler;
+    private final int KEY_COMMENT_SUC = 101;
+    private final int KEY_GET_COMMENT_SUC = 201;
+    private final int KEY_GET_TREND_DETAIL_SUC = 301;
+    class MyHandler extends BaseHandler{
+
+        public MyHandler(Context context, SwipeRefreshLayout mSwipeRefreshLayout) {
+            super(context, mSwipeRefreshLayout);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+                case KEY_GET_COMMENT_SUC:
+                    Trend.Response12004.Data data = (Trend.Response12004.Data) msg.obj;
+                    if(refresh){
+                        comments.clear();
+                    } else{
+                        adapter.setLoadingMore(false);
+                    }
+
+                    maxCountPerPage = data.maxCountPerPage;
+                    if (maxCountPerPage > data.comments.length){
+                        canLoadingMore = false;
+                        adapter.setCannotLoadingMore();
+                    } else{
+                        canLoadingMore = true;
+                    }
+
+                    comment_index ++;
+
+                    int lastSize = comments.size();
+                    comments.addAll(ArrayUtil.Array2List(data.comments));
+                    if (lastSize < comments.size()) {
+
+                        if(refresh){
+                            adapter.notifyDataSetChanged();
+                        } else{
+                            adapter.notifyItemRangeInserted(adapter.headViews.size() + lastSize, data.comments.length);
+                        }
+                    }
+                    refresh = false;
+                    break;
+
+                case KEY_COMMENT_SUC:
+                    sendToast("评论成功");
+                    if(!canLoadingMore){
+                        // 如果评论数量过少，则重新加载评论
+                        refresh = true;
+                        comment_index = 0;
+                        new GetCommentThread().start();
+                    }
+                    trend.commentCount ++;
+                    configLikeAndCommentCount();
+                    et_comment_text.setText("");
+                    break;
+
+                case KEY_LIKE_TREND:
+                    trend.isLiked = true;
+                    trend.likeCount ++;
+                    configLikeAndCommentCount();
+                    break;
+
+                case KEY_UNLIKE_TREND:
+                    trend.isLiked = false;
+                    trend.likeCount --;
+                    configLikeAndCommentCount();
+                    break;
+
+                case KEY_GET_TREND_DETAIL_SUC:
+                    trend = (Common.Trend) msg.obj;
+                    configView();
+                    break;
+            }
+        }
+    }
+
+    class CommentThread extends Thread{
+        @Override
+        public void run() {
+            super.run();
+            long currentMills = System.currentTimeMillis();
+            int cmdid = 12006;
+            Trend.Request12006 request = new Trend.Request12006();
+            Trend.Request12006.Params params = new Trend.Request12006.Params();
+            Common.RequestCommon common = RequestUtil.getProtoCommon(cmdid, currentMills);
+            request.common = common;
+            request.params = params;
+
+            params.content = et_comment_text.getText().toString();
+            params.trendId = trend.id;
+
+            if (!commentToTrend){
+                params.toUserId = toBriefUser.userId;
+                params.toCommentId = toCommentId;
+            }
+
+            if (choosedGym != null){
+                params.gymId = choosedGym.getGymId();
+            }
+
+            byte[] result = RequestUtil.postWithProtobuf(request, UrlUtil.URL_COMMENT_TREND, cmdid, currentMills);
+            if (null != result){
+                // 加载成功
+                try{
+                    Trend.Response12006 response = Trend.Response12006.parseFrom(result);
+
+                    if (response.common != null){
+                        if(response.common.code == 0){
+                            Message msg = Message.obtain();
+                            msg.what = KEY_COMMENT_SUC;
+                            mHandler.sendMessage(msg);
+                        } else{
+                            // code is not 0, find error
+                            Message msg = Message.obtain();
+                            msg.what = BaseHandler.KEY_ERROR;
+                            msg.obj = response.common.message;
+                            mHandler.sendMessage(msg);
+                        }
+                    } else {
+                        Message msg = Message.obtain();
+                        msg.what = BaseHandler.KEY_ERROR;
+                        msg.obj = "数据错误";
+                        mHandler.sendMessage(msg);
+                    }
+
+                } catch (InvalidProtocolBufferNanoException e){
+                    Message msg = Message.obtain();
+                    msg.what = BaseHandler.KEY_PARSE_ERROR;
+                    mHandler.sendMessage(msg);
+                    e.printStackTrace();
+                }
+            } else {
+                // 加载失败
+                Message msg = Message.obtain();
+                msg.what = BaseHandler.KEY_NO_RES;
+                mHandler.sendMessage(msg);
+            }
+        }
+    }
+
+    class GetCommentThread extends Thread{
+        @Override
+        public void run() {
+            super.run();
+            long currentMills = System.currentTimeMillis();
+            int cmdid = 12004;
+            Trend.Request12004 request = new Trend.Request12004();
+            Trend.Request12004.Params params = new Trend.Request12004.Params();
+            Common.RequestCommon common = RequestUtil.getProtoCommon(cmdid, currentMills);
+            request.common = common;
+            request.params = params;
+
+            params.pageIndex = comment_index;
+            params.trendId = trend.id;
+
+            byte[] result = RequestUtil.postWithProtobuf(request, UrlUtil.URL_GET_COMMENT, cmdid, currentMills);
+            if (null != result){
+                // 加载成功
+                try{
+                    Trend.Response12004 response = Trend.Response12004.parseFrom(result);
+
+                    if (response.common != null){
+                        if(response.common.code == 0){
+                            Message msg = Message.obtain();
+                            msg.obj = response.data;
+                            msg.what = KEY_GET_COMMENT_SUC;
+                            mHandler.sendMessage(msg);
+                        } else{
+                            // code is not 0, find error
+                            Message msg = Message.obtain();
+                            msg.what = BaseHandler.KEY_ERROR;
+                            msg.obj = response.common.message;
+                            mHandler.sendMessage(msg);
+                        }
+                    } else {
+                        Message msg = Message.obtain();
+                        msg.what = BaseHandler.KEY_ERROR;
+                        msg.obj = "数据错误";
+                        mHandler.sendMessage(msg);
+                    }
+
+                } catch (InvalidProtocolBufferNanoException e){
+                    Message msg = Message.obtain();
+                    msg.what = BaseHandler.KEY_PARSE_ERROR;
+                    mHandler.sendMessage(msg);
+                    e.printStackTrace();
+                }
+            } else {
+                // 加载失败
+                Message msg = Message.obtain();
+                msg.what = BaseHandler.KEY_NO_RES;
+                mHandler.sendMessage(msg);
+            }
+        }
+    }
+
+    class GetTrendByIdThread extends Thread{
+        private int trendId;
+        public GetTrendByIdThread(int trendId){
+            this.trendId = trendId;
+        }
+
+        @Override
+        public void run() {
+            super.run();
+            long currentMills = System.currentTimeMillis();
+            int cmdid = 12003;
+            Trend.Request12003 request = new Trend.Request12003();
+            Trend.Request12003.Params params = new Trend.Request12003.Params();
+            Common.RequestCommon common = RequestUtil.getProtoCommon(cmdid, currentMills);
+            request.common = common;
+            request.params = params;
+
+            params.trendId = trendId;
+
+            byte[] result = RequestUtil.postWithProtobuf(request, UrlUtil.URL_GET_TREND_BY_ID, cmdid, currentMills);
+            if (null != result){
+                // 加载成功
+                try{
+                    Trend.Response12003 response = Trend.Response12003.parseFrom(result);
+
+                    if (response.common != null){
+                        if(response.common.code == 0){
+                            Message msg = Message.obtain();
+                            msg.what = KEY_GET_TREND_DETAIL_SUC;
+                            msg.obj = response.data.trend;
+                            mHandler.sendMessage(msg);
+                        } else{
+                            // code is not 0, find error
+                            Message msg = Message.obtain();
+                            msg.what = BaseHandler.KEY_ERROR;
+                            msg.obj = response.common.message;
+                            mHandler.sendMessage(msg);
+                        }
+                    } else {
+                        Message msg = Message.obtain();
+                        msg.what = BaseHandler.KEY_ERROR;
+                        msg.obj = "数据错误";
+                        mHandler.sendMessage(msg);
+                    }
+
+                } catch (InvalidProtocolBufferNanoException e){
+                    Message msg = Message.obtain();
+                    msg.what = BaseHandler.KEY_PARSE_ERROR;
+                    mHandler.sendMessage(msg);
+                    e.printStackTrace();
+                }
+            } else {
+                // 加载失败
+                Message msg = Message.obtain();
+                msg.what = BaseHandler.KEY_NO_RES;
+                mHandler.sendMessage(msg);
             }
         }
     }

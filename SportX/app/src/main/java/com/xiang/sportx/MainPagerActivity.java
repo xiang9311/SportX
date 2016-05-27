@@ -1,9 +1,14 @@
 package com.xiang.sportx;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -11,17 +16,23 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.xiang.Util.ActivityUtil;
+import com.xiang.Util.Constant;
+import com.xiang.Util.UserStatic;
 import com.xiang.adapter.MainPagerAdapter;
+import com.xiang.database.helper.BriefUserHelper;
+import com.xiang.database.model.TblBriefUser;
+import com.xiang.factory.MaterialDialogFactory;
 import com.xiang.fragment.FollowFragment;
 import com.xiang.fragment.GymFragment;
 import com.xiang.fragment.MessageFragment;
 import com.xiang.fragment.UserFragment;
+import com.xiang.view.TwoOptionMaterialDialog;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import io.rong.imkit.RongIM;
-import io.rong.imlib.RongIMClient;
 import io.rong.imlib.model.UserInfo;
 
 public class MainPagerActivity extends BaseAppCompatActivity {
@@ -31,16 +42,38 @@ public class MainPagerActivity extends BaseAppCompatActivity {
     private ViewPager viewPager;
     private RelativeLayout rl_discover, rl_follow, rl_user, rl[], rl_chat;
     private ImageView iv_search, iv_add_trend;
+    private TwoOptionMaterialDialog md_login_register;
 
     private MainPagerAdapter mainPagerAdapter;
     private static List<Fragment> fragmentList;
 
+    private BriefUserHelper briefUserHelper = new BriefUserHelper(this);
+    private SharedPreferences sp;
+
+    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (Constant.BROADCAST_NEW_COMMENT_MESSAGE.equals(intent.getAction())){
+                try{
+                    if (viewPager.getCurrentItem() == 1 && ActivityUtil.isForeground(MainPagerActivity.this)){ // 关注在1的位置
+                        ((FollowFragment) fragmentList.get(1)).notifyNewComment();
+                    } else{
+                        SharedPreferences.Editor editor = sp.edit();
+                        editor.putBoolean(Constant.SP_NEW_COMMENT_MESSAGE, true);
+                        editor.commit();
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            } else if(Constant.BROADCAST_GOTO_MESSAGE_ACTIVITY.equals(intent.getAction())){
+                startActivity(new Intent(MainPagerActivity.this, CommentMessageActivity.class));
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // 连接融云
-        connectRongyun();
 
         // 设置融云信息提供者
         setUserInfoProvider();
@@ -50,39 +83,22 @@ public class MainPagerActivity extends BaseAppCompatActivity {
         RongIM.setUserInfoProvider(new RongIM.UserInfoProvider() {
             @Override
             public UserInfo getUserInfo(String s) {
-                if (s.equals("10010")) {
-                    Uri uri = Uri.parse("http://img5.duitang.com/uploads/item/201410/26/20141026133942_YsYim.thumb.224_0.jpeg");
-                    return new UserInfo("10010", "我是10010", uri);
+                TblBriefUser tblBriefUser = briefUserHelper.getUserById(s);
+                if(tblBriefUser != null) {
+                    Uri uri = Uri.parse(tblBriefUser.userAvatar);
+                    return new UserInfo(tblBriefUser.id, tblBriefUser.userName, uri);
+                } else{
+                    return null;
                 }
-                Uri uri = Uri.parse("http://www.ld12.com/upimg358/allimg/c150708/14363445264S30-205R2.jpg");
-                return new UserInfo("10086", "我是10086", uri);
             }
         }, true);
     }
 
-    private void connectRongyun() {
-        String token = "0/oss9GvSdsSiwYvqC/TRUWWGOlHE2HxqANt1yJQKDraEzUj7+/DUdLRwfqrIaD8ibNPxZQVAmh9wtgA9+DfqQ==";
-        RongIM.connect(token, new RongIMClient.ConnectCallback() {
-            @Override
-            public void onTokenIncorrect() {
-                Log.d("rongyun", "onTokenIncorrect");
-            }
-
-            @Override
-            public void onSuccess(String s) {
-                // log
-                Log.d("rongyun", "connect success");
-            }
-
-            @Override
-            public void onError(RongIMClient.ErrorCode errorCode) {
-                Log.d("rongyun", "onError" + errorCode.getMessage());
-            }
-        });
-    }
 
     @Override
     protected void initView() {
+        sp = getSharedPreferences(Constant.SP_DATA, MODE_PRIVATE);
+
         setContentView(R.layout.activity_main_pager);
 
         viewPager = (ViewPager) findViewById(R.id.vp_main);
@@ -223,9 +239,35 @@ public class MainPagerActivity extends BaseAppCompatActivity {
         iv_add_trend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainPagerActivity.this, CreateTrendActivity.class));
+                if(UserStatic.logged) {
+                    startActivity(new Intent(MainPagerActivity.this, CreateTrendActivity.class));
+                } else{
+                    if(md_login_register == null){
+                        String[] options = new String[]{"登录", "注册"};
+                        md_login_register = MaterialDialogFactory.createTwoOptionMd(MainPagerActivity.this, options, false, 0, true);
+                        md_login_register.setOnOptionChooseListener(new TwoOptionMaterialDialog.OnOptionChooseListener() {
+                            @Override
+                            public void onOptionChoose(int index) {
+                                if(index == 0){
+                                    startActivity(new Intent(MainPagerActivity.this, LoginActivity.class));
+                                } else{
+                                    startActivity(new Intent(MainPagerActivity.this, RegisterActivity.class));
+                                }
+                            }
+                        });
+                        md_login_register.setTitle("您还未登录");
+                        md_login_register.setCanceledOnTouchOutside(true);
+                    }
+                    md_login_register.show();
+                }
             }
         });
+
+        // 注册新消息广播
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Constant.BROADCAST_NEW_COMMENT_MESSAGE);
+        intentFilter.addAction(Constant.BROADCAST_GOTO_MESSAGE_ACTIVITY);
+        LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver, intentFilter);
     }
 
     private void resetRbs(int index){
@@ -243,5 +285,15 @@ public class MainPagerActivity extends BaseAppCompatActivity {
             return true;
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    protected void onDestroy() {
+        try {
+            unregisterReceiver(mReceiver);
+        } catch (IllegalArgumentException e){
+            e.printStackTrace();
+        }
+        super.onDestroy();
     }
 }

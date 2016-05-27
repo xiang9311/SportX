@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.xiang.Util.ImageUtil;
 import com.xiang.factory.DisplayOptionsFactory;
 import com.xiang.listener.OnRclViewItemClickListener;
 import com.xiang.proto.nano.Common;
@@ -81,7 +82,7 @@ public class SearchedUserAdapter extends RecyclerView.Adapter<SearchedUserAdapte
         });
 
         for(int i = 0; i < searchedUser.images.length && i < holder.imageViews.length; i ++){
-            imageLoader.displayImage(searchedUser.images[i], holder.imageViews[i], displayImageOptions);
+            imageLoader.displayImage(ImageUtil.getSearchedImageUrlSmall(searchedUser.images[i]), holder.imageViews[i], displayImageOptions);
         }
     }
 
