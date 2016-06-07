@@ -151,7 +151,7 @@ public class MyDetailActivity extends BaseAppCompatActivity {
         rl_name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(md_username == null){
+                if (md_username == null) {
                     md_username = new MaterialDialog(MyDetailActivity.this);
                     md_username.setContentView(v_username);
                     md_username.setCanceledOnTouchOutside(true);
@@ -159,14 +159,15 @@ public class MyDetailActivity extends BaseAppCompatActivity {
                         @Override
                         public void onClick(View v) {
                             //
+
                             String username = met_username.getText().toString();
 
-                            if(!StringUtil.isNotEmpty(username)){
+                            if (!StringUtil.isNotEmpty(username)) {
                                 sendToast("用户名不能为空");
                                 return;
                             }
 
-                            if(!checkUserName(username) || username.length() > 20){
+                            if (!checkUserName(username) || username.length() > Constant.MAX_LENGTH_USER_NAME) {
                                 sendToast("用户名不合法");
                                 return;
                             }
@@ -189,7 +190,7 @@ public class MyDetailActivity extends BaseAppCompatActivity {
         rl_sign.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(md_sign == null){
+                if (md_sign == null) {
                     md_sign = new MaterialDialog(MyDetailActivity.this);
                     md_sign.setContentView(v_sign);
                     md_sign.setCanceledOnTouchOutside(true);
@@ -197,6 +198,7 @@ public class MyDetailActivity extends BaseAppCompatActivity {
                         @Override
                         public void onClick(View v) {
                             //
+
                             String sign = met_sign.getText().toString();
 
                             if (!StringUtil.isNotEmpty(sign)) {
@@ -204,7 +206,7 @@ public class MyDetailActivity extends BaseAppCompatActivity {
                                 return;
                             }
 
-                            if (!checkUserSign(sign) || sign.length() > 300) {
+                            if (!checkUserSign(sign) || sign.length() > Constant.MAX_LENGTH_SIGN) {
                                 sendToast("签名不合法");
                                 return;
                             }
@@ -279,6 +281,17 @@ public class MyDetailActivity extends BaseAppCompatActivity {
             }
         });
 
+        iv_avatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String[] images = new String[]{UserStatic.avatarUrl};
+                Intent intent = new Intent(MyDetailActivity.this, ImageAndTextActivity.class);
+                intent.putExtra(Constant.IMAGES, images);
+                intent.putExtra(Constant.SHOW_INDICATOR, false);
+                startActivity(intent);
+            }
+        });
+
 
         mHandler = new MyHandler(this, null);
 
@@ -286,7 +299,7 @@ public class MyDetailActivity extends BaseAppCompatActivity {
     }
 
     public static boolean checkUserName(String userName) {
-        String regex = "([a-z]|[A-Z]|[0-9]|[\\u4e00-\\u9fa5])+";
+        String regex = "^[^('\"\\\\?)]+$";
         Pattern p = Pattern.compile(regex);
         Matcher m = p.matcher(userName);
         return m.matches();

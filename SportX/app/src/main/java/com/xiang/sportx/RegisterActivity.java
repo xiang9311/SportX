@@ -270,7 +270,7 @@ public class RegisterActivity extends BaseAppCompatActivity {
     }
 
     public static boolean checkUserName(String userName) {
-        String regex = "([a-z]|[A-Z]|[0-9]|[\\u4e00-\\u9fa5])+";
+        String regex = "^[^('\"\\\\?)]+$";
         Pattern p = Pattern.compile(regex);
         Matcher m = p.matcher(userName);
         return m.matches();
@@ -403,7 +403,7 @@ public class RegisterActivity extends BaseAppCompatActivity {
             return;
         }
 
-        if(!checkUserName(username) || username.length() > 20){
+        if(!checkUserName(username) || username.length() > Constant.MAX_LENGTH_USER_NAME){
             sendToast("用户名不合法");
             return;
         }
@@ -718,6 +718,8 @@ public class RegisterActivity extends BaseAppCompatActivity {
                     uploadBitmap(avatarBitmap);
                 }
             });
+
+            met_username.setMaxCharacters(Constant.MAX_LENGTH_USER_NAME);
 
             return view;
         }

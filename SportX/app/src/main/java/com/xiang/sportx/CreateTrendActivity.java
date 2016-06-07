@@ -22,6 +22,7 @@ import com.qiniu.android.storage.UpCompletionHandler;
 import com.qiniu.android.storage.UploadManager;
 import com.wefika.flowlayout.FlowLayout;
 import com.xiang.Util.BitmapUtil;
+import com.xiang.Util.Constant;
 import com.xiang.Util.StringUtil;
 import com.xiang.base.BaseHandler;
 import com.xiang.factory.MaterialDialogFactory;
@@ -55,6 +56,7 @@ public class CreateTrendActivity extends BaseAppCompatActivity {
     private RelativeLayout rl_add, rl_choose_gym;
     private EditText et_content;
     private TextView tv_gymname;
+    private View v_creating;
 
     private MaterialDialog md_quit;
     private TwoOptionMaterialDialog md_choose_image;
@@ -81,7 +83,6 @@ public class CreateTrendActivity extends BaseAppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -108,6 +109,16 @@ public class CreateTrendActivity extends BaseAppCompatActivity {
         myTitleBar.setMoreTextButton("发布", new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if(isCreateing){
+                    return ;
+                }
+
+                if (et_content.getText().toString().length() > Constant.MAX_LENGTH_TREND_CONENT) {
+                    sendToast("内容过长，应在" + Constant.MAX_LENGTH_TREND_CONENT +"字以内");
+                    return;
+                }
+
                 if (et_content.getText().toString().length() > 0 || imageUris.size() > 0) {
                     // 上传完成后自动发布
                     uploadBitmap();
@@ -264,7 +275,7 @@ public class CreateTrendActivity extends BaseAppCompatActivity {
     private void addImageView2FlowLayout(Uri bitmapUri) {
         try {
             Bitmap bitmap = null;
-            bitmap = BitmapUtil.getCompressedImage(this, bitmapUri, true);
+            bitmap = BitmapUtil.getCompressedImage(this, bitmapUri, true, 80, false);
             addImageView2FlowLayout(bitmap);
         } catch(NullPointerException e) {
             sendToast("未找到图片，可能由于机型问题，请联系我们解决。");
@@ -324,14 +335,15 @@ public class CreateTrendActivity extends BaseAppCompatActivity {
 
     private void startUploadBitmap(int index){
         final Bitmap bitmap;
-        bitmap = BitmapUtil.getCompressedImage(this, imageUris.get(index), false);
+
+        bitmap = BitmapUtil.getCompressedImage(this, imageUris.get(index), false, 90, true);
         addBitmapToRecycle(bitmap);
 
         String thisKey = StringUtil.generatorTrendKey();
         avatar_key.add(thisKey);
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, outputStream);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
         UploadManager uploadManager = new UploadManager();
         byte[] data = outputStream.toByteArray();
         uploadManager.put(data, thisKey, qiniuToken, new UpCompletionHandler() {
@@ -370,7 +382,7 @@ public class CreateTrendActivity extends BaseAppCompatActivity {
                     bucketName = data.bucketName;
                     break;
                 case KEY_UPLOAD_IMAGE:
-                    CreateTrendActivity.this.sendToast("已上传：" + uploadedCount + "/" + imageUris.size());
+                    showProgress("已上传：" + uploadedCount + "/" + imageUris.size(), false);
                     if(uploadedCount == imageUris.size()){
                         sendEmptyMessage(KEY_START_CREATE_TREND);
                     } else {
@@ -378,11 +390,17 @@ public class CreateTrendActivity extends BaseAppCompatActivity {
                     }
                     break;
                 case KEY_START_CREATE_TREND:
-                    CreateTrendActivity.this.sendToast("开始发布信息");
+                    showProgress("开始发布信息", false);
                     new CreateTrendThrad().start();
                     break;
                 case KEY_TREND_CREATE_SUC:
-                    CreateTrendActivity.this.sendToast("发布成功");
+                    showProgress("发布成功", true);
+                    postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            dissmissProgress();
+                        }
+                    }, 1000);
                     finish();
                     isCreateing = false;
                     break;
@@ -445,6 +463,7 @@ public class CreateTrendActivity extends BaseAppCompatActivity {
             }
 
             byte[] result = RequestUtil.postWithProtobuf(request, UrlUtil.URL_CREATE_TREND, cmdid, currentMills);
+            isCreateing = false;
             if (null != result){
                 // 加载成功
                 try{

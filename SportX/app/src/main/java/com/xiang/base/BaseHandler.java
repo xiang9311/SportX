@@ -1,11 +1,15 @@
 package com.xiang.base;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.xiang.sportx.BaseAppCompatActivity;
 
 /**
  * Created by 祥祥 on 2016/3/21.
@@ -14,6 +18,9 @@ public class BaseHandler extends Handler {
     private static final String TAG = "BaseHandler";
     protected Context context;
     protected SwipeRefreshLayout mSwipeRefreshLayout;
+
+    protected Snackbar snackbar;
+
     public BaseHandler(Context context, SwipeRefreshLayout mSwipeRefreshLayout){
         this.context = context;
         this.mSwipeRefreshLayout = mSwipeRefreshLayout;
@@ -21,6 +28,7 @@ public class BaseHandler extends Handler {
 
     public static final int KEY_TOAST = 1000;
     public static final int KEY_TOAST_LONG = 1001;
+    public static final int KEY_DISSMISS_PROGRESS = 1002;
     public static final int KEY_ERROR = 2001;
     public static final int KEY_SUCCESS = 2000;
     public static final int KEY_NO_RES = 2002;
@@ -50,6 +58,14 @@ public class BaseHandler extends Handler {
      * 获取用户关注
      */
     public static final int KEY_GET_GUANZHU_SUC = 3006;
+    /**
+     * 获取用户简要信息
+     */
+    public static final int KEY_GET_BRIEFUSER_SUC = 3007;
+    /**
+     * 获取gym列表成功
+     */
+    public static final int KEY_GET_GYM_LIST_SUC = 3008;
 
     @Override
     public void handleMessage(Message msg) {
@@ -76,7 +92,7 @@ public class BaseHandler extends Handler {
                 break;
             case KEY_NO_RES:
                 if (context != null){
-                    Toast.makeText(context, "网络连接失败或服务器出错", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "无法连接到服务器", Toast.LENGTH_SHORT).show();
                 }
                 if (mSwipeRefreshLayout != null){
                     mSwipeRefreshLayout.setRefreshing(false);
@@ -84,12 +100,29 @@ public class BaseHandler extends Handler {
                 break;
             case KEY_TOAST:
                 if (context != null){
-                    Toast.makeText(context, (String)msg.obj, Toast.LENGTH_SHORT).show();
+                    if(snackbar == null) {
+                        snackbar = Snackbar.make(((Activity) context).getWindow().getDecorView().findViewById(android.R.id.content)
+                                , (String) msg.obj
+                                , Snackbar.LENGTH_SHORT);
+                        snackbar.show();
+                    } else{
+                        snackbar.setText((String) msg.obj);
+                        snackbar.show();
+                    }
                 }
                 break;
             case KEY_TOAST_LONG:
                 if (context != null){
-                    Toast.makeText(context, (String)msg.obj, Toast.LENGTH_LONG).show();
+                    Snackbar.make(((Activity) context).getWindow().getDecorView().findViewById(android.R.id.content)
+                            , (String) msg.obj
+                            , Snackbar.LENGTH_LONG).show();
+                }
+                break;
+            case KEY_DISSMISS_PROGRESS:
+                try {
+                    ((BaseAppCompatActivity) context).dissmissProgress();
+                } catch(Exception e){
+
                 }
                 break;
         }
@@ -106,6 +139,12 @@ public class BaseHandler extends Handler {
         Message msg = Message.obtain();
         msg.what = KEY_TOAST_LONG;
         msg.obj = content;
+        this.sendMessage(msg);
+    }
+
+    public void sendDisMissProgress(){
+        Message msg = Message.obtain();
+        msg.what = KEY_DISSMISS_PROGRESS;
         this.sendMessage(msg);
     }
 }

@@ -32,6 +32,7 @@ import com.xiang.proto.pilot.nano.Pilot;
 import com.xiang.request.RequestUtil;
 import com.xiang.request.UrlUtil;
 import com.xiang.thread.GetTrendThread;
+import com.xiang.thread.LikeTrendThread;
 import com.xiang.view.MyTitleBar;
 
 import java.util.ArrayList;
@@ -52,7 +53,7 @@ public class UserDetailActivity extends BaseAppCompatActivity {
     private TextView tv_sign;         // 签名
     private ImageView iv_sex;
     private TextView tv_guanzhu_count, tv_fensi_count, tv_trend_count;
-    private LinearLayout ll_guanzhu, ll_fensi;
+    private LinearLayout ll_guanzhu, ll_fensi, ll_trend;
 
     // adapter
     private TrendAdapter trendAdapter;
@@ -98,6 +99,7 @@ public class UserDetailActivity extends BaseAppCompatActivity {
         tv_trend_count = (TextView) findHeadViewById(R.id.tv_trend_count);
         ll_guanzhu = (LinearLayout) findHeadViewById(R.id.ll_guanzhu);
         ll_fensi = (LinearLayout) findHeadViewById(R.id.ll_fensi);
+        ll_trend = (LinearLayout) findHeadViewById(R.id.ll_trend);
     }
 
     private View findHeadViewById(int id){
@@ -128,6 +130,20 @@ public class UserDetailActivity extends BaseAppCompatActivity {
 //        configHeadView();
 
         trendAdapter = new TrendAdapter(this, trends, rv_trend, Constant.FROM_USER_DETAIL);
+        trendAdapter.setOnLikeItemClickListener(new TrendAdapter.OnLikeItemClickListener() {
+            @Override
+            public void itemLikeClick(final View view, int dataIndex, boolean isLike) {
+                view.setEnabled(false);
+                new LikeTrendThread(mHandler, trends.get(dataIndex).id, isLike, dataIndex).start();
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        view.setEnabled(true);
+                    }
+                },10000);
+            }
+        });
+
         trendAdapter.addHeadView(headerView);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         rv_trend.setAdapter(trendAdapter);
@@ -190,6 +206,13 @@ public class UserDetailActivity extends BaseAppCompatActivity {
             @Override
             public void onClick(View v) {
                 SportXIntent.gotoUserListActivity(UserDetailActivity.this, userId, userName, Constant.FIND_FENSI);
+            }
+        });
+
+        ll_trend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((LinearLayoutManager)rv_trend.getLayoutManager()).scrollToPositionWithOffset(1, 0);
             }
         });
 
@@ -282,6 +305,19 @@ public class UserDetailActivity extends BaseAppCompatActivity {
                         trendAdapter.notifyItemRangeInserted(lastSize0 + trendAdapter.getHeadViewSize(), data.trends.length);
                     }
                     pageIndex ++;
+                    break;
+
+                case KEY_LIKE_TREND:
+                    Common.Trend trend = trends.get(msg.arg1);
+                    trend.isLiked = true;
+                    trend.likeCount ++;
+                    trendAdapter.notifyItemLikeChanged(msg.arg1);
+                    break;
+                case KEY_UNLIKE_TREND:
+                    Common.Trend trend1 = trends.get(msg.arg1);
+                    trend1.isLiked = false;
+                    trend1.likeCount --;
+                    trendAdapter.notifyItemLikeChanged(msg.arg1);
                     break;
             }
         }

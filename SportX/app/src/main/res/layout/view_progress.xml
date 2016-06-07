@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.rey.material.widget.ProgressView
+        android:id="@+id/pv"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center_horizontal"
+        app:pv_autostart="true"
+        app:pv_circular="true"
+        app:pv_progressStyle="@style/Material.Drawable.CircularProgress"
+        app:cpd_strokeColor="@color/main_color"
+        app:cpd_strokeColors="@array/process_colors"
+        app:cpd_strokeSize="2dp"
+        app:cpd_transformDuration="1000"
+        app:pv_progressMode="indeterminate"/>
+
+    <TextView
+        android:id="@+id/tv_progress_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/text_lighter"
+        android:textSize="@dimen/text_normal"/>
+
+</LinearLayout>

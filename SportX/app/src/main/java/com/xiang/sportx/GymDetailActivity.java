@@ -12,7 +12,6 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.xiang.Util.ArrayUtil;
-import com.xiang.Util.CardUtil;
 import com.xiang.Util.Constant;
 import com.xiang.Util.SportXIntent;
 import com.xiang.adapter.GymImageAdapter;
@@ -151,7 +150,7 @@ public class GymDetailActivity extends BaseAppCompatActivity {
 
     // 建设房水平滑动图片列表
     private void initImageRecyclerView() {
-        gymImageAdapter = new GymImageAdapter(this, ArrayUtil.Array2List(detailGym.briefGym.gymCover), rv_gym_images);
+        gymImageAdapter = new GymImageAdapter(this, ArrayUtil.Array2List(detailGym.gymCovers), rv_gym_images);
         gymImageAdapter.setOnRclViewItemClickListener(new OnRclViewItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -180,30 +179,30 @@ public class GymDetailActivity extends BaseAppCompatActivity {
         tv_place.setText(detailGym.briefGym.place);
 
         // 设置器材内容
-        StringBuilder sb_equip = new StringBuilder();
-        for(int i = 0; i < detailGym.briefGym.equipments.length; i ++){
-            sb_equip.append(detailGym.briefGym.equipments[i].name);
-            sb_equip.append(" ");
-        }
-        tv_equipment_more.setText(sb_equip.toString());
+//        StringBuilder sb_equip = new StringBuilder();
+//        for(int i = 0; i < detailGym.briefGym.equipments.length; i ++){
+//            sb_equip.append(detailGym.briefGym.equipments[i].name);
+//            sb_equip.append(" ");
+//        }
+        tv_equipment_more.setText(detailGym.briefGym.eqm);
 
         // 设置课程内容
-        StringBuilder sb_course = new StringBuilder();
-        for(int i = 0; i < detailGym.courses.length; i ++){
-            sb_course.append(detailGym.courses[i].name);
-            sb_course.append(" ");
-        }
-        tv_class_more.setText(sb_course.toString());
+//        StringBuilder sb_course = new StringBuilder();
+//        for(int i = 0; i < detailGym.courses.length; i ++){
+//            sb_course.append(detailGym.courses[i].name);
+//            sb_course.append(" ");
+//        }
+        tv_class_more.setText(detailGym.courses);
 
         // 设置卡片内容
-        StringBuilder sb_card = new StringBuilder();
-        for(int i = 0; i < detailGym.gymCards.length; i ++){
-            sb_card.append(CardUtil.getCardName(detailGym.gymCards[i].cardType));
-            sb_card.append("/");
-            sb_card.append((int)detailGym.gymCards[i].price);
-            sb_card.append("元 ");
-        }
-        tv_card_more.setText(sb_card);
+//        StringBuilder sb_card = new StringBuilder();
+//        for(int i = 0; i < detailGym.gymCards.length; i ++){
+//            sb_card.append(CardUtil.getCardName(detailGym.gymCards[i].cardType));
+//            sb_card.append("/");
+//            sb_card.append((int)detailGym.gymCards[i].price);
+//            sb_card.append("元 ");
+//        }
+        tv_card_more.setText(detailGym.gymCards);
 
     }
 

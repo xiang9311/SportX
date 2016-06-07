@@ -2,7 +2,9 @@ package com.xiang.sportx;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 
+import com.xiang.Util.SportXIntent;
 import com.xiang.view.MyTitleBar;
 
 public class ConversationActivity extends BaseAppCompatActivity {
@@ -38,6 +40,16 @@ public class ConversationActivity extends BaseAppCompatActivity {
     protected void configView() {
         myTitleBar.setTitle(userName);
         myTitleBar.setBackButtonDefault();
-        myTitleBar.setMoreButton(0, false, null);
+        myTitleBar.setMoreButtonPadding(10);
+        myTitleBar.setMoreButton(R.mipmap.user_white, true, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    SportXIntent.gotoUserDetail(ConversationActivity.this, Integer.parseInt(chatUserid), userName);
+                } catch (Exception e){
+
+                }
+            }
+        });
     }
 }

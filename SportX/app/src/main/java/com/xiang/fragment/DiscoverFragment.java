@@ -146,7 +146,7 @@ public class DiscoverFragment extends Fragment implements SwipeRefreshLayout.OnR
                 TextView tv_name = (TextView) mView.findViewById(textViewId[i]);
                 TextView tv_place = (TextView) mView.findViewById(placeViewId[i]);
 
-                imageLoader.displayImage(gyms.get(i).gymCover[0], imageView, displayImageOptions);
+                imageLoader.displayImage(gyms.get(i).gymCover, imageView, displayImageOptions);
                 tv_name.setText(gyms.get(i).gymName);
                 tv_place.setText(gyms.get(i).place);
             }

@@ -251,12 +251,16 @@ public interface Gym {
       // repeated .com.xiang.proto.BriefGym briefGyms = 1;
       public com.xiang.proto.nano.Common.BriefGym[] briefGyms;
 
+      // optional int32 maxCountPerPage = 2;
+      public int maxCountPerPage;
+
       public Data() {
         clear();
       }
 
       public Data clear() {
         briefGyms = com.xiang.proto.nano.Common.BriefGym.emptyArray();
+        maxCountPerPage = 0;
         cachedSize = -1;
         return this;
       }
@@ -272,6 +276,9 @@ public interface Gym {
             }
           }
         }
+        if (this.maxCountPerPage != 0) {
+          output.writeInt32(2, this.maxCountPerPage);
+        }
         super.writeTo(output);
       }
 
@@ -286,6 +293,10 @@ public interface Gym {
                 .computeMessageSize(1, element);
             }
           }
+        }
+        if (this.maxCountPerPage != 0) {
+          size += com.google.protobuf.nano.CodedOutputByteBufferNano
+              .computeInt32Size(2, this.maxCountPerPage);
         }
         return size;
       }
@@ -323,6 +334,10 @@ public interface Gym {
               newArray[i] = new com.xiang.proto.nano.Common.BriefGym();
               input.readMessage(newArray[i]);
               this.briefGyms = newArray;
+              break;
+            }
+            case 16: {
+              this.maxCountPerPage = input.readInt32();
               break;
             }
           }
@@ -891,6 +906,9 @@ public interface Gym {
       // optional float latitude = 2;
       public float latitude;
 
+      // optional int32 wantGymId = 3;
+      public int wantGymId;
+
       public Params() {
         clear();
       }
@@ -898,6 +916,7 @@ public interface Gym {
       public Params clear() {
         longitude = 0F;
         latitude = 0F;
+        wantGymId = 0;
         cachedSize = -1;
         return this;
       }
@@ -912,6 +931,9 @@ public interface Gym {
         if (Float.floatToIntBits(this.latitude)
             != Float.floatToIntBits(0F)) {
           output.writeFloat(2, this.latitude);
+        }
+        if (this.wantGymId != 0) {
+          output.writeInt32(3, this.wantGymId);
         }
         super.writeTo(output);
       }
@@ -928,6 +950,10 @@ public interface Gym {
             != Float.floatToIntBits(0F)) {
           size += com.google.protobuf.nano.CodedOutputByteBufferNano
               .computeFloatSize(2, this.latitude);
+        }
+        if (this.wantGymId != 0) {
+          size += com.google.protobuf.nano.CodedOutputByteBufferNano
+              .computeInt32Size(3, this.wantGymId);
         }
         return size;
       }
@@ -953,6 +979,10 @@ public interface Gym {
             }
             case 21: {
               this.latitude = input.readFloat();
+              break;
+            }
+            case 24: {
+              this.wantGymId = input.readInt32();
               break;
             }
           }
@@ -1093,10 +1123,16 @@ public interface Gym {
         return _emptyArray;
       }
 
-      // optional .com.xiang.proto.DetailGym detailGym = 1;
-      public com.xiang.proto.nano.Common.DetailGym detailGym;
+      // optional .com.xiang.proto.BriefGym briefGym = 1;
+      public com.xiang.proto.nano.Common.BriefGym briefGym;
 
-      // repeated .com.xiang.proto.BriefUser briefUsers = 2;
+      // optional int32 userNum = 2;
+      public int userNum;
+
+      // optional int32 trendNum = 3;
+      public int trendNum;
+
+      // repeated .com.xiang.proto.BriefUser briefUsers = 4;
       public com.xiang.proto.nano.Common.BriefUser[] briefUsers;
 
       public Data() {
@@ -1104,7 +1140,9 @@ public interface Gym {
       }
 
       public Data clear() {
-        detailGym = null;
+        briefGym = null;
+        userNum = 0;
+        trendNum = 0;
         briefUsers = com.xiang.proto.nano.Common.BriefUser.emptyArray();
         cachedSize = -1;
         return this;
@@ -1113,14 +1151,20 @@ public interface Gym {
       @Override
       public void writeTo(com.google.protobuf.nano.CodedOutputByteBufferNano output)
           throws java.io.IOException {
-        if (this.detailGym != null) {
-          output.writeMessage(1, this.detailGym);
+        if (this.briefGym != null) {
+          output.writeMessage(1, this.briefGym);
+        }
+        if (this.userNum != 0) {
+          output.writeInt32(2, this.userNum);
+        }
+        if (this.trendNum != 0) {
+          output.writeInt32(3, this.trendNum);
         }
         if (this.briefUsers != null && this.briefUsers.length > 0) {
           for (int i = 0; i < this.briefUsers.length; i++) {
             com.xiang.proto.nano.Common.BriefUser element = this.briefUsers[i];
             if (element != null) {
-              output.writeMessage(2, element);
+              output.writeMessage(4, element);
             }
           }
         }
@@ -1130,16 +1174,24 @@ public interface Gym {
       @Override
       protected int computeSerializedSize() {
         int size = super.computeSerializedSize();
-        if (this.detailGym != null) {
+        if (this.briefGym != null) {
           size += com.google.protobuf.nano.CodedOutputByteBufferNano
-            .computeMessageSize(1, this.detailGym);
+            .computeMessageSize(1, this.briefGym);
+        }
+        if (this.userNum != 0) {
+          size += com.google.protobuf.nano.CodedOutputByteBufferNano
+              .computeInt32Size(2, this.userNum);
+        }
+        if (this.trendNum != 0) {
+          size += com.google.protobuf.nano.CodedOutputByteBufferNano
+              .computeInt32Size(3, this.trendNum);
         }
         if (this.briefUsers != null && this.briefUsers.length > 0) {
           for (int i = 0; i < this.briefUsers.length; i++) {
             com.xiang.proto.nano.Common.BriefUser element = this.briefUsers[i];
             if (element != null) {
               size += com.google.protobuf.nano.CodedOutputByteBufferNano
-                .computeMessageSize(2, element);
+                .computeMessageSize(4, element);
             }
           }
         }
@@ -1162,15 +1214,23 @@ public interface Gym {
               break;
             }
             case 10: {
-              if (this.detailGym == null) {
-                this.detailGym = new com.xiang.proto.nano.Common.DetailGym();
+              if (this.briefGym == null) {
+                this.briefGym = new com.xiang.proto.nano.Common.BriefGym();
               }
-              input.readMessage(this.detailGym);
+              input.readMessage(this.briefGym);
               break;
             }
-            case 18: {
+            case 16: {
+              this.userNum = input.readInt32();
+              break;
+            }
+            case 24: {
+              this.trendNum = input.readInt32();
+              break;
+            }
+            case 34: {
               int arrayLength = com.google.protobuf.nano.WireFormatNano
-                  .getRepeatedFieldArrayLength(input, 18);
+                  .getRepeatedFieldArrayLength(input, 34);
               int i = this.briefUsers == null ? 0 : this.briefUsers.length;
               com.xiang.proto.nano.Common.BriefUser[] newArray =
                   new com.xiang.proto.nano.Common.BriefUser[i + arrayLength];

@@ -9,7 +9,10 @@ import android.view.inputmethod.InputMethodManager;
  */
 public class WindowUtil {
     public static void hideInputMethod(Activity activity){
-        ((InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE))
-                .hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        try {
+            ((InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE))
+                    .hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        } catch (Exception e){
+        }
     }
 }

@@ -18,6 +18,7 @@ import com.xiang.base.BaseHandler;
 import com.xiang.proto.nano.Common;
 import com.xiang.proto.pilot.nano.Pilot;
 import com.xiang.thread.GetTrendThread;
+import com.xiang.thread.LikeTrendThread;
 import com.xiang.view.MyTitleBar;
 
 import java.util.ArrayList;
@@ -72,6 +73,20 @@ public class UserAlbumActivity extends BaseAppCompatActivity {
         });
 
         adapter = new TrendAdapter(this, trends, rv_album, Constant.FROM_ALBUM);
+        adapter.setOnLikeItemClickListener(new TrendAdapter.OnLikeItemClickListener() {
+            @Override
+            public void itemLikeClick(final View view, int dataIndex, boolean isLike) {
+                view.setEnabled(false);
+                new LikeTrendThread(mHandler, trends.get(dataIndex).id, isLike, dataIndex).start();
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        view.setEnabled(true);
+                    }
+                },10000);
+            }
+        });
+
         LinearLayoutManager manager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
 
         rv_album.setAdapter(adapter);
@@ -103,6 +118,7 @@ public class UserAlbumActivity extends BaseAppCompatActivity {
 
         mHandler = new MyHandler(this, null);
 
+        showProgress("",true);
         new GetTrendThread(mHandler, pageIndex, UserStatic.userId).start();
     }
 
@@ -128,12 +144,32 @@ public class UserAlbumActivity extends BaseAppCompatActivity {
                         adapter.setCannotLoadingMore();
                     }
 
-                    if (data.trends.length > 0){
-                        adapter.notifyItemRangeInserted(adapter.getHeadViewSize() + lastSize, data.trends.length);
+                    adapter.setLoadingMore(false);
+
+                    if(lastSize == 0){
+                        // 重新刷新，否则页面出来后会在底下
+                        adapter.notifyDataSetChanged();
+                    } else {
+                        if (data.trends.length > 0) {
+                            adapter.notifyItemRangeInserted(adapter.getHeadViewSize() + lastSize, data.trends.length);
+                        }
                     }
 
                     pageIndex ++;
 
+                    break;
+
+                case KEY_LIKE_TREND:
+                    Common.Trend trend = trends.get(msg.arg1);
+                    trend.isLiked = true;
+                    trend.likeCount ++;
+                    adapter.notifyItemLikeChanged(msg.arg1);
+                    break;
+                case KEY_UNLIKE_TREND:
+                    Common.Trend trend1 = trends.get(msg.arg1);
+                    trend1.isLiked = false;
+                    trend1.likeCount --;
+                    adapter.notifyItemLikeChanged(msg.arg1);
                     break;
             }
         }

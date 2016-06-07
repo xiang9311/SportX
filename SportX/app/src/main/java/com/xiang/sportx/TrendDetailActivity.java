@@ -27,6 +27,7 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.xiang.Util.ArrayUtil;
 import com.xiang.Util.Constant;
 import com.xiang.Util.SportTimeUtil;
+import com.xiang.Util.SportXIntent;
 import com.xiang.Util.ViewUtil;
 import com.xiang.Util.WindowUtil;
 import com.xiang.adapter.TrendCommentAdapter;
@@ -51,7 +52,7 @@ public class TrendDetailActivity extends BaseAppCompatActivity {
 
     private MyTitleBar titleBar;
     private RecyclerView recyclerView;
-    private View headView;
+    private View headView, headTitleView;
 
     // headview 相关内容
     private ImageView iv_avatar;
@@ -89,6 +90,9 @@ public class TrendDetailActivity extends BaseAppCompatActivity {
     private ChoosedGym choosedGym;
     private boolean canLoadingMore = true;
 
+    int itemViewInspactSize;
+    int bigInspactSize;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,6 +103,13 @@ public class TrendDetailActivity extends BaseAppCompatActivity {
     protected void initView() {
         setContentView(R.layout.activity_trend_detail);
 
+        int windowWidth = ViewUtil.getWindowWidth(this);
+        float usedWidth = getResources().getDimension(R.dimen.used_size_of_trend);
+        float margin = getResources().getDimension(R.dimen.follow_image_margin);
+        bigInspactSize = (int) ((windowWidth - usedWidth) * 0.9f);
+        itemViewInspactSize = (int) (((windowWidth - usedWidth) * 0.9f - 2 * margin) / 3);        // 占用90%的空间。每行三个
+
+
         titleBar = (MyTitleBar) findViewById(R.id.titleBar);
         recyclerView = (RecyclerView) findViewById(R.id.rv_comment);
         rl_choose_gym = (RelativeLayout) findViewById(R.id.rl_choose_gym);
@@ -108,6 +119,7 @@ public class TrendDetailActivity extends BaseAppCompatActivity {
         et_comment_text = (EditText) findViewById(R.id.et_comment_text);
 
         headView = LayoutInflater.from(this).inflate(R.layout.listitem_trend_follow, null ,false);
+        headTitleView = LayoutInflater.from(this).inflate(R.layout.view_comment_title, null, false);
         initHeadView();
     }
 
@@ -135,6 +147,15 @@ public class TrendDetailActivity extends BaseAppCompatActivity {
         iv_like = (ImageView) findHeadViewById(R.id.iv_like);
         tv_comment_count = (TextView) findHeadViewById(R.id.tv_comment_count);
         tv_like_count = (TextView) findHeadViewById(R.id.tv_like_count);
+
+        for (int i =0; i < iv_images.length; i ++){
+            GridLayout.LayoutParams layoutParams = (GridLayout.LayoutParams) iv_images[i].getLayoutParams();
+            layoutParams.width = itemViewInspactSize;
+            layoutParams.height = itemViewInspactSize;
+            iv_images[i].setLayoutParams(layoutParams);
+        }
+        iv_big.setMaxWidth(bigInspactSize);
+        iv_big.setMaxHeight(bigInspactSize);
     }
 
     private View findHeadViewById(int id){
@@ -178,6 +199,12 @@ public class TrendDetailActivity extends BaseAppCompatActivity {
         tv_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if (et_comment_text.getText().toString().length() > Constant.MAX_LENGTH_TREND_COMMENT){
+                    sendToast("您输入的内容过长。应小于100字。");
+                    return;
+                }
+
                 if (et_comment_text.getText().toString().equals("")){
                     sendToast("您还未输入内容");
                     return;
@@ -192,9 +219,23 @@ public class TrendDetailActivity extends BaseAppCompatActivity {
             }
         });
 
+        iv_avatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SportXIntent.gotoUserDetail(TrendDetailActivity.this, trend.briefUser.userId, trend.briefUser.userName);
+            }
+        });
+
+        tv_username.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SportXIntent.gotoUserDetail(TrendDetailActivity.this, trend.briefUser.userId, trend.briefUser.userName);
+            }
+        });
 
         adapter = new TrendCommentAdapter(this, comments, recyclerView);
         adapter.addHeadView(headView);
+        adapter.addHeadView(headTitleView);
         headView.findViewById(R.id.rl_parent).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -348,7 +389,9 @@ public class TrendDetailActivity extends BaseAppCompatActivity {
 
                 @Override
                 public void onLoadingComplete(String s, View view, Bitmap bitmap) {
-                    ViewUtil.setViewHeightByWidth(TrendDetailActivity.this, bitmap, iv_big, getResources().getDimension(R.dimen.follow_big_image_max_size));
+                    ViewUtil.setViewSizeByUsedWidth(TrendDetailActivity.this, bitmap, iv_big,
+                            getResources().getDimension(R.dimen.used_size_of_trend)
+                    );
                     iv_big.setImageBitmap(bitmap);
                 }
 
@@ -372,12 +415,20 @@ public class TrendDetailActivity extends BaseAppCompatActivity {
         iv_like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                iv_like.setEnabled(false);
                 new LikeTrendThread(mHandler, trend.id, !trend.isLiked, 0).start();
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        iv_like.setEnabled(true);
+                    }
+                }, 10000);
             }
         });
     }
 
     private void configLikeAndCommentCount(){
+        iv_like.setEnabled(true);
         tv_like_count.setText(trend.likeCount + "");
         tv_comment_count.setText(trend.commentCount + "");
 
@@ -394,7 +445,7 @@ public class TrendDetailActivity extends BaseAppCompatActivity {
         if (resultCode == RESULT_OK){
             switch (requestCode){
                 case CODE_CHOOSE_GYM:
-                    ChoosedGym choosedGym = (ChoosedGym) data.getSerializableExtra(ChooseGymActivity.CHOOSED_GYM);
+                    choosedGym = (ChoosedGym) data.getSerializableExtra(ChooseGymActivity.CHOOSED_GYM);
                     tv_gym_name.setText(choosedGym.getGymName());
                     break;
             }

@@ -59,7 +59,7 @@ public class SearchedUserAdapter extends RecyclerView.Adapter<SearchedUserAdapte
         }
 
         for(; i < viewHolder.imageViews.length; i ++){  // 3是imageView的数量
-            viewHolder.imageViews[i].setVisibility(View.GONE);
+            viewHolder.imageViews[i].setVisibility((viewType > 0) ? View.INVISIBLE : View.GONE);
         }
 
         return viewHolder;

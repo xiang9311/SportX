@@ -879,14 +879,14 @@ public interface Common {
     // optional string gymName = 2;
     public String gymName;
 
-    // repeated string gymCover = 3;
-    public String[] gymCover;
-
     // optional string place = 4;
     public String place;
 
     // optional string gymAvatar = 8;
     public String gymAvatar;
+
+    // optional string gymCover = 9;
+    public String gymCover;
 
     // optional float latitude = 5;
     public float latitude;
@@ -894,11 +894,8 @@ public interface Common {
     // optional float longitude = 6;
     public float longitude;
 
-    // optional bool isCoop = 7;
-    public boolean isCoop;
-
-    // repeated .com.xiang.proto.Equipment equipments = 9;
-    public Equipment[] equipments;
+    // optional string eqm = 7;
+    public String eqm;
 
     public BriefGym() {
       clear();
@@ -907,13 +904,12 @@ public interface Common {
     public BriefGym clear() {
       id = 0;
       gymName = "";
-      gymCover = com.google.protobuf.nano.WireFormatNano.EMPTY_STRING_ARRAY;
       place = "";
       gymAvatar = "";
+      gymCover = "";
       latitude = 0F;
       longitude = 0F;
-      isCoop = false;
-      equipments = Equipment.emptyArray();
+      eqm = "";
       cachedSize = -1;
       return this;
     }
@@ -927,14 +923,6 @@ public interface Common {
       if (!this.gymName.equals("")) {
         output.writeString(2, this.gymName);
       }
-      if (this.gymCover != null && this.gymCover.length > 0) {
-        for (int i = 0; i < this.gymCover.length; i++) {
-          String element = this.gymCover[i];
-          if (element != null) {
-            output.writeString(3, element);
-          }
-        }
-      }
       if (!this.place.equals("")) {
         output.writeString(4, this.place);
       }
@@ -946,19 +934,14 @@ public interface Common {
           != Float.floatToIntBits(0F)) {
         output.writeFloat(6, this.longitude);
       }
-      if (this.isCoop != false) {
-        output.writeBool(7, this.isCoop);
+      if (!this.eqm.equals("")) {
+        output.writeString(7, this.eqm);
       }
       if (!this.gymAvatar.equals("")) {
         output.writeString(8, this.gymAvatar);
       }
-      if (this.equipments != null && this.equipments.length > 0) {
-        for (int i = 0; i < this.equipments.length; i++) {
-          Equipment element = this.equipments[i];
-          if (element != null) {
-            output.writeMessage(9, element);
-          }
-        }
+      if (!this.gymCover.equals("")) {
+        output.writeString(9, this.gymCover);
       }
       super.writeTo(output);
     }
@@ -974,20 +957,6 @@ public interface Common {
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
             .computeStringSize(2, this.gymName);
       }
-      if (this.gymCover != null && this.gymCover.length > 0) {
-        int dataCount = 0;
-        int dataSize = 0;
-        for (int i = 0; i < this.gymCover.length; i++) {
-          String element = this.gymCover[i];
-          if (element != null) {
-            dataCount++;
-            dataSize += com.google.protobuf.nano.CodedOutputByteBufferNano
-                .computeStringSizeNoTag(element);
-          }
-        }
-        size += dataSize;
-        size += 1 * dataCount;
-      }
       if (!this.place.equals("")) {
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
             .computeStringSize(4, this.place);
@@ -1002,22 +971,17 @@ public interface Common {
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
             .computeFloatSize(6, this.longitude);
       }
-      if (this.isCoop != false) {
+      if (!this.eqm.equals("")) {
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
-            .computeBoolSize(7, this.isCoop);
+            .computeStringSize(7, this.eqm);
       }
       if (!this.gymAvatar.equals("")) {
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
             .computeStringSize(8, this.gymAvatar);
       }
-      if (this.equipments != null && this.equipments.length > 0) {
-        for (int i = 0; i < this.equipments.length; i++) {
-          Equipment element = this.equipments[i];
-          if (element != null) {
-            size += com.google.protobuf.nano.CodedOutputByteBufferNano
-              .computeMessageSize(9, element);
-          }
-        }
+      if (!this.gymCover.equals("")) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeStringSize(9, this.gymCover);
       }
       return size;
     }
@@ -1045,23 +1009,6 @@ public interface Common {
             this.gymName = input.readString();
             break;
           }
-          case 26: {
-            int arrayLength = com.google.protobuf.nano.WireFormatNano
-                .getRepeatedFieldArrayLength(input, 26);
-            int i = this.gymCover == null ? 0 : this.gymCover.length;
-            String[] newArray = new String[i + arrayLength];
-            if (i != 0) {
-              System.arraycopy(this.gymCover, 0, newArray, 0, i);
-            }
-            for (; i < newArray.length - 1; i++) {
-              newArray[i] = input.readString();
-              input.readTag();
-            }
-            // Last one without readTag.
-            newArray[i] = input.readString();
-            this.gymCover = newArray;
-            break;
-          }
           case 34: {
             this.place = input.readString();
             break;
@@ -1074,8 +1021,8 @@ public interface Common {
             this.longitude = input.readFloat();
             break;
           }
-          case 56: {
-            this.isCoop = input.readBool();
+          case 58: {
+            this.eqm = input.readString();
             break;
           }
           case 66: {
@@ -1083,23 +1030,7 @@ public interface Common {
             break;
           }
           case 74: {
-            int arrayLength = com.google.protobuf.nano.WireFormatNano
-                .getRepeatedFieldArrayLength(input, 74);
-            int i = this.equipments == null ? 0 : this.equipments.length;
-            Equipment[] newArray =
-                new Equipment[i + arrayLength];
-            if (i != 0) {
-              System.arraycopy(this.equipments, 0, newArray, 0, i);
-            }
-            for (; i < newArray.length - 1; i++) {
-              newArray[i] = new Equipment();
-              input.readMessage(newArray[i]);
-              input.readTag();
-            }
-            // Last one without readTag.
-            newArray[i] = new Equipment();
-            input.readMessage(newArray[i]);
-            this.equipments = newArray;
+            this.gymCover = input.readString();
             break;
           }
         }
@@ -1138,11 +1069,14 @@ public interface Common {
     // optional .com.xiang.proto.BriefGym briefGym = 1;
     public BriefGym briefGym;
 
-    // repeated .com.xiang.proto.Course courses = 3;
-    public Course[] courses;
+    // optional string courses = 3;
+    public String courses;
 
-    // repeated .com.xiang.proto.GymCard gymCards = 4;
-    public GymCard[] gymCards;
+    // optional string gymCards = 4;
+    public String gymCards;
+
+    // repeated string gymCovers = 5;
+    public String[] gymCovers;
 
     public DetailGym() {
       clear();
@@ -1150,8 +1084,9 @@ public interface Common {
 
     public DetailGym clear() {
       briefGym = null;
-      courses = Course.emptyArray();
-      gymCards = GymCard.emptyArray();
+      courses = "";
+      gymCards = "";
+      gymCovers = com.google.protobuf.nano.WireFormatNano.EMPTY_STRING_ARRAY;
       cachedSize = -1;
       return this;
     }
@@ -1162,19 +1097,17 @@ public interface Common {
       if (this.briefGym != null) {
         output.writeMessage(1, this.briefGym);
       }
-      if (this.courses != null && this.courses.length > 0) {
-        for (int i = 0; i < this.courses.length; i++) {
-          Course element = this.courses[i];
-          if (element != null) {
-            output.writeMessage(3, element);
-          }
-        }
+      if (!this.courses.equals("")) {
+        output.writeString(3, this.courses);
       }
-      if (this.gymCards != null && this.gymCards.length > 0) {
-        for (int i = 0; i < this.gymCards.length; i++) {
-          GymCard element = this.gymCards[i];
+      if (!this.gymCards.equals("")) {
+        output.writeString(4, this.gymCards);
+      }
+      if (this.gymCovers != null && this.gymCovers.length > 0) {
+        for (int i = 0; i < this.gymCovers.length; i++) {
+          String element = this.gymCovers[i];
           if (element != null) {
-            output.writeMessage(4, element);
+            output.writeString(5, element);
           }
         }
       }
@@ -1188,23 +1121,27 @@ public interface Common {
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
           .computeMessageSize(1, this.briefGym);
       }
-      if (this.courses != null && this.courses.length > 0) {
-        for (int i = 0; i < this.courses.length; i++) {
-          Course element = this.courses[i];
-          if (element != null) {
-            size += com.google.protobuf.nano.CodedOutputByteBufferNano
-              .computeMessageSize(3, element);
-          }
-        }
+      if (!this.courses.equals("")) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeStringSize(3, this.courses);
       }
-      if (this.gymCards != null && this.gymCards.length > 0) {
-        for (int i = 0; i < this.gymCards.length; i++) {
-          GymCard element = this.gymCards[i];
+      if (!this.gymCards.equals("")) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeStringSize(4, this.gymCards);
+      }
+      if (this.gymCovers != null && this.gymCovers.length > 0) {
+        int dataCount = 0;
+        int dataSize = 0;
+        for (int i = 0; i < this.gymCovers.length; i++) {
+          String element = this.gymCovers[i];
           if (element != null) {
-            size += com.google.protobuf.nano.CodedOutputByteBufferNano
-              .computeMessageSize(4, element);
+            dataCount++;
+            dataSize += com.google.protobuf.nano.CodedOutputByteBufferNano
+                .computeStringSizeNoTag(element);
           }
         }
+        size += dataSize;
+        size += 1 * dataCount;
       }
       return size;
     }
@@ -1232,43 +1169,28 @@ public interface Common {
             break;
           }
           case 26: {
-            int arrayLength = com.google.protobuf.nano.WireFormatNano
-                .getRepeatedFieldArrayLength(input, 26);
-            int i = this.courses == null ? 0 : this.courses.length;
-            Course[] newArray =
-                new Course[i + arrayLength];
-            if (i != 0) {
-              System.arraycopy(this.courses, 0, newArray, 0, i);
-            }
-            for (; i < newArray.length - 1; i++) {
-              newArray[i] = new Course();
-              input.readMessage(newArray[i]);
-              input.readTag();
-            }
-            // Last one without readTag.
-            newArray[i] = new Course();
-            input.readMessage(newArray[i]);
-            this.courses = newArray;
+            this.courses = input.readString();
             break;
           }
           case 34: {
+            this.gymCards = input.readString();
+            break;
+          }
+          case 42: {
             int arrayLength = com.google.protobuf.nano.WireFormatNano
-                .getRepeatedFieldArrayLength(input, 34);
-            int i = this.gymCards == null ? 0 : this.gymCards.length;
-            GymCard[] newArray =
-                new GymCard[i + arrayLength];
+                .getRepeatedFieldArrayLength(input, 42);
+            int i = this.gymCovers == null ? 0 : this.gymCovers.length;
+            String[] newArray = new String[i + arrayLength];
             if (i != 0) {
-              System.arraycopy(this.gymCards, 0, newArray, 0, i);
+              System.arraycopy(this.gymCovers, 0, newArray, 0, i);
             }
             for (; i < newArray.length - 1; i++) {
-              newArray[i] = new GymCard();
-              input.readMessage(newArray[i]);
+              newArray[i] = input.readString();
               input.readTag();
             }
             // Last one without readTag.
-            newArray[i] = new GymCard();
-            input.readMessage(newArray[i]);
-            this.gymCards = newArray;
+            newArray[i] = input.readString();
+            this.gymCovers = newArray;
             break;
           }
         }

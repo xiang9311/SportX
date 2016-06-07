@@ -13,26 +13,15 @@
         android:layout_height="@dimen/top_height"
         android:background="@color/main_color">
 
-        <ImageView
-            android:id="@+id/iv_back"
-            android:layout_width="40dp"
-            android:layout_height="@dimen/top_height"
-            android:scaleType="fitCenter"
-            android:paddingTop="9dp"
-            android:paddingBottom="9dp"
-            android:clickable="true"
-            android:background="@drawable/selector_main_pressed"
-            android:src="@mipmap/back"/>
-
         <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/et_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/iv_back"
             android:layout_toLeftOf="@+id/tv_search"
             android:textColor="@color/white"
             android:textSize="@dimen/text_big"
             android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/padding_lr"
             android:hint="搜索内容"
             android:layout_marginRight="5dp"
             app:met_baseColor="@color/white"
@@ -50,7 +39,7 @@
             android:gravity="center"
             android:clickable="true"
             android:background="@drawable/selector_main_pressed"
-            android:text="搜索" />
+            android:text="取消" />
 
     </RelativeLayout>
 
@@ -79,14 +68,23 @@
             android:textColor="@color/delete"
             android:text="清空记录"/>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_keywords"
+        <!--<android.support.v7.widget.RecyclerView-->
+            <!--android:id="@+id/rv_keywords"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="3dp"-->
+            <!--android:layout_below="@+id/tv_history">-->
+
+        <!--</android.support.v7.widget.RecyclerView>-->
+
+        <com.wefika.flowlayout.FlowLayout
+            android:id="@+id/fl_history_keywords"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
             android:layout_below="@+id/tv_history">
 
-        </android.support.v7.widget.RecyclerView>
+        </com.wefika.flowlayout.FlowLayout>
 
     </RelativeLayout>
 
@@ -106,14 +104,23 @@
             style="@style/text_part_title"
             android:text="热门搜索"/>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_hot_keywords"
+        <!--<android.support.v7.widget.RecyclerView-->
+            <!--android:id="@+id/rv_hot_keywords"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="3dp"-->
+            <!--android:layout_below="@+id/tv_hot">-->
+
+        <!--</android.support.v7.widget.RecyclerView>-->
+
+        <com.wefika.flowlayout.FlowLayout
+            android:id="@+id/fl_hot_keywords"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
             android:layout_below="@+id/tv_hot">
 
-        </android.support.v7.widget.RecyclerView>
+        </com.wefika.flowlayout.FlowLayout>
 
     </RelativeLayout>
 

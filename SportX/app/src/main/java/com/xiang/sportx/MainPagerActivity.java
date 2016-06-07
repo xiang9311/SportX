@@ -7,9 +7,11 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -18,8 +20,11 @@ import android.widget.RelativeLayout;
 
 import com.xiang.Util.ActivityUtil;
 import com.xiang.Util.Constant;
+import com.xiang.Util.LoginUtil;
+import com.xiang.Util.UserInfoUtil;
 import com.xiang.Util.UserStatic;
 import com.xiang.adapter.MainPagerAdapter;
+import com.xiang.base.BaseHandler;
 import com.xiang.database.helper.BriefUserHelper;
 import com.xiang.database.model.TblBriefUser;
 import com.xiang.factory.MaterialDialogFactory;
@@ -27,6 +32,8 @@ import com.xiang.fragment.FollowFragment;
 import com.xiang.fragment.GymFragment;
 import com.xiang.fragment.MessageFragment;
 import com.xiang.fragment.UserFragment;
+import com.xiang.proto.nano.Common;
+import com.xiang.thread.GetBriefUserThread;
 import com.xiang.view.TwoOptionMaterialDialog;
 
 import java.util.ArrayList;
@@ -53,19 +60,19 @@ public class MainPagerActivity extends BaseAppCompatActivity {
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (Constant.BROADCAST_NEW_COMMENT_MESSAGE.equals(intent.getAction())){
-                try{
-                    if (viewPager.getCurrentItem() == 1 && ActivityUtil.isForeground(MainPagerActivity.this)){ // 关注在1的位置
+            if (Constant.BROADCAST_NEW_COMMENT_MESSAGE.equals(intent.getAction())) {
+                try {
+                    if (viewPager.getCurrentItem() == 1 && ActivityUtil.isForeground(MainPagerActivity.this)) { // 关注在1的位置
                         ((FollowFragment) fragmentList.get(1)).notifyNewComment();
-                    } else{
+                    } else {
                         SharedPreferences.Editor editor = sp.edit();
                         editor.putBoolean(Constant.SP_NEW_COMMENT_MESSAGE, true);
                         editor.commit();
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
-            } else if(Constant.BROADCAST_GOTO_MESSAGE_ACTIVITY.equals(intent.getAction())){
+            } else if (Constant.BROADCAST_GOTO_MESSAGE_ACTIVITY.equals(intent.getAction())) {
                 startActivity(new Intent(MainPagerActivity.this, CommentMessageActivity.class));
             }
         }
@@ -75,6 +82,7 @@ public class MainPagerActivity extends BaseAppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        mHandler = new MyHandler(this, null);
         // 设置融云信息提供者
         setUserInfoProvider();
     }
@@ -84,10 +92,16 @@ public class MainPagerActivity extends BaseAppCompatActivity {
             @Override
             public UserInfo getUserInfo(String s) {
                 TblBriefUser tblBriefUser = briefUserHelper.getUserById(s);
-                if(tblBriefUser != null) {
+                if (tblBriefUser != null) {
                     Uri uri = Uri.parse(tblBriefUser.userAvatar);
                     return new UserInfo(tblBriefUser.id, tblBriefUser.userName, uri);
-                } else{
+                } else {
+                    try {
+                        // 新开线程获取，并更新
+                        new GetBriefUserThread(mHandler, Integer.parseInt(s)).start();
+                    } catch (Exception e) {
+
+                    }
                     return null;
                 }
             }
@@ -97,6 +111,8 @@ public class MainPagerActivity extends BaseAppCompatActivity {
 
     @Override
     protected void initView() {
+
+
         sp = getSharedPreferences(Constant.SP_DATA, MODE_PRIVATE);
 
         setContentView(R.layout.activity_main_pager);
@@ -268,6 +284,12 @@ public class MainPagerActivity extends BaseAppCompatActivity {
         intentFilter.addAction(Constant.BROADCAST_NEW_COMMENT_MESSAGE);
         intentFilter.addAction(Constant.BROADCAST_GOTO_MESSAGE_ACTIVITY);
         LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver, intentFilter);
+
+        // 如果登陆了，而且需要跳转到消息，则跳转
+        if(UserStatic.logged && LoginUtil.GotoMessageWhenStart){
+            startActivity(new Intent(MainPagerActivity.this, CommentMessageActivity.class));
+            LoginUtil.GotoMessageWhenStart = false;
+        }
     }
 
     private void resetRbs(int index){
@@ -295,5 +317,24 @@ public class MainPagerActivity extends BaseAppCompatActivity {
             e.printStackTrace();
         }
         super.onDestroy();
+    }
+
+    private MyHandler mHandler;
+    class MyHandler extends BaseHandler{
+
+        public MyHandler(Context context, SwipeRefreshLayout mSwipeRefreshLayout) {
+            super(context, mSwipeRefreshLayout);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+                case KEY_GET_BRIEFUSER_SUC:
+                    Common.BriefUser briefUser = (Common.BriefUser) msg.obj;
+                    UserInfoUtil.updateSavedUserInfo(briefUser.userId, briefUser.userName, briefUser.userAvatar, briefUserHelper);
+                    break;
+            }
+        }
     }
 }

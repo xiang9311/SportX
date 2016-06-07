@@ -43,7 +43,6 @@ public class Constant {
     /*****************************  以下是 sp 的字段  **********************************/
 
     public static final String SP_AUTO_SHOW_MONEY_DIALOG = "sp_auto_show_money_dialog";
-    public static final String SP_KEYWORDS = "sp_keywords";
     public static final String SP_NEW_COMMENT_MESSAGE = "sp_new_comment_message";
 
     public static final int FIND_FENSI = 0;
@@ -103,26 +102,6 @@ public class Constant {
         return strings;
     }
 
-    /***文章分类***/
-    /**
-     * web
-     */
-    public static final int ARTICLE_WEB = 1;
-    /**
-     * 普通
-     */
-    public static final int ARTICLE_NORMAL = 2;
-    /**
-     * image
-     */
-    public static final int ARTICLE_IMAGE = 3;
-
-    /**
-     * recycler与swiprefresh嵌套，或者有加载更多的时候，在数据加载后，会执行加载动画效果，这时如果用户滑动页面，就会崩溃
-     * 解决办法：数据加载后延迟屏蔽recyclerview若干毫秒
-     */
-    public static final int RECYCLERVIEW_REFRESH_DELAY = 500;
-
     /*******************  froms  *********************/
     public static final int FROM_FOLLOW = 1;
     public static final int FROM_GYM_DETAIL = 2;
@@ -134,7 +113,9 @@ public class Constant {
 
     /******************* max string length ***************************/
     public static final int MAX_LENGTH_USER_NAME = 15;
-    public static final int MAX_LENGTH_SIGN = 36;
+    public static final int MAX_LENGTH_SIGN = 50;
+    public static final int MAX_LENGTH_TREND_CONENT = 140;
+    public static final int MAX_LENGTH_TREND_COMMENT = 100;
 
     /**********************************  广播 *************************************/
     public static final String BROADCAST_UPDATE_USERINFO = "b_update_userinfo";

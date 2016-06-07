@@ -3,6 +3,7 @@ package com.xiang.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.Nullable;
@@ -10,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,19 +21,27 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.xiang.Util.CardUtil;
+import com.xiang.Util.ArrayUtil;
 import com.xiang.Util.Constant;
+import com.xiang.Util.LocationUtil;
 import com.xiang.Util.SportXIntent;
-import com.xiang.adapter.GymItemAdapter;
+import com.xiang.adapter.CoverGymItemAdapter;
 import com.xiang.adapter.UserInGymAdapter;
 import com.xiang.base.BaseHandler;
 import com.xiang.dafault.DefaultUtil;
 import com.xiang.factory.DisplayOptionsFactory;
 import com.xiang.listener.OnRclViewItemClickListener;
+import com.xiang.proto.gym.nano.Gym;
 import com.xiang.proto.nano.Common;
 import com.xiang.sportx.GymDetailActivity;
 import com.xiang.sportx.ImageAndTextActivity;
 import com.xiang.sportx.R;
+import com.xiang.thread.GetGymListThread;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import me.drakeet.materialdialog.MaterialDialog;
 
 /**
  * Created by 祥祥 on 2016/4/26.
@@ -40,19 +50,19 @@ public class GymFragment extends Fragment {
 
     private View mView;
     private RecyclerView rv_user_in_gym, rv_gyms;
-    private ImageView iv_cover, iv_avatar;
-    private TextView tv_gym_name, tv_place;
-    private TextView tv_equipment_more, tv_class_more, tv_card_more;
+    private ImageView iv_avatar;
+    private TextView tv_gym_name;
+    private TextView tv_equipment;
     private TextView tv_recommend_content;
     private RelativeLayout rl_gym;
 
 
     // view
-    private View headerView;
+    private View preferGymView;
 
     // adapter
     private UserInGymAdapter adapter;
-    private GymItemAdapter gymItemAdapter;
+    private CoverGymItemAdapter gymItemAdapter;
 
     // tools
     private ImageLoader imageLoader = ImageLoader.getInstance();
@@ -60,7 +70,9 @@ public class GymFragment extends Fragment {
 
     // data
     private Common.DetailGym detailGym = DefaultUtil.getDetailGym();
-
+    private Location location;
+    private List<Common.BriefGym> briefGyms = new ArrayList<>();
+    private int pageIndex = 0;
     // sp
     private SharedPreferences sp;
 
@@ -74,23 +86,34 @@ public class GymFragment extends Fragment {
     private boolean isUpdate = true;
 
     protected void onInitFragment() {
+        location = LocationUtil.getLocation(getContext());
+        if (null != location){
+            Log.d("location", location.getLatitude() + "" + location.getLongitude());
+        } else{
+            final MaterialDialog materialDialog = new MaterialDialog(getContext());
+            materialDialog.setCanceledOnTouchOutside(true);
+            materialDialog.setTitle("提示");
+            materialDialog.setMessage("请您打开“设置->应用->SportX->权限管理”，并允许使用手机定位，以便给您提供更好的服务。");
+            materialDialog.setPositiveButton("好的", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    materialDialog.dismiss();
+                }
+            });
+            materialDialog.show();
+        }
+
         sp = getContext().getSharedPreferences(Constant.SP_DATA, Context.MODE_PRIVATE);
         mHandler = new MyHandler(getContext(), null);
 
         rv_gyms = (RecyclerView) findViewById(R.id.rv_gyms);
 
         rv_user_in_gym = (RecyclerView) findHeadViewById(R.id.rv_user_in_gym);
-        iv_cover = (ImageView) findHeadViewById(R.id.iv_cover);
         iv_avatar = (ImageView) findHeadViewById(R.id.iv_gym_avatar);
         tv_gym_name = (TextView) findHeadViewById(R.id.tv_gym_name);
-        tv_place = (TextView) findHeadViewById(R.id.tv_place);
 
-        tv_equipment_more = (TextView) findHeadViewById(R.id.tv_equipment_more);
-        tv_class_more = (TextView) findHeadViewById(R.id.tv_course_more);
-        tv_card_more = (TextView) findHeadViewById(R.id.tv_card_more);
-        rl_gym = (RelativeLayout) findHeadViewById(R.id.rl_gym);
-
-
+        tv_equipment = (TextView) findHeadViewById(R.id.tv_equipment);
+        rl_gym = (RelativeLayout) findHeadViewById(R.id.rl_content);
 
         initRecyclerView();
 
@@ -98,12 +121,9 @@ public class GymFragment extends Fragment {
 
         initGymList();
 
-        // 这里做的东西在initGymDetail做了
-        configHeaderView();
-    }
+        new GetGymListThread(mHandler, location, pageIndex).start();
 
-    private void configHeaderView() {
-
+        rl_gym.requestFocus();
     }
 
     /**
@@ -112,7 +132,7 @@ public class GymFragment extends Fragment {
      * @return
      */
     private View findHeadViewById(int id){
-        return headerView.findViewById(id);
+        return preferGymView.findViewById(id);
     }
 
     @Override
@@ -123,10 +143,10 @@ public class GymFragment extends Fragment {
     }
 
     private void initGymList() {
-        gymItemAdapter = new GymItemAdapter(getContext(), DefaultUtil.getGyms(10), rv_gyms);
+        gymItemAdapter = new CoverGymItemAdapter(getContext(), briefGyms, rv_gyms);
 
         // add head view
-        gymItemAdapter.addHeadView(headerView);
+        gymItemAdapter.addHeadView(preferGymView);
 
         //TODO add foot view
 
@@ -145,14 +165,37 @@ public class GymFragment extends Fragment {
 
         rv_gyms.setAdapter(gymItemAdapter);
         rv_gyms.setLayoutManager(manager);
+        rv_gyms.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (!gymItemAdapter.canLoadingMore()) {
+                    return;
+                }
+
+                int lastVisibleItem = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastVisibleItemPosition();
+                int totalItemCount = recyclerView.getLayoutManager().getItemCount();
+                //lastVisibleItem >= totalItemCount - 1 表示剩下1个item自动加载，各位自由选择
+                // dy>0 表示向下滑动
+                if (lastVisibleItem >= totalItemCount - 2 && dy > 0) {
+                    if (gymItemAdapter.isLoadingMore()) {
+                        Log.d("isloadingmore", "ignore manually update!");
+                    } else {
+                        gymItemAdapter.setLoadingMore(true);
+
+                        new GetGymListThread(mHandler, location, pageIndex).start();
+                    }
+                }
+            }
+        });
     }
 
     /**
      * 初始化场馆详情信息
      */
     private void initGymDetail() {
-        imageLoader.displayImage(detailGym.briefGym.gymCover[0], iv_cover, options);
-        iv_cover.setOnClickListener(new View.OnClickListener() {
+        imageLoader.displayImage(detailGym.briefGym.gymCover, iv_avatar, options);
+        iv_avatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), ImageAndTextActivity.class);
@@ -160,35 +203,9 @@ public class GymFragment extends Fragment {
                 startActivity(intent);
             }
         });
-        imageLoader.displayImage(detailGym.briefGym.gymAvatar, iv_avatar, options);
         tv_gym_name.setText(detailGym.briefGym.gymName);
-        tv_place.setText(detailGym.briefGym.place);
-
         // 设置器材内容
-        StringBuilder sb_equip = new StringBuilder();
-        for(int i = 0; i < detailGym.briefGym.equipments.length; i ++){
-            sb_equip.append(detailGym.briefGym.equipments[i].name);
-            sb_equip.append(" ");
-        }
-        tv_equipment_more.setText(sb_equip.toString());
-
-        // 设置课程内容
-        StringBuilder sb_course = new StringBuilder();
-        for(int i = 0; i < detailGym.courses.length; i ++){
-            sb_course.append(detailGym.courses[i].name);
-            sb_course.append(" ");
-        }
-        tv_class_more.setText(sb_course.toString());
-
-        // 设置卡片内容
-        StringBuilder sb_card = new StringBuilder();
-        for(int i = 0; i < detailGym.gymCards.length; i ++){
-            sb_card.append(CardUtil.getCardName(detailGym.gymCards[i].cardType));
-            sb_card.append("/");
-            sb_card.append((int)detailGym.gymCards[i].price);
-            sb_card.append("元 ");
-        }
-        tv_card_more.setText(sb_card);
+        tv_equipment.setText(detailGym.briefGym.eqm);
 
         rl_gym.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -197,25 +214,6 @@ public class GymFragment extends Fragment {
             }
         });
 
-
-        // 打卡点击事件的一些信息
-        initRl_checkin();
-    }
-
-    private void initRl_checkin() {
-        // 如果上次点击了，现在计时，并设置点击事件
-        final boolean checked = sp.getBoolean(Constant.CKECKED, false);
-        if(checked){
-            // 获取时间
-            lastCheckInTime = sp.getLong(Constant.LAST_CHECKED_TIME, 0);
-            // 计时线程
-            isUpdate = true;
-            checkThread = new CheckThread();
-            checkThread.start();
-        }
-
-
-        // 如果没有点击，设置点击事件，并存入后重新点去init checkin
     }
 
     private void initRecyclerView() {
@@ -243,7 +241,8 @@ public class GymFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView( inflater, container, savedInstanceState);
-        headerView = inflater.inflate(R.layout.view_gyms_header, null, false);
+//        headerView = inflater.inflate(R.layout.view_gyms_header, null, false);
+        preferGymView = inflater.inflate(R.layout.view_prefer_gym, null, false);
         mView = inflater.inflate(R.layout.view_gym, container, false);
         return mView;
     }
@@ -278,6 +277,23 @@ public class GymFragment extends Fragment {
                         isUpdate = false;
                     }
                     sendToast("锻炼时长：" + getTime(System.currentTimeMillis() - lastCheckInTime));
+                    break;
+                case KEY_GET_GYM_LIST_SUC:
+                    Gym.Response13001.Data data = (Gym.Response13001.Data) msg.obj;
+
+                    int lastSize = briefGyms.size();
+
+                    briefGyms.addAll(ArrayUtil.Array2List(data.briefGyms));
+
+                    if (data.maxCountPerPage > data.briefGyms.length){
+                        gymItemAdapter.setCannotLoadingMore();
+                    }
+
+                    if(data.briefGyms.length > 0) {
+                        gymItemAdapter.notifyItemRangeInserted(lastSize + gymItemAdapter.headViews.size(), data.briefGyms.length);
+                    }
+                    gymItemAdapter.setLoadingMore(false);
+                    pageIndex ++;
                     break;
                 default:
                     break;

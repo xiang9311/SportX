@@ -34,6 +34,7 @@ public class GetMyFensiThread extends  Thread{
         params.userId = userId;
 
         byte[] result = RequestUtil.postWithProtobuf(request, UrlUtil.URL_GET_USER_FENSI, cmdid, currentMills);
+        mHandler.sendDisMissProgress();
         if (null != result){
             // 加载成功
             try{
@@ -43,7 +44,11 @@ public class GetMyFensiThread extends  Thread{
                     if(response.common.code == 0){
                         Message msg = Message.obtain();
                         msg.what = BaseHandler.KEY_GET_FENSI_SUC;
-                        msg.obj = response.data.briefUsers;
+                        try{
+                            msg.obj = response.data.briefUsers;
+                        } catch (NullPointerException e){
+                            msg.obj = new Common.BriefUser[0];
+                        }
                         mHandler.sendMessage(msg);
                     } else{
                         // code is not 0, find error

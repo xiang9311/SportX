@@ -13,7 +13,6 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.wefika.flowlayout.FlowLayout;
-import com.xiang.Util.GymIconUtil;
 import com.xiang.factory.DisplayOptionsFactory;
 import com.xiang.listener.OnRclViewItemClickListener;
 import com.xiang.proto.nano.Common;
@@ -51,7 +50,6 @@ public class GymItemAdapter extends BaseRecyclerAdapter<GymItemAdapter.MyViewHol
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Log.d("onCreateViewHolder", "onCreateViewHolder" +viewType);
         View view = getHeadOrFootViewByType(viewType);
 
         if(view != null){
@@ -84,21 +82,21 @@ public class GymItemAdapter extends BaseRecyclerAdapter<GymItemAdapter.MyViewHol
         });
 
         holder.flowLayout.removeAllViews();
-        for (int i = 0; i < briefGym.equipments.length; i ++){
-            View iconView = LayoutInflater.from(context).inflate(R.layout.view_equment_icon, null);
-            ImageView imageView = (ImageView) iconView.findViewById(R.id.iv_icon);
-            imageView.setImageDrawable(context.getResources().getDrawable(GymIconUtil.getIconId(briefGym.equipments[i].equipmentType)));
-            int size = (int) context.getResources().getDimension(R.dimen.gym_equipment_icon);
-            FlowLayout.LayoutParams layoutParams = new FlowLayout.LayoutParams(size, size);
-            if(i != 0){
-                layoutParams.leftMargin = 5;
-            }
-            holder.flowLayout.addView(iconView, layoutParams);
-        }
+//        for (int i = 0; i < briefGym.equipments.length; i ++){
+//            View iconView = LayoutInflater.from(context).inflate(R.layout.view_equment_icon, null);
+//            ImageView imageView = (ImageView) iconView.findViewById(R.id.iv_icon);
+//            imageView.setImageDrawable(context.getResources().getDrawable(GymIconUtil.getIconId(briefGym.equipments[i].equipmentType)));
+//            int size = (int) context.getResources().getDimension(R.dimen.gym_equipment_icon);
+//            FlowLayout.LayoutParams layoutParams = new FlowLayout.LayoutParams(size, size);
+//            if(i != 0){
+//                layoutParams.leftMargin = 5;
+//            }
+//            holder.flowLayout.addView(iconView, layoutParams);
+//        }
 
-        for (int i = 0; i < holder.imageViews.length && i < briefGym.gymCover.length; i ++){
-            imageLoader.displayImage(briefGym.gymCover[i], holder.imageViews[i]);
-        }
+//        for (int i = 0; i < holder.imageViews.length && i < briefGym.gymCover.length; i ++){
+//            imageLoader.displayImage(briefGym.gymCover[i], holder.imageViews[i]);
+//        }
 
     }
 

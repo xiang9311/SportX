@@ -3,7 +3,6 @@ package com.xiang.Util;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Point;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -36,25 +35,34 @@ public class ViewUtil {
     }
 
     /**
-     * 根据屏幕的宽度，和bitmap的高宽，设置view的高度
+     * 根据屏幕宽度和边距 计算出剩余图片可以显示的大小
+     *
      * @param context
      * @param bitmap
      * @param view
-     * @param maxWidthDp dp值
+     * @param usedSize
      */
-    public static final void setViewHeightByWidth(Context context, Bitmap bitmap, View view, float maxWidthDp){
+    public static final void setViewSizeByUsedWidth(Context context, Bitmap bitmap, View view, float usedSize){
 
-        int maxWidth = (int) maxWidthDp;
+        int windowWidth = getWindowWidth(context);
+        int lastWidth = (int) (windowWidth - usedSize);
 
-        if (bitmap.getWidth() < maxWidth){
-            maxWidth = bitmap.getWidth();
+        float viewWidth = lastWidth * 0.9f;
+
+        if (bitmap.getWidth() < viewWidth){
+            viewWidth = bitmap.getWidth();
         }
 
-        int viewHeight = maxWidth * bitmap.getHeight() / bitmap.getWidth();
+        float viewHeight = viewWidth * bitmap.getHeight() / bitmap.getWidth();
+
+        if(viewHeight > lastWidth){        // 如果viewheight过高，则限制高度为lastWidth， 并重新计算kuandu
+            viewHeight = lastWidth;
+            viewWidth = viewHeight * bitmap.getWidth() / bitmap.getHeight();
+        }
 
         ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
-        layoutParams.height = viewHeight;
-        layoutParams.width = maxWidth;
+        layoutParams.height = (int) viewHeight;
+        layoutParams.width = (int) viewWidth;
 
         view.setLayoutParams(layoutParams);
     }
@@ -115,8 +123,8 @@ public class ViewUtil {
     /**
      * 将px值转换为sp值，保证文字大小不变
      *
+     * @param context
      * @param pxValue
-     * @param fontScale
      *            （DisplayMetrics类中属性scaledDensity）
      * @return
      */

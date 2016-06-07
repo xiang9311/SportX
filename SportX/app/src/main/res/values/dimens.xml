@@ -48,6 +48,8 @@
     <dimen name="trend_upload_size">65dp</dimen>
     <dimen name="trend_iv_margin">5dp</dimen>
 
+    <dimen name="used_size_of_trend">80dp</dimen> <!-- trend中确定使用了的尺寸大小 边距， 头像大小-->
+
     <dimen name="gym_intro_icon_size">31dp</dimen>
 
     <dimen name="banner_height">130dp</dimen>

@@ -6562,4 +6562,385 @@ public interface Pilot {
       return new Response10017().mergeFrom(input);
     }
   }
+
+  public static final class Request10018 extends
+      com.google.protobuf.nano.MessageNano {
+
+    public static final class Params extends
+        com.google.protobuf.nano.MessageNano {
+
+      private static volatile Params[] _emptyArray;
+      public static Params[] emptyArray() {
+        // Lazily initializes the empty array
+        if (_emptyArray == null) {
+          synchronized (
+              com.google.protobuf.nano.InternalNano.LAZY_INIT_LOCK) {
+            if (_emptyArray == null) {
+              _emptyArray = new Params[0];
+            }
+          }
+        }
+        return _emptyArray;
+      }
+
+      // optional int32 userId = 1;
+      public int userId;
+
+      public Params() {
+        clear();
+      }
+
+      public Params clear() {
+        userId = 0;
+        cachedSize = -1;
+        return this;
+      }
+
+      @Override
+      public void writeTo(com.google.protobuf.nano.CodedOutputByteBufferNano output)
+          throws java.io.IOException {
+        if (this.userId != 0) {
+          output.writeInt32(1, this.userId);
+        }
+        super.writeTo(output);
+      }
+
+      @Override
+      protected int computeSerializedSize() {
+        int size = super.computeSerializedSize();
+        if (this.userId != 0) {
+          size += com.google.protobuf.nano.CodedOutputByteBufferNano
+              .computeInt32Size(1, this.userId);
+        }
+        return size;
+      }
+
+      @Override
+      public Params mergeFrom(
+              com.google.protobuf.nano.CodedInputByteBufferNano input)
+          throws java.io.IOException {
+        while (true) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              return this;
+            default: {
+              if (!com.google.protobuf.nano.WireFormatNano.parseUnknownField(input, tag)) {
+                return this;
+              }
+              break;
+            }
+            case 8: {
+              this.userId = input.readInt32();
+              break;
+            }
+          }
+        }
+      }
+
+      public static Params parseFrom(byte[] data)
+          throws com.google.protobuf.nano.InvalidProtocolBufferNanoException {
+        return com.google.protobuf.nano.MessageNano.mergeFrom(new Params(), data);
+      }
+
+      public static Params parseFrom(
+              com.google.protobuf.nano.CodedInputByteBufferNano input)
+          throws java.io.IOException {
+        return new Params().mergeFrom(input);
+      }
+    }
+
+    private static volatile Request10018[] _emptyArray;
+    public static Request10018[] emptyArray() {
+      // Lazily initializes the empty array
+      if (_emptyArray == null) {
+        synchronized (
+            com.google.protobuf.nano.InternalNano.LAZY_INIT_LOCK) {
+          if (_emptyArray == null) {
+            _emptyArray = new Request10018[0];
+          }
+        }
+      }
+      return _emptyArray;
+    }
+
+    // optional .com.xiang.proto.RequestCommon common = 1;
+    public com.xiang.proto.nano.Common.RequestCommon common;
+
+    // optional .com.xiang.proto.pilot.Request10018.Params params = 2;
+    public Params params;
+
+    public Request10018() {
+      clear();
+    }
+
+    public Request10018 clear() {
+      common = null;
+      params = null;
+      cachedSize = -1;
+      return this;
+    }
+
+    @Override
+    public void writeTo(com.google.protobuf.nano.CodedOutputByteBufferNano output)
+        throws java.io.IOException {
+      if (this.common != null) {
+        output.writeMessage(1, this.common);
+      }
+      if (this.params != null) {
+        output.writeMessage(2, this.params);
+      }
+      super.writeTo(output);
+    }
+
+    @Override
+    protected int computeSerializedSize() {
+      int size = super.computeSerializedSize();
+      if (this.common != null) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+          .computeMessageSize(1, this.common);
+      }
+      if (this.params != null) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+          .computeMessageSize(2, this.params);
+      }
+      return size;
+    }
+
+    @Override
+    public Request10018 mergeFrom(
+            com.google.protobuf.nano.CodedInputByteBufferNano input)
+        throws java.io.IOException {
+      while (true) {
+        int tag = input.readTag();
+        switch (tag) {
+          case 0:
+            return this;
+          default: {
+            if (!com.google.protobuf.nano.WireFormatNano.parseUnknownField(input, tag)) {
+              return this;
+            }
+            break;
+          }
+          case 10: {
+            if (this.common == null) {
+              this.common = new com.xiang.proto.nano.Common.RequestCommon();
+            }
+            input.readMessage(this.common);
+            break;
+          }
+          case 18: {
+            if (this.params == null) {
+              this.params = new Params();
+            }
+            input.readMessage(this.params);
+            break;
+          }
+        }
+      }
+    }
+
+    public static Request10018 parseFrom(byte[] data)
+        throws com.google.protobuf.nano.InvalidProtocolBufferNanoException {
+      return com.google.protobuf.nano.MessageNano.mergeFrom(new Request10018(), data);
+    }
+
+    public static Request10018 parseFrom(
+            com.google.protobuf.nano.CodedInputByteBufferNano input)
+        throws java.io.IOException {
+      return new Request10018().mergeFrom(input);
+    }
+  }
+
+  public static final class Response10018 extends
+      com.google.protobuf.nano.MessageNano {
+
+    public static final class Data extends
+        com.google.protobuf.nano.MessageNano {
+
+      private static volatile Data[] _emptyArray;
+      public static Data[] emptyArray() {
+        // Lazily initializes the empty array
+        if (_emptyArray == null) {
+          synchronized (
+              com.google.protobuf.nano.InternalNano.LAZY_INIT_LOCK) {
+            if (_emptyArray == null) {
+              _emptyArray = new Data[0];
+            }
+          }
+        }
+        return _emptyArray;
+      }
+
+      // optional .com.xiang.proto.BriefUser briefUser = 1;
+      public com.xiang.proto.nano.Common.BriefUser briefUser;
+
+      public Data() {
+        clear();
+      }
+
+      public Data clear() {
+        briefUser = null;
+        cachedSize = -1;
+        return this;
+      }
+
+      @Override
+      public void writeTo(com.google.protobuf.nano.CodedOutputByteBufferNano output)
+          throws java.io.IOException {
+        if (this.briefUser != null) {
+          output.writeMessage(1, this.briefUser);
+        }
+        super.writeTo(output);
+      }
+
+      @Override
+      protected int computeSerializedSize() {
+        int size = super.computeSerializedSize();
+        if (this.briefUser != null) {
+          size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeMessageSize(1, this.briefUser);
+        }
+        return size;
+      }
+
+      @Override
+      public Data mergeFrom(
+              com.google.protobuf.nano.CodedInputByteBufferNano input)
+          throws java.io.IOException {
+        while (true) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              return this;
+            default: {
+              if (!com.google.protobuf.nano.WireFormatNano.parseUnknownField(input, tag)) {
+                return this;
+              }
+              break;
+            }
+            case 10: {
+              if (this.briefUser == null) {
+                this.briefUser = new com.xiang.proto.nano.Common.BriefUser();
+              }
+              input.readMessage(this.briefUser);
+              break;
+            }
+          }
+        }
+      }
+
+      public static Data parseFrom(byte[] data)
+          throws com.google.protobuf.nano.InvalidProtocolBufferNanoException {
+        return com.google.protobuf.nano.MessageNano.mergeFrom(new Data(), data);
+      }
+
+      public static Data parseFrom(
+              com.google.protobuf.nano.CodedInputByteBufferNano input)
+          throws java.io.IOException {
+        return new Data().mergeFrom(input);
+      }
+    }
+
+    private static volatile Response10018[] _emptyArray;
+    public static Response10018[] emptyArray() {
+      // Lazily initializes the empty array
+      if (_emptyArray == null) {
+        synchronized (
+            com.google.protobuf.nano.InternalNano.LAZY_INIT_LOCK) {
+          if (_emptyArray == null) {
+            _emptyArray = new Response10018[0];
+          }
+        }
+      }
+      return _emptyArray;
+    }
+
+    // optional .com.xiang.proto.ResponseCommon common = 1;
+    public com.xiang.proto.nano.Common.ResponseCommon common;
+
+    // optional .com.xiang.proto.pilot.Response10018.Data data = 2;
+    public Data data;
+
+    public Response10018() {
+      clear();
+    }
+
+    public Response10018 clear() {
+      common = null;
+      data = null;
+      cachedSize = -1;
+      return this;
+    }
+
+    @Override
+    public void writeTo(com.google.protobuf.nano.CodedOutputByteBufferNano output)
+        throws java.io.IOException {
+      if (this.common != null) {
+        output.writeMessage(1, this.common);
+      }
+      if (this.data != null) {
+        output.writeMessage(2, this.data);
+      }
+      super.writeTo(output);
+    }
+
+    @Override
+    protected int computeSerializedSize() {
+      int size = super.computeSerializedSize();
+      if (this.common != null) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+          .computeMessageSize(1, this.common);
+      }
+      if (this.data != null) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+          .computeMessageSize(2, this.data);
+      }
+      return size;
+    }
+
+    @Override
+    public Response10018 mergeFrom(
+            com.google.protobuf.nano.CodedInputByteBufferNano input)
+        throws java.io.IOException {
+      while (true) {
+        int tag = input.readTag();
+        switch (tag) {
+          case 0:
+            return this;
+          default: {
+            if (!com.google.protobuf.nano.WireFormatNano.parseUnknownField(input, tag)) {
+              return this;
+            }
+            break;
+          }
+          case 10: {
+            if (this.common == null) {
+              this.common = new com.xiang.proto.nano.Common.ResponseCommon();
+            }
+            input.readMessage(this.common);
+            break;
+          }
+          case 18: {
+            if (this.data == null) {
+              this.data = new Data();
+            }
+            input.readMessage(this.data);
+            break;
+          }
+        }
+      }
+    }
+
+    public static Response10018 parseFrom(byte[] data)
+        throws com.google.protobuf.nano.InvalidProtocolBufferNanoException {
+      return com.google.protobuf.nano.MessageNano.mergeFrom(new Response10018(), data);
+    }
+
+    public static Response10018 parseFrom(
+            com.google.protobuf.nano.CodedInputByteBufferNano input)
+        throws java.io.IOException {
+      return new Response10018().mergeFrom(input);
+    }
+  }
 }

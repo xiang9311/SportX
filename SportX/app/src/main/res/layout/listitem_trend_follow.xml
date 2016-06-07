@@ -28,11 +28,12 @@
 
             <TextView
                 android:id="@+id/tv_username"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
+                android:background="@drawable/selector_white_to_gray"
                 style="@style/text_user_name_in_follow"
-                android:text="飞天小王子"/>
+                android:text=""/>
 
             <TextView
                 android:id="@+id/tv_content"
@@ -40,16 +41,15 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
                 style="@style/text_content"
-                android:text="内部推荐英文翻译:internal referral…,点击查查权威在线词典详细解释内部推荐英文怎么说,怎么用英语翻译内部推荐,内部推荐的英语例句用法和解释。"/>
+                android:text=""/>
 
             <ImageView
                 android:id="@+id/iv_big"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:maxWidth="@dimen/follow_big_image_max_size"
-                android:visibility="gone"
-                android:scaleType="centerCrop"
+                android:scaleType="fitXY"
                 android:layout_marginTop="3dp"
+                android:adjustViewBounds="true"
                 android:src="@mipmap/image"/>
 
             <GridLayout
@@ -121,14 +121,14 @@
 
             <TextView
                 android:id="@+id/tv_place"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="-4dp"
                 android:textColor="@color/text_high_light"
+                android:background="@drawable/selector_white_to_gray"
                 android:textSize="@dimen/text_smaller"
-                android:text="三里屯乐乐建设房"/>
-
-
+                android:text=""/>
 
             <RelativeLayout
                 android:layout_width="match_parent"

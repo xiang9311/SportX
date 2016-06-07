@@ -77,6 +77,13 @@ public class TrendCommentAdapter extends BaseRecyclerAdapter<TrendCommentAdapter
             }
         });
 
+        holder.tv_username.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SportXIntent.gotoUserDetail(context, comment.briefUser.userId, comment.briefUser.userName);
+            }
+        });
+
         holder.tv_username.setText(comment.briefUser.userName);
 
         holder.rl_parent.setOnClickListener(new View.OnClickListener() {
@@ -110,7 +117,6 @@ public class TrendCommentAdapter extends BaseRecyclerAdapter<TrendCommentAdapter
             PlaceNameSpan placeNameSpan = new PlaceNameSpan(context, new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    Snackbar.make(recyclerView, comment.gymName, Snackbar.LENGTH_SHORT).show();
                     Intent intent = new Intent(context, GymDetailActivity.class);
                     //TODO
                     intent.putExtra(Constant.FROM, Constant.FROM_PLACE_IN_TREND);

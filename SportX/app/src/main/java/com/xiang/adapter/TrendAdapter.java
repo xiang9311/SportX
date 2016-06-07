@@ -2,7 +2,6 @@ package com.xiang.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,8 +13,6 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.xiang.Util.Constant;
 import com.xiang.Util.ImageUtil;
 import com.xiang.Util.SportTimeUtil;
@@ -48,12 +45,22 @@ public class TrendAdapter extends BaseRecyclerAdapter<TrendAdapter.MyViewHolder>
     private DisplayImageOptions avatarOption = DisplayOptionsFactory.createBigAvatarOption(0);
     private DisplayImageOptions imageOptions = DisplayOptionsFactory.createNormalImageOption();
 
+    // data
+    int bigInspactSize;
+    int itemViewInspactSize;
+
     public TrendAdapter(Context context, List<Common.Trend> trends, RecyclerView recyclerView, int from) {
         super(context, trends, recyclerView);
         this.context = context;
         this.trends = trends;
         this.recyclerView = recyclerView;
         this.from = from;
+
+        int windowWidth = ViewUtil.getWindowWidth(context);
+        float usedWidth = context.getResources().getDimension(R.dimen.used_size_of_trend);
+        bigInspactSize = (int) ((windowWidth - usedWidth) * 0.9f);
+        float margin = context.getResources().getDimension(R.dimen.follow_image_margin);
+        itemViewInspactSize = (int) (((windowWidth - usedWidth) * 0.9f - 2 * margin) / 3);        // 占用90%的空间。每行三个
 
     }
 
@@ -75,7 +82,7 @@ public class TrendAdapter extends BaseRecyclerAdapter<TrendAdapter.MyViewHolder>
      * 点赞的监听接口
      */
     public interface OnLikeItemClickListener{
-        public abstract void itemLikeClick(int dataIndex, boolean isLike);
+        public abstract void itemLikeClick(View view, int dataIndex, boolean isLike);
     }
     private OnLikeItemClickListener onLikeItemClickListener;
     public void setOnLikeItemClickListener(OnLikeItemClickListener onLikeItemClickListener) {
@@ -87,10 +94,12 @@ public class TrendAdapter extends BaseRecyclerAdapter<TrendAdapter.MyViewHolder>
      * @param dataIndex 数据的index，不是view的index
      */
     public void notifyItemLikeChanged(int dataIndex){
+
         MyViewHolder holder = (MyViewHolder) recyclerView.findViewHolderForAdapterPosition(dataIndex + headViews.size());
         if (holder == null){
             return ;
         }
+        holder.iv_like.setEnabled(true);  // 点击后会设置enable为false，在notify change后需要设置为true
         Common.Trend trend = trends.get(dataIndex);
         if(trend.isLiked){
             holder.iv_like.setImageDrawable(context.getResources().getDrawable(R.mipmap.liked));
@@ -147,6 +156,16 @@ public class TrendAdapter extends BaseRecyclerAdapter<TrendAdapter.MyViewHolder>
             holder.gv_images.setVisibility(View.GONE);
         }
 
+        for (int i =0; i < holder.iv_images.length; i ++){
+            GridLayout.LayoutParams layoutParams = (GridLayout.LayoutParams) holder.iv_images[i].getLayoutParams();
+            layoutParams.width = itemViewInspactSize;
+            layoutParams.height = itemViewInspactSize;
+            holder.iv_images[i].setLayoutParams(layoutParams);
+        }
+
+        holder.iv_big.setMaxWidth(bigInspactSize);
+        holder.iv_big.setMaxHeight(bigInspactSize);
+
         return holder;
     }
 
@@ -189,6 +208,13 @@ public class TrendAdapter extends BaseRecyclerAdapter<TrendAdapter.MyViewHolder>
             }
         });
 
+        holder.tv_username.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SportXIntent.gotoUserDetail(context, trend.briefUser.userId, trend.briefUser.userName);
+            }
+        });
+
         imageLoader.displayImage(trend.briefUser.userAvatar, holder.iv_avatar, avatarOption);
 
         if (trend.imgs.length > 1){
@@ -208,28 +234,31 @@ public class TrendAdapter extends BaseRecyclerAdapter<TrendAdapter.MyViewHolder>
             }
 
         } else if (trend.imgs.length == 1){
-            imageLoader.loadImage(trend.imgs[0], new ImageLoadingListener() {
-                @Override
-                public void onLoadingStarted(String s, View view) {
-
-                }
-
-                @Override
-                public void onLoadingFailed(String s, View view, FailReason failReason) {
-
-                }
-
-                @Override
-                public void onLoadingComplete(String s, View view, Bitmap bitmap) {
-                    ViewUtil.setViewHeightByWidth(context, bitmap, holder.iv_big, context.getResources().getDimension(R.dimen.follow_big_image_max_size));
-                    holder.iv_big.setImageBitmap(bitmap);
-                }
-
-                @Override
-                public void onLoadingCancelled(String s, View view) {
-
-                }
-            });
+            imageLoader.displayImage(trend.imgs[0], holder.iv_big, imageOptions);
+//            imageLoader.loadImage(trend.imgs[0], new ImageLoadingListener() {
+//                @Override
+//                public void onLoadingStarted(String s, View view) {
+//
+//                }
+//
+//                @Override
+//                public void onLoadingFailed(String s, View view, FailReason failReason) {
+//
+//                }
+//
+//                @Override
+//                public void onLoadingComplete(String s, View view, Bitmap bitmap) {
+//                    ViewUtil.setViewSizeByUsedWidth(context, bitmap, holder.iv_big,
+//                            context.getResources().getDimension(R.dimen.used_size_of_trend)
+//                    );
+//                    holder.iv_big.setImageBitmap(bitmap);
+//                }
+//
+//                @Override
+//                public void onLoadingCancelled(String s, View view) {
+//
+//                }
+//            });
             holder.iv_big.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -253,7 +282,7 @@ public class TrendAdapter extends BaseRecyclerAdapter<TrendAdapter.MyViewHolder>
             @Override
             public void onClick(View v) {
                 if (onLikeItemClickListener != null){
-                    onLikeItemClickListener.itemLikeClick(position - headViews.size(), !trend.isLiked);
+                    onLikeItemClickListener.itemLikeClick(v, position - headViews.size(), !trend.isLiked);
                 }
             }
         });
@@ -273,19 +302,19 @@ public class TrendAdapter extends BaseRecyclerAdapter<TrendAdapter.MyViewHolder>
 
     class MyViewHolder extends RecyclerView.ViewHolder{
 
-        private ImageView iv_avatar;
-        private TextView tv_username;
-        private TextView tv_content;
-        private ImageView iv_big;         // 单张 大图
-        private ImageView iv_images[];  // 最多9张的小图
-        private TextView tv_place;
-        private TextView tv_time;
+        public ImageView iv_avatar;
+        public TextView tv_username;
+        public TextView tv_content;
+        public ImageView iv_big;         // 单张 大图
+        public ImageView iv_images[];  // 最多9张的小图
+        public TextView tv_place;
+        public TextView tv_time;
 
-        private ImageView iv_comment, iv_like;
-        private TextView tv_comment_count, tv_like_count;
+        public ImageView iv_comment, iv_like;
+        public TextView tv_comment_count, tv_like_count;
 
-        private GridLayout gv_images;
-        private RelativeLayout rl_parent;
+        public GridLayout gv_images;
+        public RelativeLayout rl_parent;
 
         public MyViewHolder(View itemView) {
             super(itemView);

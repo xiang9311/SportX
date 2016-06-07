@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/text_part_title"
+        android:layout_marginLeft="@dimen/padding_lr"
+        android:layout_marginRight="@dimen/padding_lr"
+        android:layout_marginTop="5dp"
+        android:text="常用"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:layout_marginLeft="@dimen/padding_lr"
+        android:layout_marginRight="@dimen/padding_lr"
+        android:clickable="true"
+        android:background="@drawable/selector_white_to_gray"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:layout_below="@+id/textView1">
+
+        <ImageView
+            android:id="@+id/iv_gym_avatar"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/image"/>
+
+        <TextView
+            android:id="@+id/tv_gym_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/iv_gym_avatar"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="1dp"
+            android:textColor="@color/text_high_light"
+            android:textSize="@dimen/text_normal"
+            android:text="名字呀"/>
+
+        <ImageView
+            android:id="@+id/iv_icon0"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:padding="2dp"
+            android:layout_alignLeft="@+id/tv_gym_name"
+            android:layout_below="@+id/tv_gym_name"
+            android:layout_marginTop="4dp"
+            android:src="@mipmap/renqi"/>
+
+        <TextView
+            android:id="@+id/tv_renqi"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:gravity="center"
+            android:layout_alignTop="@+id/iv_icon0"
+            android:layout_toRightOf="@+id/iv_icon0"
+            android:layout_marginLeft="3dp"
+            android:text="10000"/>
+
+        <ImageView
+            android:id="@+id/iv_icon1"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:padding="2dp"
+            android:layout_alignTop="@+id/iv_icon0"
+            android:layout_toRightOf="@+id/tv_renqi"
+            android:layout_marginLeft="10dp"
+            android:src="@mipmap/trends"/>
+
+        <TextView
+            android:id="@+id/tv_trend_count"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:gravity="center"
+            android:layout_alignTop="@+id/iv_icon0"
+            android:layout_toRightOf="@+id/iv_icon1"
+            android:layout_marginLeft="3dp"
+            android:text="10000"/>
+
+        <TextView
+            android:id="@+id/tv_equipment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/iv_icon0"
+            android:layout_alignLeft="@+id/iv_icon0"
+            android:layout_marginTop="2dp"
+            android:textSize="@dimen/text_small"
+            android:maxLength="2"
+            android:ellipsize="end"
+            android:text="器材齐全"/>
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rl_content"
+        style="@style/text_part_title"
+        android:layout_marginLeft="@dimen/padding_lr"
+        android:layout_marginRight="@dimen/padding_lr"
+        android:layout_marginTop="5dp"
+        android:text="附近朋友"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_user_in_gym"
+        android:layout_width="match_parent"
+        android:layout_below="@+id/textView"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/padding_lr"
+        android:layout_marginRight="@dimen/padding_lr"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="2dp">
+
+    </android.support.v7.widget.RecyclerView>
+
+    <View
+        android:id="@+id/view_0"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:layout_below="@+id/rv_user_in_gym"
+        android:background="@color/lightestGray"/>
+
+    <TextView
+        android:id="@+id/textView0"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/view_0"
+        style="@style/text_part_title"
+        android:layout_marginLeft="@dimen/padding_lr"
+        android:layout_marginRight="@dimen/padding_lr"
+        android:layout_marginTop="5dp"
+        android:text="附近场馆"/>
+
+</RelativeLayout>

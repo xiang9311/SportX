@@ -39,6 +39,7 @@ public class GetTrendThread extends Thread {
         params.userId = userId;
         
         byte[] result = RequestUtil.postWithProtobuf(request, UrlUtil.URL_GET_TRENDS, cmdid, currentMills);
+        mHandler.sendDisMissProgress();
         if (null != result){
             // 加载成功
             try{

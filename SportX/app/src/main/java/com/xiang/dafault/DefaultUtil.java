@@ -101,11 +101,11 @@ public class DefaultUtil {
             gym.id = 0;
             gym.gymName = name[getRandom(6)];
             gym.gymAvatar = gymcover[getRandom(3)];
-            gym.gymCover = new String[]{gymcover[getRandom(3)], gymcover[getRandom(3)], gymcover[getRandom(3)]
-                    , gymcover[getRandom(3)], gymcover[getRandom(3)], gymcover[getRandom(3)]};
+            gym.gymCover = gymcover[getRandom(3)];
             gym.place = "海淀区海淀黄庄4号楼2503";
-            gym.isCoop = getRandom(2) == 1;
-            gym.equipments = getEquipments(6);
+            gym.eqm = "器材全新 游泳池 瑜伽房";
+//            gym.isCoop = getRandom(2) == 1;
+//            gym.equipments = getEquipments(6);
             gyms.add(gym);
         }
         return gyms;
@@ -122,8 +122,8 @@ public class DefaultUtil {
     public static Common.DetailGym getDetailGym(){
         Common.DetailGym detailGym = new Common.DetailGym();
         detailGym.briefGym = getGyms(1).get(0);
-        detailGym.courses = getCourse(4);
-        detailGym.gymCards = getGymCard(3);
+        detailGym.courses = "瑜伽课 舞蹈课 街舞课 游泳课";
+        detailGym.gymCards = "价格：100 美团价：80";
         return detailGym;
     }
 

@@ -5,4 +5,5 @@ package com.xiang.database.common;
  */
 public class DataBaseCommon {
     public static final String DATABASE_USER = "db_user";
+    public static final String DATABASE_HISTORY_KEYWORD = "db_history_keyword";
 }

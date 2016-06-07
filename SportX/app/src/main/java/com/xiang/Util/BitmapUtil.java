@@ -20,11 +20,20 @@ import java.io.ByteArrayOutputStream;
  */
 public class BitmapUtil {
 
-    public static Bitmap getCompressedImage(Context context, Uri uri, boolean small) {
-        return getCompressedImage(getImagePathByUri(context, uri), small);
+    /**
+     *
+     * @param context
+     * @param uri
+     * @param small 只要是小图，就会压缩质量
+     * @param quality
+     * @param noCompressWhenTooSmall    true 如果不是小图，则当图片比较小时不用压缩质量
+     * @return
+     */
+    public static Bitmap getCompressedImage(Context context, Uri uri, boolean small, int quality, boolean noCompressWhenTooSmall) {
+        return getCompressedImage(getImagePathByUri(context, uri), small, quality, noCompressWhenTooSmall);
     }
 
-    public static Bitmap getCompressedImage(String srcPath, boolean small) {
+    public static Bitmap getCompressedImage(String srcPath, boolean small, int quality, boolean noCompressWhenTooSmall) {
         BitmapFactory.Options newOpts = new BitmapFactory.Options();
         //开始读入图片，此时把options.inJustDecodeBounds 设回true了
         newOpts.inJustDecodeBounds = true;
@@ -52,12 +61,21 @@ public class BitmapUtil {
         newOpts.inSampleSize = be;//设置缩放比例
         //重新读入图片，注意此时已经把options.inJustDecodeBounds 设回false了
         bitmap = BitmapFactory.decodeFile(srcPath, newOpts);
-        return compressImage(bitmap);//压缩好比例大小后再进行质量压缩
+
+        if(small) {
+            return compressImage(bitmap, quality);//压缩好比例大小后再进行质量压缩
+        } else{
+            if ( (bitmap.getHeight() * bitmap.getWidth()) < 400000 && noCompressWhenTooSmall){
+                return bitmap;
+            } else{
+                return compressImage(bitmap, quality);//压缩好比例大小后再进行质量压缩
+            }
+        }
     }
 
-    private static Bitmap compressImage(Bitmap image) {
+    private static Bitmap compressImage(Bitmap image, int quality) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.JPEG, 80, baos);//质量压缩方法，这里100表示不压缩，把压缩后的数据存放到baos中
+        image.compress(Bitmap.CompressFormat.JPEG, quality, baos);//质量压缩方法，这里100表示不压缩，把压缩后的数据存放到baos中
         int options = 100;
         while ( baos.toByteArray().length / 1024>100) {    //循环判断如果压缩后图片是否大于100kb,大于继续压缩
             baos.reset();//重置baos即清空baos

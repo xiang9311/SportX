@@ -83,7 +83,7 @@
             android:layout_toRightOf="@+id/iv_0"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
-            android:text="选择我的位置"/>
+            android:text="选择我的位置 （可以获取更多关注哦）"/>
 
     </RelativeLayout>
 

@@ -27,7 +27,7 @@
         app:met_floatingLabelText="用户名"
         android:hint="用户名"
         app:met_primaryColor="@color/main_color"
-        app:met_maxCharacters="20"/>
+        app:met_maxCharacters="15"/>
 
     <com.rengwuxian.materialedittext.MaterialEditText
         android:id="@+id/et_password"

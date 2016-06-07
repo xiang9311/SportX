@@ -6,10 +6,13 @@ import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.TextView;
 
 import com.xiang.Util.ArrayUtil;
 import com.xiang.Util.Constant;
 import com.xiang.Util.UserInfoUtil;
+import com.xiang.Util.UserStatic;
 import com.xiang.adapter.UserItemAdapter;
 import com.xiang.base.BaseHandler;
 import com.xiang.database.helper.BriefUserHelper;
@@ -25,6 +28,7 @@ public class UserListActivity extends BaseAppCompatActivity {
 
     private MyTitleBar myTitleBar;
     private RecyclerView recyclerView;
+    private TextView tv_empty;
 
     // adapter
     private UserItemAdapter userItemAdapter;
@@ -49,6 +53,7 @@ public class UserListActivity extends BaseAppCompatActivity {
 
         myTitleBar = (MyTitleBar) findViewById(R.id.titleBar);
         recyclerView = (RecyclerView) findViewById(R.id.rv_users);
+        tv_empty = (TextView) findViewById(R.id.tv_empty);
     }
 
     @Override
@@ -79,6 +84,8 @@ public class UserListActivity extends BaseAppCompatActivity {
 
         mHandler = new MyHandler(this, null);
 
+        showProgress("", true);
+
         if (findWhat == Constant.FIND_FENSI){
             new GetMyFensiThread(mHandler, relatedUserId).start();
         } else{
@@ -100,6 +107,16 @@ public class UserListActivity extends BaseAppCompatActivity {
                 case KEY_GET_FENSI_SUC:
                 case KEY_GET_GUANZHU_SUC:
                     Common.BriefUser[] briefUsers = (Common.BriefUser[]) msg.obj;
+
+                    if (briefUsers == null || briefUsers.length == 0){
+                        StringBuilder sb = new StringBuilder();
+                        sb.append( (relatedUserId == UserStatic.userId) ? "我" : username);
+                        sb.append("还没有");
+                        sb.append((findWhat == Constant.FIND_FENSI) ? "粉丝" : "关注");
+                        tv_empty.setText(sb.toString());
+                        tv_empty.setVisibility(View.VISIBLE);
+                    }
+
                     briefUserList.addAll(ArrayUtil.Array2List(briefUsers));
                     userItemAdapter.notifyDataSetChanged();
 

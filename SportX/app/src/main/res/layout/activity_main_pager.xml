@@ -174,7 +174,7 @@
                     android:gravity="center"
                     android:layout_below="@+id/iv_3"
                     style="@style/main_tab_bottom_tv"
-                    android:text="发现"/>
+                    android:text="我"/>
 
             </RelativeLayout>
 

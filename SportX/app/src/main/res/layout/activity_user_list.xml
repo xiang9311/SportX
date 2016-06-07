@@ -21,4 +21,16 @@
 
     </android.support.v7.widget.RecyclerView>
 
+    <TextView
+        android:id="@+id/tv_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/titleBar"
+        android:padding="8dp"
+        android:visibility="gone"
+        android:textColor="@color/text_lighter"
+        android:textSize="@dimen/text_big"
+        android:gravity="center"
+        android:text="空"/>
+
 </RelativeLayout>

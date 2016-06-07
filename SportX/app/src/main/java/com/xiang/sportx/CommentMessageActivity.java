@@ -113,6 +113,7 @@ public class CommentMessageActivity extends BaseAppCompatActivity {
 
         mHandler = new MyHandler(this, null);
 
+        showProgress("", true);
         new GetCommentMessageThread().start();
     }
 
@@ -170,6 +171,7 @@ public class CommentMessageActivity extends BaseAppCompatActivity {
             params.pageIndex = pageIndex;
 
             byte[] result = RequestUtil.postWithProtobuf(request, UrlUtil.URL_GET_MY_COMMENT_MESSAGE, cmdid, currentMills);
+            mHandler.sendDisMissProgress();
             if (null != result){
                 // 加载成功
                 try{

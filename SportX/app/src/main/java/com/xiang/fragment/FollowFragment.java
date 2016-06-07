@@ -25,6 +25,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.xiang.Util.ArrayUtil;
 import com.xiang.Util.Constant;
+import com.xiang.Util.SportTimeUtil;
 import com.xiang.adapter.TrendAdapter;
 import com.xiang.base.BaseHandler;
 import com.xiang.dafault.DefaultUtil;
@@ -66,6 +67,8 @@ public class FollowFragment extends BaseFragment implements SwipeRefreshLayout.O
     private int maxCountPerPage_trend = 0;
 
     private boolean canLoadingMoreTrend = false;
+    private long lastRefreshTime = 0;
+    private final long RefreshIntervalTime = SportTimeUtil.HALF_HOUR;
 
     // tools
     private ImageLoader imageLoader = ImageLoader.getInstance();
@@ -87,6 +90,8 @@ public class FollowFragment extends BaseFragment implements SwipeRefreshLayout.O
 
         mHandler = new MyHandler(getContext(), swipeRefreshLayout);
         new GetFollowTrendThread().start();
+
+        lastRefreshTime = System.currentTimeMillis();
 
         //TODO 未登录的话获取推荐的trend
     }
@@ -144,12 +149,40 @@ public class FollowFragment extends BaseFragment implements SwipeRefreshLayout.O
         Log.d("onActivityCreated", "onActivityCreated");
     }
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+
+        if (isVisibleToUser && needRefresh()){
+            try {
+                swipeRefreshLayout.setRefreshing(true);
+                this.onRefresh();
+            } catch (Exception e){
+
+            }
+        }
+    }
+
+    private boolean needRefresh(){
+        if (System.currentTimeMillis() - lastRefreshTime > RefreshIntervalTime){
+            return true;
+        }
+        return false;
+    }
+
     private boolean initTrend() {
         trendAdapter = new TrendAdapter(getContext(), trendList, rv_trend, Constant.FROM_FOLLOW);
         trendAdapter.setOnLikeItemClickListener(new TrendAdapter.OnLikeItemClickListener() {
             @Override
-            public void itemLikeClick(int dataIndex, boolean isLike) {
+            public void itemLikeClick(final View view, int dataIndex, boolean isLike) {
+                view.setEnabled(false);
                 new LikeTrendThread(mHandler, trendList.get(dataIndex).id, isLike, dataIndex).start();
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        view.setEnabled(true);
+                    }
+                },10000);
             }
         });
 
@@ -204,6 +237,7 @@ public class FollowFragment extends BaseFragment implements SwipeRefreshLayout.O
     @Override
     public void onRefresh() {
         addMoreTrend = false;
+        lastRefreshTime = System.currentTimeMillis();
         trendPageIndex = 0;
         new GetFollowTrendThread().start();
     }
@@ -376,17 +410,6 @@ public class FollowFragment extends BaseFragment implements SwipeRefreshLayout.O
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d("onCreate", "onCreate");
-    }
-
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser){
-            SharedPreferences sp = getContext().getSharedPreferences(Constant.SP_DATA, Context.MODE_PRIVATE);
-            if (sp.getBoolean(Constant.SP_NEW_COMMENT_MESSAGE, false)){
-                notifyNewComment();
-            }
-        }
     }
 
     public void notifyNewComment(){

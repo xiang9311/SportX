@@ -106,6 +106,7 @@ public class BriefUserHelper extends SQLiteOpenHelper {
                     , cursor.getString(1)
                     , cursor.getString(2));
         }
+        cursor.close();
         return tblBriefUser;
     }
 }

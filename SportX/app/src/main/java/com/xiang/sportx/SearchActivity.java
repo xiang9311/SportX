@@ -2,25 +2,27 @@ package com.xiang.sportx;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.ImageView;
+import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.rengwuxian.materialedittext.MaterialEditText;
+import com.wefika.flowlayout.FlowLayout;
 import com.xiang.Util.ArrayUtil;
-import com.xiang.Util.Constant;
 import com.xiang.Util.SportXIntent;
 import com.xiang.Util.UserInfoUtil;
+import com.xiang.Util.ViewUtil;
+import com.xiang.Util.WindowUtil;
 import com.xiang.adapter.GymItemAdapter;
 import com.xiang.adapter.HotKeywordsAdapter;
 import com.xiang.adapter.KeywordsAdapter;
@@ -28,6 +30,8 @@ import com.xiang.adapter.SearchedUserAdapter;
 import com.xiang.base.BaseHandler;
 import com.xiang.dafault.DefaultUtil;
 import com.xiang.database.helper.BriefUserHelper;
+import com.xiang.database.helper.HistoryKeywordHelper;
+import com.xiang.database.model.TblHistoryKeyword;
 import com.xiang.listener.OnRclViewItemClickListener;
 import com.xiang.proto.nano.Common;
 import com.xiang.proto.pilot.nano.Pilot;
@@ -35,16 +39,14 @@ import com.xiang.request.RequestUtil;
 import com.xiang.request.UrlUtil;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class SearchActivity extends BaseAppCompatActivity {
 
-    private ImageView iv_back;
     private MaterialEditText et_content;
     private TextView tv_search, tv_clear, tv_gym, tv_user;
-    private RecyclerView rv_keywords, rv_hot_keywords, rv_searched_gym, rv_searched_user;
+    private RecyclerView rv_searched_gym, rv_searched_user;
+    private FlowLayout fl_hot_keywords, fl_history_keywords;
     private RelativeLayout rl_searched;
 
     // adapter
@@ -55,8 +57,7 @@ public class SearchActivity extends BaseAppCompatActivity {
 
     // data
     private List<String> hotKeywords;
-    private List<String> keywords;
-    private Set<String> keywordsSet;
+    private List<TblHistoryKeyword> historyKeywords;
     private List<Common.BriefGym> briefGyms = DefaultUtil.getGyms(20);
     private List<Common.SearchedUser> searchedUsers = new ArrayList<>();
 
@@ -65,34 +66,26 @@ public class SearchActivity extends BaseAppCompatActivity {
     private int pageIndex_user = 0, pageIndex_gym = 0;
     private boolean isloading_user = false, isIsloading_gym = false;
 
-    // sp
-    private SharedPreferences sp;
-
     // tools
     private BriefUserHelper briefUserHelper = new BriefUserHelper(this);
+    private HistoryKeywordHelper historyKeywordHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
     protected void initView() {
         setContentView(R.layout.activity_search);
 
-        sp = getSharedPreferences(Constant.SP_DATA, MODE_PRIVATE);
-        keywordsSet = sp.getStringSet(Constant.SP_KEYWORDS, new HashSet<String>());
-
-
-        iv_back = (ImageView) findViewById(R.id.iv_back);
         et_content = (MaterialEditText) findViewById(R.id.et_content);
         tv_search = (TextView) findViewById(R.id.tv_search);
         tv_gym = (TextView) findViewById(R.id.tv_search_gym);
         tv_user = (TextView) findViewById(R.id.tv_search_user);
-        rv_keywords = (RecyclerView) findViewById(R.id.rv_keywords);
         tv_clear = (TextView) findViewById(R.id.tv_clear);
-        rv_hot_keywords = (RecyclerView) findViewById(R.id.rv_hot_keywords);
+        fl_history_keywords = (FlowLayout) findViewById(R.id.fl_history_keywords);
+        fl_hot_keywords = (FlowLayout) findViewById(R.id.fl_hot_keywords);
         rv_searched_gym = (RecyclerView) findViewById(R.id.rv_search_gym);
         rv_searched_user = (RecyclerView) findViewById(R.id.rv_search_user);
         rl_searched = (RelativeLayout) findViewById(R.id.rl_searched);
@@ -107,8 +100,8 @@ public class SearchActivity extends BaseAppCompatActivity {
 
     @Override
     protected void initData() {
-        keywords = new ArrayList<>();
-        keywords.addAll(keywordsSet);
+        historyKeywordHelper = new HistoryKeywordHelper(this);
+        historyKeywords = historyKeywordHelper.getHistoryKeywords();
 
         hotKeywords = new ArrayList<>();
         for (int i = 0; i < 10; i ++){
@@ -118,21 +111,16 @@ public class SearchActivity extends BaseAppCompatActivity {
 
     @Override
     protected void configView() {
-        iv_back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-
         tv_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                doSearch();
+                if (et_content.getText().toString().length() > 0) {
+                    doSearch();
+                } else {
+                    finish();
+                }
             }
         });
-
-
 
         configHistoryKeywords();
 
@@ -164,6 +152,35 @@ public class SearchActivity extends BaseAppCompatActivity {
             }
         });
 
+        tv_clear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                historyKeywordHelper.removeAll();
+                updateHistoryKeywordsList();
+            }
+        });
+
+        et_content.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.toString().length() > 0){
+                    tv_search.setText("搜索");
+                } else{
+                    tv_search.setText("取消");
+                }
+            }
+        });
+
         mHandler = new MyHandler(this, null);
     }
 
@@ -180,6 +197,7 @@ public class SearchActivity extends BaseAppCompatActivity {
                 rv_searched_gym.setVisibility(View.GONE);
                 rv_searched_user.setVisibility(View.VISIBLE);
                 if(needSearch) {
+                    showProgress(null, true);
                     new SearchUserThread().start();
                 }
                 break;
@@ -187,15 +205,12 @@ public class SearchActivity extends BaseAppCompatActivity {
     }
 
     private void doSearch(){
-        ((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE))
-                .hideSoftInputFromWindow(SearchActivity.this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
-        keywordsSet.add(et_content.getText().toString());
-        SharedPreferences.Editor editor = sp.edit();
-        editor.putStringSet(Constant.SP_KEYWORDS, keywordsSet);
-        editor.commit();
+        WindowUtil.hideInputMethod(this);
 
-        updateKeywordsList();
+        historyKeywordHelper.addHistoryKeyword(et_content.getText().toString());
+
+        updateHistoryKeywordsList();
 
         rl_searched.setVisibility(View.VISIBLE);
 
@@ -247,50 +262,56 @@ public class SearchActivity extends BaseAppCompatActivity {
     }
 
     private void configHistoryKeywords() {
-        historyAdapter = new KeywordsAdapter(this, keywords, rv_keywords);
-        historyAdapter.setOnRclViewItemClickListener(new OnRclViewItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                et_content.setText(keywords.get(position));
-                doSearch();
-            }
-
-            @Override
-            public void OnItemLongClick(View view, int position) {
-
-            }
-        });
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
-
-        rv_keywords.setAdapter(historyAdapter);
-        rv_keywords.setLayoutManager(gridLayoutManager);
+        LayoutInflater layoutInflater = LayoutInflater.from(this);
+        fl_history_keywords.removeAllViews();
+        for (int i = 0 ; i < historyKeywords.size(); i ++){
+            View view = layoutInflater.inflate(R.layout.textview_keywords, null);
+            TextView textView = (TextView) view.findViewById(R.id.textView);
+            FlowLayout.LayoutParams layoutParams = new FlowLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            layoutParams.rightMargin = ViewUtil.dp2px(this, 3);
+            layoutParams.topMargin = ViewUtil.dp2px(this, 2);
+            textView.setLayoutParams(layoutParams);
+            final String keyword = historyKeywords.get(i).keyword;
+            textView.setText(keyword);
+            textView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    et_content.setText(keyword);
+                    doSearch();
+                }
+            });
+            fl_history_keywords.addView(textView);
+        }
     }
 
     private void configHotKeywords() {
-        hotKeywordsAdapter = new HotKeywordsAdapter(SearchActivity.this, hotKeywords, rv_hot_keywords);
-        hotKeywordsAdapter.setOnRclViewItemClickListener(new OnRclViewItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                et_content.setText(hotKeywords.get(position));
-                doSearch();
-            }
-
-            @Override
-            public void OnItemLongClick(View view, int position) {
-
-            }
-        });
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
-
-        rv_hot_keywords.setAdapter(hotKeywordsAdapter);
-        rv_hot_keywords.setLayoutManager(layoutManager);
+        LayoutInflater layoutInflater = LayoutInflater.from(this);
+        fl_hot_keywords.removeAllViews();
+        for (int i = 0 ; i < hotKeywords.size(); i ++){
+            View view = layoutInflater.inflate(R.layout.textview_keywords, null);
+            TextView textView = (TextView) view.findViewById(R.id.textView);
+            FlowLayout.LayoutParams layoutParams = new FlowLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            layoutParams.rightMargin = ViewUtil.dp2px(this, 3);
+            layoutParams.topMargin = ViewUtil.dp2px(this, 2);
+            textView.setLayoutParams(layoutParams);
+            final String keyword = hotKeywords.get(i);
+            textView.setText(keyword);
+            textView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    et_content.setText(keyword);
+                    doSearch();
+                }
+            });
+            fl_hot_keywords.addView(textView);
+        }
     }
 
 
-    private void updateKeywordsList() {
-        keywords.clear();
-        keywords.addAll(keywordsSet);
-        historyAdapter.notifyDataSetChanged();
+    private void updateHistoryKeywordsList() {
+        historyKeywords.clear();
+        historyKeywords.addAll(historyKeywordHelper.getHistoryKeywords());
+        configHistoryKeywords();
     }
 
     private MyHandler mHandler;
@@ -342,6 +363,7 @@ public class SearchActivity extends BaseAppCompatActivity {
             params.pageIndex = pageIndex_gym;
 
             byte[] result = RequestUtil.postWithProtobuf(request, UrlUtil.URL_SEARCH_USER, cmdid, currentMills);
+            mHandler.sendDisMissProgress();
             if (null != result){
                 // 加载成功
                 isloading_user = false;

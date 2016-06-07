@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.xiang.Util.ViewUtil;
 import com.xiang.sportx.R;
 
 
@@ -139,6 +140,11 @@ public class MyTitleBar extends RelativeLayout {
         }
 
         tv_more.setVisibility(View.GONE);
+    }
+
+    public void setMoreButtonPadding(int dp){
+        int px = ViewUtil.dp2px(context, dp);
+        iv_more.setPadding(px, px, px, px);
     }
 
     /**

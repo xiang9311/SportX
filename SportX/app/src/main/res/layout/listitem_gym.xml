@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:paddingLeft="@dimen/padding_lr"
+    android:paddingRight="@dimen/padding_lr"
+    android:paddingTop="4dp"
+    android:paddingBottom="4dp"
+    android:layout_width="match_parent"
+    android:layout_height="370px">
+
+    <ImageView
+        android:id="@+id/iv_cover"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@mipmap/image"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:padding="5dp"
+        android:background="@drawable/selector_main_opercity_pressed">
+
+        <TextView
+            android:id="@+id/tv_place"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_small"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:text="北京市海淀区中关村南路承德大厦6楼602"/>
+
+        <TextView
+            android:id="@+id/tv_equipment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/tv_place"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_small"
+            android:layout_marginTop="1dp"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:text="器材齐全 淋浴 瑜伽室"/>
+
+        <TextView
+            android:id="@+id/tv_gym_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/tv_equipment"
+            android:layout_alignParentRight="true"
+            android:textSize="@dimen/text_normal"
+            android:textColor="@color/white"
+            android:text="浩沙健身"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>

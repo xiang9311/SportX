@@ -45,4 +45,9 @@ public class LoginUtil {
             }
         });
     }
+
+    /**
+     * 登录到页面后是否跳转到消息页面（从推送打开app）
+     */
+    public static boolean GotoMessageWhenStart = false;
 }
