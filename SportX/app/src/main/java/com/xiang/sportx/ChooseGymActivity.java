@@ -13,6 +13,7 @@ import android.view.View;
 
 import com.xiang.Util.ArrayUtil;
 import com.xiang.Util.LocationUtil;
+import com.xiang.Util.SportXIntent;
 import com.xiang.adapter.BriefGymAdapter;
 import com.xiang.base.BaseHandler;
 import com.xiang.listener.OnRclViewItemClickListener;
@@ -103,7 +104,7 @@ public class ChooseGymActivity extends BaseAppCompatActivity {
         adapter.setOnItemNameAndAvatarClickListener(new BriefGymAdapter.OnItemNameAndAvatarClickListener() {
             @Override
             public void onClick(int position) {
-                startActivity(new Intent(ChooseGymActivity.this, GymDetailActivity.class));
+                SportXIntent.gotoGymDetailActivity(ChooseGymActivity.this, briefGyms.get(position).id);
             }
         });
         LinearLayoutManager manager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);

@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:background="@color/white"
+    android:background="@color/gray_background"
     android:layout_height="match_parent">
 
     <RelativeLayout
@@ -13,7 +13,7 @@
         android:layout_marginRight="@dimen/match_parent_margin"
         android:layout_marginLeft="@dimen/match_parent_margin"
         android:clickable="true"
-        android:background="@drawable/selector_white_to_gray"
+        android:background="@drawable/selector_graybackground_to_gray"
         style="@style/main_padding">
 
         <TextView
@@ -35,7 +35,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        android:background="@color/white"
         style="@style/main_padding">
 
         <TextView

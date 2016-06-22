@@ -15,7 +15,7 @@
         android:id="@+id/civ_avatar_prefer"
         android:layout_width="@dimen/avatar_small_in_discover"
         android:layout_height="@dimen/avatar_small_in_discover"
-        android:src="@mipmap/avatar_01"/>
+        android:src="@mipmap/image"/>
 
     <TextView
         android:id="@+id/tv_username_prefer"

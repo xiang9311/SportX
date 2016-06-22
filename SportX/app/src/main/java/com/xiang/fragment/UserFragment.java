@@ -22,10 +22,8 @@ import com.xiang.Util.SportXIntent;
 import com.xiang.Util.UserStatic;
 import com.xiang.factory.DisplayOptionsFactory;
 import com.xiang.factory.MaterialDialogFactory;
-import com.xiang.sportx.LoginActivity;
 import com.xiang.sportx.MyDetailActivity;
 import com.xiang.sportx.R;
-import com.xiang.sportx.RegisterActivity;
 import com.xiang.sportx.SettingActivity;
 import com.xiang.sportx.UserAlbumActivity;
 import com.xiang.sportx.XMoneyActivity;
@@ -88,7 +86,14 @@ public class UserFragment extends BaseFragment {
         rl_photo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getContext(), UserAlbumActivity.class));
+                if (UserStatic.logged) {
+                    startActivity(new Intent(getContext(), UserAlbumActivity.class));
+                } else{
+                    if(md_login_register == null){
+                        md_login_register = MaterialDialogFactory.createLoginOrRegisterMd(getContext());
+                    }
+                    md_login_register.show();
+                }
             }
         });
 
@@ -100,20 +105,7 @@ public class UserFragment extends BaseFragment {
                     startActivity(new Intent(getContext(), MyDetailActivity.class));
                 } else{
                     if(md_login_register == null){
-                        String[] options = new String[]{"登录", "注册"};
-                        md_login_register = MaterialDialogFactory.createTwoOptionMd(getContext(), options, false, 0, true);
-                        md_login_register.setOnOptionChooseListener(new TwoOptionMaterialDialog.OnOptionChooseListener() {
-                            @Override
-                            public void onOptionChoose(int index) {
-                                if(index == 0){
-                                    startActivity(new Intent(getContext(), LoginActivity.class));
-                                } else{
-                                    startActivity(new Intent(getContext(), RegisterActivity.class));
-                                }
-                            }
-                        });
-                        md_login_register.setTitle("您还未登录");
-                        md_login_register.setCanceledOnTouchOutside(true);
+                        md_login_register = MaterialDialogFactory.createLoginOrRegisterMd(getContext());
                     }
                     md_login_register.show();
                 }
@@ -123,7 +115,14 @@ public class UserFragment extends BaseFragment {
         rl_money.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getContext(), XMoneyActivity.class));
+                if(UserStatic.logged) {
+                    startActivity(new Intent(getContext(), XMoneyActivity.class));
+                } else{
+                    if(md_login_register == null){
+                        md_login_register = MaterialDialogFactory.createLoginOrRegisterMd(getContext());
+                    }
+                    md_login_register.show();
+                }
             }
         });
 
@@ -132,6 +131,11 @@ public class UserFragment extends BaseFragment {
             public void onClick(View v) {
                 if(UserStatic.logged) {
                     SportXIntent.gotoUserListActivity(getContext(), UserStatic.userId, UserStatic.realUserName, Constant.FIND_GUANZHU);
+                } else{
+                    if(md_login_register == null){
+                        md_login_register = MaterialDialogFactory.createLoginOrRegisterMd(getContext());
+                    }
+                    md_login_register.show();
                 }
             }
         });
@@ -141,6 +145,11 @@ public class UserFragment extends BaseFragment {
             public void onClick(View v) {
                 if(UserStatic.logged) {
                     SportXIntent.gotoUserListActivity(getContext(), UserStatic.userId, UserStatic.realUserName, Constant.FIND_FENSI);
+                } else{
+                    if(md_login_register == null){
+                        md_login_register = MaterialDialogFactory.createLoginOrRegisterMd(getContext());
+                    }
+                    md_login_register.show();
                 }
             }
         });
@@ -184,6 +193,7 @@ public class UserFragment extends BaseFragment {
         } else{
             tv_username.setText("未登录");
             tv_usersign.setText("");
+            iv_avatar.setImageDrawable(getContext().getResources().getDrawable(R.mipmap.image));
         }
     }
 

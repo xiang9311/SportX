@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.xiang.Util.ViewUtil;
 import com.xiang.factory.DisplayOptionsFactory;
 import com.xiang.listener.OnRclViewItemClickListener;
 import com.xiang.proto.nano.Common;
@@ -27,11 +28,18 @@ public class CoverGymItemAdapter extends BaseRecyclerAdapter<CoverGymItemAdapter
     private List<Common.BriefGym> gyms;
     private RecyclerView recyclerView;
 
+    private float height;
+
     public CoverGymItemAdapter(Context context, List<Common.BriefGym> data, RecyclerView recyclerView) {
         super(context, data, recyclerView);
         this.context = context;
         this.gyms = gyms;
         this.recyclerView = recyclerView;
+
+        int windowWidth = ViewUtil.getWindowWidth(context);
+        float space = context.getResources().getDimension(R.dimen.padding_lr) * 2;
+        float width = windowWidth - space;
+        height = width * 0.6f;
     }
 
     // item点击事件监听
@@ -51,7 +59,11 @@ public class CoverGymItemAdapter extends BaseRecyclerAdapter<CoverGymItemAdapter
         if(view != null){
             return new MyViewHolder(view);
         } else {
-            return new MyViewHolder(LayoutInflater.from(context).inflate(R.layout.listitem_gym, parent, false));
+            MyViewHolder holder = new MyViewHolder(LayoutInflater.from(context).inflate(R.layout.listitem_gym, parent, false));
+            RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams) holder.rl_parent.getLayoutParams();
+            layoutParams.height = (int) height;
+            holder.rl_parent.setLayoutParams(layoutParams);
+            return holder;
         }
     }
 
@@ -63,7 +75,7 @@ public class CoverGymItemAdapter extends BaseRecyclerAdapter<CoverGymItemAdapter
 
         Common.BriefGym briefGym = (Common.BriefGym) getDataByPosition(position);
 
-        holder.tv_equipment.setText("设备齐全 淋浴房 瑜伽房 舞蹈房");
+        holder.tv_equipment.setText(briefGym.eqm);
         holder.tv_gymname.setText(briefGym.gymName);
         holder.tv_place.setText(briefGym.place);
         imageLoader.displayImage(briefGym.gymCover, holder.iv_cover, options);
@@ -85,7 +97,7 @@ public class CoverGymItemAdapter extends BaseRecyclerAdapter<CoverGymItemAdapter
         public TextView tv_equipment;
         public TextView tv_place;
 
-        public RelativeLayout rl_content;
+        public RelativeLayout rl_content, rl_parent;
 
         public MyViewHolder(View itemView) {
             super(itemView);
@@ -95,6 +107,7 @@ public class CoverGymItemAdapter extends BaseRecyclerAdapter<CoverGymItemAdapter
             tv_equipment = (TextView) itemView.findViewById(R.id.tv_equipment);
             tv_place = (TextView) itemView.findViewById(R.id.tv_place);
             rl_content = (RelativeLayout) itemView.findViewById(R.id.rl_content);
+            rl_parent = (RelativeLayout) itemView.findViewById(R.id.rl_parent);
         }
     }
 }

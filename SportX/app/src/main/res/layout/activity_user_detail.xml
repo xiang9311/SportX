@@ -3,22 +3,28 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gray_background"
     tools:context="com.xiang.sportx.UserDetailActivity">
 
-    <com.xiang.view.MyTitleBar
-        android:id="@+id/titleBar"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:background="@color/gray_background">
 
-    </com.xiang.view.MyTitleBar>
+        <com.xiang.view.MyTitleBar
+            android:id="@+id/titleBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_user_trend"
-        android:layout_below="@+id/titleBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        </com.xiang.view.MyTitleBar>
 
-    </android.support.v7.widget.RecyclerView>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_user_trend"
+            android:layout_below="@+id/titleBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </android.support.v7.widget.RecyclerView>
+
+    </RelativeLayout>
 
 </RelativeLayout>

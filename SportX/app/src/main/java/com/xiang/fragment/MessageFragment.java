@@ -1,6 +1,5 @@
 package com.xiang.fragment;
 
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,9 +10,7 @@ import android.view.ViewGroup;
 
 import com.xiang.Util.UserStatic;
 import com.xiang.factory.MaterialDialogFactory;
-import com.xiang.sportx.LoginActivity;
 import com.xiang.sportx.R;
-import com.xiang.sportx.RegisterActivity;
 import com.xiang.view.TwoOptionMaterialDialog;
 
 import io.rong.imkit.fragment.ConversationListFragment;
@@ -38,31 +35,26 @@ public class MessageFragment extends BaseFragment {
     }
 
     private void initMessage() {
-        if ( ! UserStatic.logged){
-            if(md_login_register == null){
-                String[] options = new String[]{"登录", "注册"};
-                md_login_register = MaterialDialogFactory.createTwoOptionMd(getContext(), options, false, 0, true);
-                md_login_register.setOnOptionChooseListener(new TwoOptionMaterialDialog.OnOptionChooseListener() {
-                    @Override
-                    public void onOptionChoose(int index) {
-                        if(index == 0){
-                            startActivity(new Intent(getContext(), LoginActivity.class));
-                        } else{
-                            startActivity(new Intent(getContext(), RegisterActivity.class));
-                        }
-                    }
-                });
-                md_login_register.setTitle("您还未登录");
-                md_login_register.setCanceledOnTouchOutside(true);
+
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser){
+            if ( ! UserStatic.logged){
+                if(md_login_register == null){
+                    md_login_register = MaterialDialogFactory.createLoginOrRegisterMd(getContext());
+                }
+                md_login_register.show();
             }
-            md_login_register.show();
         }
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        super.onCreateView( inflater, container, savedInstanceState);
+        super.onCreateView(inflater, container, savedInstanceState);
         mView = inflater.inflate(R.layout.view_message, container, false);
 
         ConversationListFragment fragment = new ConversationListFragment();
@@ -82,6 +74,7 @@ public class MessageFragment extends BaseFragment {
 
         return mView;
     }
+
 
     private View findViewById(int id) {
         return mView.findViewById(id);

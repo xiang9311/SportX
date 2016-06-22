@@ -1,7 +1,6 @@
 package com.xiang.sportx;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Message;
@@ -10,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,12 +23,11 @@ import com.xiang.Util.SportXIntent;
 import com.xiang.Util.UserInfoUtil;
 import com.xiang.Util.ViewUtil;
 import com.xiang.Util.WindowUtil;
-import com.xiang.adapter.GymItemAdapter;
+import com.xiang.adapter.CoverGymItemAdapter;
 import com.xiang.adapter.HotKeywordsAdapter;
 import com.xiang.adapter.KeywordsAdapter;
 import com.xiang.adapter.SearchedUserAdapter;
 import com.xiang.base.BaseHandler;
-import com.xiang.dafault.DefaultUtil;
 import com.xiang.database.helper.BriefUserHelper;
 import com.xiang.database.helper.HistoryKeywordHelper;
 import com.xiang.database.model.TblHistoryKeyword;
@@ -52,14 +51,15 @@ public class SearchActivity extends BaseAppCompatActivity {
     // adapter
     private KeywordsAdapter historyAdapter;
     private HotKeywordsAdapter hotKeywordsAdapter;
-    private GymItemAdapter gymItemAdapter;
+    private CoverGymItemAdapter gymItemAdapter;
     private SearchedUserAdapter searchedUserAdapter;
 
     // data
     private List<String> hotKeywords;
     private List<TblHistoryKeyword> historyKeywords;
-    private List<Common.BriefGym> briefGyms = DefaultUtil.getGyms(20);
+    private List<Common.BriefGym> briefGyms = new ArrayList<>();
     private List<Common.SearchedUser> searchedUsers = new ArrayList<>();
+    private String lastKeyword = "";
 
     private static final int SEARCH_GYM = 0, SEARCH_USER = 1;
     private int currentSearch = SEARCH_GYM;
@@ -104,9 +104,6 @@ public class SearchActivity extends BaseAppCompatActivity {
         historyKeywords = historyKeywordHelper.getHistoryKeywords();
 
         hotKeywords = new ArrayList<>();
-        for (int i = 0; i < 10; i ++){
-            hotKeywords.add("热门关键字" + i);
-        }
     }
 
     @Override
@@ -173,13 +170,15 @@ public class SearchActivity extends BaseAppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (s.toString().length() > 0){
+                if (s.toString().length() > 0) {
                     tv_search.setText("搜索");
-                } else{
+                } else {
                     tv_search.setText("取消");
                 }
             }
         });
+
+        new GetHotKeywordsThread().start();
 
         mHandler = new MyHandler(this, null);
     }
@@ -187,16 +186,34 @@ public class SearchActivity extends BaseAppCompatActivity {
     private void startSearchThread(boolean needSearch) {
         switch (currentSearch){
             case SEARCH_GYM:
+
+                if(isIsloading_gym) {
+                    return ;
+                }
+
                 rv_searched_gym.setVisibility(View.VISIBLE);
                 rv_searched_user.setVisibility(View.GONE);
+                if(needSearch) {
+                    // 清空之前的数据
+                    briefGyms.clear();
+                    gymItemAdapter.notifyDataSetChanged();
+                    showProgress(null, true);
+                    new SearchGymThread().start();
+                    rv_searched_gym.scrollToPosition(0);
+                }
                 break;
             case SEARCH_USER:
+
                 if(isloading_user){
                     return;
                 }
+
                 rv_searched_gym.setVisibility(View.GONE);
                 rv_searched_user.setVisibility(View.VISIBLE);
                 if(needSearch) {
+                    // searched user 清空
+                    searchedUsers.clear();
+                    searchedUserAdapter.notifyDataSetChanged();
                     showProgress(null, true);
                     new SearchUserThread().start();
                 }
@@ -208,14 +225,19 @@ public class SearchActivity extends BaseAppCompatActivity {
 
         WindowUtil.hideInputMethod(this);
 
+        // 空的话返回
+        if(et_content.getText().toString().equals("")){
+            return ;
+        }
+
+        lastKeyword = et_content.getText().toString();
+
         historyKeywordHelper.addHistoryKeyword(et_content.getText().toString());
 
         updateHistoryKeywordsList();
 
         rl_searched.setVisibility(View.VISIBLE);
 
-        searchedUsers.clear();
-        //TODO gymclear
         pageIndex_user = 0;
         pageIndex_gym = 0;
 
@@ -242,11 +264,11 @@ public class SearchActivity extends BaseAppCompatActivity {
     }
 
     private void configSearchedGym() {
-        gymItemAdapter = new GymItemAdapter(this, briefGyms, rv_searched_gym);
+        gymItemAdapter = new CoverGymItemAdapter(this, briefGyms, rv_searched_gym);
         gymItemAdapter.setOnRclViewItemClickListener(new OnRclViewItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                startActivity(new Intent(SearchActivity.this, GymDetailActivity.class));
+                SportXIntent.gotoGymDetailActivity(SearchActivity.this, briefGyms.get(position).id);
             }
 
             @Override
@@ -259,6 +281,29 @@ public class SearchActivity extends BaseAppCompatActivity {
         rv_searched_gym.setAdapter(gymItemAdapter);
         rv_searched_gym.setLayoutManager(layoutManager);
 
+        rv_searched_gym.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (!gymItemAdapter.canLoadingMore()) {
+                    return;
+                }
+
+                int lastVisibleItem = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastVisibleItemPosition();
+                int totalItemCount = recyclerView.getLayoutManager().getItemCount();
+                //lastVisibleItem >= totalItemCount - 1 表示剩下1个item自动加载，各位自由选择
+                // dy>0 表示向下滑动
+                if (lastVisibleItem >= totalItemCount - 2 && dy > 0) {
+                    if (gymItemAdapter.isLoadingMore()) {
+                        Log.d("isloadingmore", "ignore manually update!");
+                    } else {
+                        gymItemAdapter.setLoadingMore(true);
+
+                        new SearchGymThread().start();
+                    }
+                }
+            }
+        });
     }
 
     private void configHistoryKeywords() {
@@ -316,6 +361,8 @@ public class SearchActivity extends BaseAppCompatActivity {
 
     private MyHandler mHandler;
     private static final int KEY_SEARCH_USER_SUC = 101;
+    private static final int KEY_SEARCH_GYM_SUC = 102;
+    private static final int KEY_GET_SEARCH_KEYS_SUC = 103;
     private class MyHandler extends BaseHandler{
 
         public MyHandler(Context context, SwipeRefreshLayout mSwipeRefreshLayout) {
@@ -329,9 +376,18 @@ public class SearchActivity extends BaseAppCompatActivity {
                 case KEY_SEARCH_USER_SUC:
                     Pilot.Response10013.Data data = (Pilot.Response10013.Data) msg.obj;
                     int count = data.maxCountPerPage;
+                    int lastUserSize = searchedUsers.size();
+
+                    if (data.searchedUsers.length < data.maxCountPerPage){
+
+                    }
 
                     searchedUsers.addAll(ArrayUtil.Array2List(data.searchedUsers));
-                    searchedUserAdapter.notifyItemRangeInserted(pageIndex_user * count, searchedUsers.size());
+                    if (lastUserSize == 0){
+                        searchedUserAdapter.notifyDataSetChanged();
+                    } else {
+                        searchedUserAdapter.notifyItemRangeInserted(pageIndex_user * count, data.searchedUsers.length);
+                    }
                     pageIndex_user ++;
 
                     for(int i = 0; i < data.searchedUsers.length; i ++){
@@ -339,6 +395,94 @@ public class SearchActivity extends BaseAppCompatActivity {
                         UserInfoUtil.updateSavedUserInfo(searchedUser.userId, searchedUser.userName, searchedUser.userAvatar, briefUserHelper);
                     }
                     break;
+
+                case KEY_SEARCH_GYM_SUC:
+                    Pilot.Response10014.Data data_gym = (Pilot.Response10014.Data) msg.obj;
+                    gymItemAdapter.setLoadingMore(false);
+                    int lastGymSize = briefGyms.size();
+                    int count_gym = data_gym.maxCountPerPage;
+
+                    if (data_gym.maxCountPerPage > data_gym.briefGyms.length){
+                        gymItemAdapter.setCannotLoadingMore();
+                    }
+
+                    briefGyms.addAll(ArrayUtil.Array2List(data_gym.briefGyms));
+                    if (lastGymSize == 0) {
+                        gymItemAdapter.notifyDataSetChanged();
+                    } else{
+                        gymItemAdapter.notifyItemRangeInserted(pageIndex_gym * count_gym, data_gym.briefGyms.length);
+                    }
+                    pageIndex_gym ++;
+                    break;
+
+                case KEY_GET_SEARCH_KEYS_SUC:
+                    Pilot.Response10015.Data data_keywords = (Pilot.Response10015.Data) msg.obj;
+                    hotKeywords.clear();
+                    hotKeywords.addAll(ArrayUtil.Array2List(data_keywords.keys));
+                    configHotKeywords();
+                    break;
+            }
+        }
+    }
+
+    class SearchGymThread extends Thread{
+        @Override
+        public void run() {
+            super.run();
+            isIsloading_gym = true;
+
+            String keyWord = lastKeyword;
+
+            long currentMills = System.currentTimeMillis();
+            int cmdid = 10014;
+            Pilot.Request10014 request = new Pilot.Request10014();
+            Pilot.Request10014.Params params = new Pilot.Request10014.Params();
+            Common.RequestCommon common = RequestUtil.getProtoCommon(cmdid, currentMills);
+            request.common = common;
+            request.params = params;
+
+            params.keyword = keyWord;
+            params.pageIndex = pageIndex_gym;
+
+            byte[] result = RequestUtil.postWithProtobuf(request, UrlUtil.URL_SEARCH_GYM, cmdid, currentMills);
+            mHandler.sendDisMissProgress();
+            if (null != result){
+                // 加载成功
+                isIsloading_gym = false;
+                try{
+                    Pilot.Response10014 response = Pilot.Response10014.parseFrom(result);
+
+                    if (response.common != null){
+                        if(response.common.code == 0){
+                            Message msg = Message.obtain();
+                            msg.what = KEY_SEARCH_GYM_SUC;
+                            msg.obj = response.data;
+                            mHandler.sendMessage(msg);
+                        } else{
+                            // code is not 0, find error
+                            Message msg = Message.obtain();
+                            msg.what = BaseHandler.KEY_ERROR;
+                            msg.obj = response.common.message;
+                            mHandler.sendMessage(msg);
+                        }
+                    } else {
+                        Message msg = Message.obtain();
+                        msg.what = BaseHandler.KEY_ERROR;
+                        msg.obj = "数据错误";
+                        mHandler.sendMessage(msg);
+                    }
+
+                } catch (Exception e){
+                    Message msg = Message.obtain();
+                    msg.what = BaseHandler.KEY_PARSE_ERROR;
+                    mHandler.sendMessage(msg);
+                    e.printStackTrace();
+                }
+            } else {
+                // 加载失败
+                Message msg = Message.obtain();
+                msg.what = BaseHandler.KEY_NO_RES;
+                mHandler.sendMessage(msg);
             }
         }
     }
@@ -349,7 +493,7 @@ public class SearchActivity extends BaseAppCompatActivity {
             super.run();
             isloading_user = true;
 
-            String keyWord = et_content.getText().toString();
+            String keyWord = lastKeyword;
 
             long currentMills = System.currentTimeMillis();
             int cmdid = 10013;
@@ -360,7 +504,7 @@ public class SearchActivity extends BaseAppCompatActivity {
             request.params = params;
 
             params.keyword = keyWord;
-            params.pageIndex = pageIndex_gym;
+            params.pageIndex = pageIndex_user;
 
             byte[] result = RequestUtil.postWithProtobuf(request, UrlUtil.URL_SEARCH_USER, cmdid, currentMills);
             mHandler.sendDisMissProgress();
@@ -405,4 +549,63 @@ public class SearchActivity extends BaseAppCompatActivity {
         }
     }
 
+    // 获取搜索热门关键字
+    class GetHotKeywordsThread extends Thread{
+        @Override
+        public void run() {
+            super.run();
+            long currentMills = System.currentTimeMillis();
+            int cmdid = 10015;
+            Pilot.Request10015 request = new Pilot.Request10015();
+            Pilot.Request10015.Params params = new Pilot.Request10015.Params();
+            Common.RequestCommon common = RequestUtil.getProtoCommon(cmdid, currentMills);
+            request.common = common;
+            request.params = params;
+
+            byte[] result = RequestUtil.postWithProtobuf(request, UrlUtil.URL_GET_HOT_SEARCH_KEY, cmdid, currentMills);
+            mHandler.sendDisMissProgress();
+            if (null != result){
+                // 加载成功
+                isloading_user = false;
+                try{
+                    Pilot.Response10015 response = Pilot.Response10015.parseFrom(result);
+
+                    if (response.common != null){
+                        if(response.common.code == 0){
+                            if (response.data != null) {
+                                Message msg = Message.obtain();
+                                msg.what = KEY_GET_SEARCH_KEYS_SUC;
+                                msg.obj = response.data;
+                                mHandler.sendMessage(msg);
+                            } else{
+                                // data is null
+                            }
+                        } else{
+                            // code is not 0, find error
+                            Message msg = Message.obtain();
+                            msg.what = BaseHandler.KEY_ERROR;
+                            msg.obj = response.common.message;
+                            mHandler.sendMessage(msg);
+                        }
+                    } else {
+                        Message msg = Message.obtain();
+                        msg.what = BaseHandler.KEY_ERROR;
+                        msg.obj = "数据错误";
+                        mHandler.sendMessage(msg);
+                    }
+
+                } catch (Exception e){
+                    Message msg = Message.obtain();
+                    msg.what = BaseHandler.KEY_PARSE_ERROR;
+                    mHandler.sendMessage(msg);
+                    e.printStackTrace();
+                }
+            } else {
+                // 加载失败
+                Message msg = Message.obtain();
+                msg.what = BaseHandler.KEY_NO_RES;
+                mHandler.sendMessage(msg);
+            }
+        }
+    }
 }

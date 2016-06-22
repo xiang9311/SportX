@@ -21,7 +21,6 @@ import com.xiang.Util.ViewUtil;
 import com.xiang.factory.DisplayOptionsFactory;
 import com.xiang.listener.OnRclViewItemClickListener;
 import com.xiang.proto.nano.Common;
-import com.xiang.sportx.GymDetailActivity;
 import com.xiang.sportx.ImageAndTextActivity;
 import com.xiang.sportx.R;
 import com.xiang.sportx.TrendDetailActivity;
@@ -177,6 +176,7 @@ public class TrendAdapter extends BaseRecyclerAdapter<TrendAdapter.MyViewHolder>
         }
 
         final Common.Trend trend = (Common.Trend) getDataByPosition(position);
+
         holder.tv_username.setText(trend.briefUser.userName);
         if(trend.content == null || trend.content.equals("")){
             holder.tv_content.setVisibility(View.GONE);
@@ -193,10 +193,7 @@ public class TrendAdapter extends BaseRecyclerAdapter<TrendAdapter.MyViewHolder>
         holder.tv_place.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, GymDetailActivity.class);
-                //TODO
-                intent.putExtra(Constant.FROM, Constant.FROM_PLACE_IN_TREND);
-                context.startActivity(intent);
+                SportXIntent.gotoGymDetailActivity(context, trend.gymId);
             }
         });
         holder.tv_time.setText(SportTimeUtil.getDateFromNow(trend.createTime));

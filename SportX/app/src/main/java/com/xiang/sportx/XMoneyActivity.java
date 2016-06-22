@@ -72,7 +72,7 @@ public class XMoneyActivity extends BaseAppCompatActivity {
                 if (md_no_card == null) {
                     md_no_card = new MaterialDialog(XMoneyActivity.this);
                     md_no_card.setTitle("通知");
-                    md_no_card.setMessage("X币换卡活动最迟将在7月1日开启，敬请期待。");
+                    md_no_card.setMessage("X币换卡活动即将开启，敬请期待。");
                     md_no_card.setPositiveButton("我知道了", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -91,7 +91,7 @@ public class XMoneyActivity extends BaseAppCompatActivity {
                 if (md_no_shop == null) {
                     md_no_shop = new MaterialDialog(XMoneyActivity.this);
                     md_no_shop.setTitle("通知");
-                    md_no_shop.setMessage("设备商城最迟将在7月15日开启，敬请期待。");
+                    md_no_shop.setMessage("设备商城即将开启，敬请期待。");
                     md_no_shop.setPositiveButton("我知道了", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {

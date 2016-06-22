@@ -25,6 +25,7 @@ import com.xiang.Util.BitmapUtil;
 import com.xiang.Util.Constant;
 import com.xiang.Util.StringUtil;
 import com.xiang.base.BaseHandler;
+import com.xiang.database.helper.GymScoreHelper;
 import com.xiang.factory.MaterialDialogFactory;
 import com.xiang.model.ChoosedGym;
 import com.xiang.proto.nano.Common;
@@ -395,6 +396,10 @@ public class CreateTrendActivity extends BaseAppCompatActivity {
                     break;
                 case KEY_TREND_CREATE_SUC:
                     showProgress("发布成功", true);
+                    if (choosedGym != null) {
+                        GymScoreHelper gymScoreHelper = new GymScoreHelper(CreateTrendActivity.this);
+                        gymScoreHelper.whenUseGym(choosedGym.getGymId());
+                    }
                     postDelayed(new Runnable() {
                         @Override
                         public void run() {

@@ -1,5 +1,6 @@
 package com.xiang.sportx;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -36,7 +37,7 @@ import com.xiang.proto.pilot.nano.Token;
 import com.xiang.request.RequestUtil;
 import com.xiang.request.UrlUtil;
 import com.xiang.thread.GetQiniuTokenThread;
-import com.xiang.view.MyTitleBar;
+import com.xiang.view.MyTitleBarLight;
 import com.xiang.view.TwoOptionMaterialDialog;
 
 import org.json.JSONObject;
@@ -66,7 +67,7 @@ public class RegisterActivity extends BaseAppCompatActivity {
     private final int CODE_PHOTO = 1;
     private final int CODE_PHOTO_CROP = 2;
 
-    private MyTitleBar titleBar;
+    private MyTitleBarLight titleBar;
     private ViewPager viewPager;
     private ActionProcessButton apb_getcode, apb_verifycode, apb_register;
     private MaterialEditText met_phone, met_code, met_username, met_password;
@@ -100,7 +101,7 @@ public class RegisterActivity extends BaseAppCompatActivity {
     protected void initView() {
         setContentView(R.layout.activity_register);
 
-        titleBar = (MyTitleBar) findViewById(R.id.titleBar);
+        titleBar = (MyTitleBarLight) findViewById(R.id.titleBar);
         viewPager = (ViewPager) findViewById(R.id.vp_register);
         ci_register = (CircleIndicator) findViewById(R.id.ci_register);
 
@@ -194,7 +195,7 @@ public class RegisterActivity extends BaseAppCompatActivity {
         }
 
         // send
-        Pattern p = Pattern.compile("^((13[0-9])|(15[^4,\\D])|(18[0,5-9]))\\d{8}$");
+        Pattern p = Pattern.compile("^1(3[0-9]|4[57]|5[0-35-9]|8[0-9]|70)\\d{8}$");
         Matcher m = p.matcher(met_phone.getText().toString());
         if(m.matches()){
             if(sendMessageDialog == null){
@@ -391,7 +392,7 @@ public class RegisterActivity extends BaseAppCompatActivity {
             return ;
         }
 
-        if (sms_status != STATUS_VERIFY_SUC && ! Constant.DEBUG){ //TODO debug是不用验证手机号
+        if (sms_status != STATUS_VERIFY_SUC){
             sendToast("手机号还未验证");
             return ;
         }
@@ -606,7 +607,8 @@ public class RegisterActivity extends BaseAppCompatActivity {
         }
     }
 
-    class PhoneFragment extends Fragment{
+    @SuppressLint("ValidFragment")
+    public class PhoneFragment extends Fragment{
         @Nullable
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -629,7 +631,8 @@ public class RegisterActivity extends BaseAppCompatActivity {
         }
     }
 
-    class CodeFragment extends Fragment{
+    @SuppressLint("ValidFragment")
+    public class CodeFragment extends Fragment{
         @Nullable
         @Override
         public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -648,7 +651,8 @@ public class RegisterActivity extends BaseAppCompatActivity {
         }
     }
 
-    class UserInfoFragment extends Fragment{
+    @SuppressLint("ValidFragment")
+    public class UserInfoFragment extends Fragment{
         @Nullable
         @Override
         public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

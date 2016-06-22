@@ -1078,6 +1078,9 @@ public interface Common {
     // repeated string gymCovers = 5;
     public String[] gymCovers;
 
+    // optional string gymIntro = 6;
+    public String gymIntro;
+
     public DetailGym() {
       clear();
     }
@@ -1087,6 +1090,7 @@ public interface Common {
       courses = "";
       gymCards = "";
       gymCovers = com.google.protobuf.nano.WireFormatNano.EMPTY_STRING_ARRAY;
+      gymIntro = "";
       cachedSize = -1;
       return this;
     }
@@ -1110,6 +1114,9 @@ public interface Common {
             output.writeString(5, element);
           }
         }
+      }
+      if (!this.gymIntro.equals("")) {
+        output.writeString(6, this.gymIntro);
       }
       super.writeTo(output);
     }
@@ -1142,6 +1149,10 @@ public interface Common {
         }
         size += dataSize;
         size += 1 * dataCount;
+      }
+      if (!this.gymIntro.equals("")) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeStringSize(6, this.gymIntro);
       }
       return size;
     }
@@ -1191,6 +1202,10 @@ public interface Common {
             // Last one without readTag.
             newArray[i] = input.readString();
             this.gymCovers = newArray;
+            break;
+          }
+          case 50: {
+            this.gymIntro = input.readString();
             break;
           }
         }
@@ -1868,6 +1883,9 @@ public interface Common {
     // optional string gymName = 8;
     public String gymName;
 
+    // optional int32 gymId = 9;
+    public int gymId;
+
     public Comment() {
       clear();
     }
@@ -1881,6 +1899,7 @@ public interface Common {
       toUserName = "";
       createTime = 0L;
       gymName = "";
+      gymId = 0;
       cachedSize = -1;
       return this;
     }
@@ -1911,6 +1930,9 @@ public interface Common {
       }
       if (!this.gymName.equals("")) {
         output.writeString(8, this.gymName);
+      }
+      if (this.gymId != 0) {
+        output.writeInt32(9, this.gymId);
       }
       super.writeTo(output);
     }
@@ -1949,6 +1971,10 @@ public interface Common {
       if (!this.gymName.equals("")) {
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
             .computeStringSize(8, this.gymName);
+      }
+      if (this.gymId != 0) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeInt32Size(9, this.gymId);
       }
       return size;
     }
@@ -2001,6 +2027,10 @@ public interface Common {
           }
           case 66: {
             this.gymName = input.readString();
+            break;
+          }
+          case 72: {
+            this.gymId = input.readInt32();
             break;
           }
         }

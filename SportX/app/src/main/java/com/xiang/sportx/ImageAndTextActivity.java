@@ -49,6 +49,8 @@ public class ImageAndTextActivity extends BaseAppCompatActivity {
 
         viewPager = (ViewPager) findViewById(R.id.vp_image_text);
         ci_images = (CircleIndicator) findViewById(R.id.ci_images);
+
+        colorId = R.color.black;
     }
 
     @Override

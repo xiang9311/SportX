@@ -115,7 +115,7 @@ public class HistoryKeywordHelper extends SQLiteOpenHelper{
             ContentValues values = new ContentValues();
             values.put(KEY_KEYWORD, keywords);
             values.put(KEY_ORDER, lastOrder);
-            int result = db.update(TABLE_NAME, values, KEY_ID + "=?", new String[]{id + ""});
+            int result = db_update.update(TABLE_NAME, values, KEY_ID + "=?", new String[]{id + ""});
             return result;
         }
     }

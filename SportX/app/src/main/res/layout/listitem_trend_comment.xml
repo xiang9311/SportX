@@ -18,7 +18,7 @@
             android:layout_width="@dimen/avatar_in_follow"
             android:layout_height="@dimen/avatar_in_follow"
             android:scaleType="centerCrop"
-            android:src="@mipmap/avatar_01"/>
+            android:src="@mipmap/image"/>
 
         <LinearLayout
             android:layout_toRightOf="@+id/iv_avatar"

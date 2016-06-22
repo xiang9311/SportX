@@ -11,13 +11,17 @@ import java.io.File;
  */
 public class Constant {
 
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
     public static final boolean DEBUG_IMAGELOADER = false;
 
     public static final String SP_DATA = "sp_data";
     public static final String DEFAULT_AVATAR_INDEX = "default_avatar_index";
 
     public static final String USER_ID = "user_id";
+    public static final String GYM_ID = "gym_id";
+    public static final String GYM_NAME = "gym_name";
+    public static final String LONGITUDE = "longitude";
+    public static final String LATITUDE = "latitude";
     public static final String URL = "url";
     public static final String ARTICLE = "article";
     public static final String ARTICLE_ID = "article_id";
@@ -74,32 +78,19 @@ public class Constant {
      * @return
      */
     public static int getDefaultAvatar(int index){
-        int[] strings = {R.mipmap.avatar_01, R.mipmap.avatar_02, R.mipmap.avatar_03, R.mipmap.avatar_04, R.mipmap.avatar_05,
-                R.mipmap.avatar_06, R.mipmap.avatar_07, R.mipmap.avatar_08, R.mipmap.avatar_09, R.mipmap.avatar_10,
-                R.mipmap.avatar_11};
+        int[] strings = {R.mipmap.image, R.mipmap.image, R.mipmap.image, R.mipmap.image, R.mipmap.image,
+                R.mipmap.image, R.mipmap.image, R.mipmap.image, R.mipmap.image, R.mipmap.image,
+                R.mipmap.image};
 
         if(index > 0 && index < strings.length){
             return strings[index];
         }
 
-        return R.mipmap.avatar_01;
+        return R.mipmap.image;
     }
 
     public static int getDefaultAvatarSize(){
         return 11;
-    }
-
-
-    /**
-     * 获取头像resId列表
-     * @param index
-     * @return
-     */
-    public static int[] getDefaultAvatars(int index){
-        int[] strings = {R.mipmap.avatar_01, R.mipmap.avatar_02, R.mipmap.avatar_03, R.mipmap.avatar_04, R.mipmap.avatar_05,
-                R.mipmap.avatar_06, R.mipmap.avatar_07, R.mipmap.avatar_08, R.mipmap.avatar_09, R.mipmap.avatar_10,
-                R.mipmap.avatar_11};
-        return strings;
     }
 
     /*******************  froms  *********************/

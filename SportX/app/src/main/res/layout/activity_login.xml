@@ -4,14 +4,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/gray_background"
     tools:context="com.xiang.sportx.LoginActivity">
 
-    <com.xiang.view.MyTitleBar
+    <com.xiang.view.MyTitleBarLight
         android:id="@+id/titleBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-    </com.xiang.view.MyTitleBar>
+    </com.xiang.view.MyTitleBarLight>
 
     <com.rengwuxian.materialedittext.MaterialEditText
         android:id="@+id/met_phone"
@@ -105,7 +106,7 @@
         android:layout_marginRight="@dimen/match_parent_margin"
         android:layout_marginTop="20dp"
         android:textColor="@color/main_color"
-        android:text="注册"
+        android:text="快速注册"
         app:pb_colorComplete="@color/white"
         app:pb_colorNormal="@color/white"
         app:pb_colorPressed="@color/white_pressed"/>

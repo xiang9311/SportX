@@ -1,6 +1,7 @@
 package com.xiang.factory;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +12,9 @@ import android.widget.TextView;
 
 import com.rey.material.widget.CheckBox;
 import com.rey.material.widget.RadioButton;
+import com.xiang.sportx.LoginActivity;
 import com.xiang.sportx.R;
+import com.xiang.sportx.RegisterActivity;
 import com.xiang.view.MateriaDialogWidthCheckBox;
 import com.xiang.view.TwoOptionMaterialDialog;
 
@@ -21,6 +24,33 @@ import com.xiang.view.TwoOptionMaterialDialog;
 public class MaterialDialogFactory {
     private static int LAYOUT_TWO_OPTION = R.layout.md_two_option;
     private static int LAYOUT_CAN_CHECK = R.layout.md_with_checkbox;
+
+    /**
+     * 返回登录 或注册的对话框
+     * @param context
+     * @return
+     */
+    public static TwoOptionMaterialDialog createLoginOrRegisterMd(final Context context) {
+        String[] options = new String[]{"登录", "注册"};
+        TwoOptionMaterialDialog md_login_register = createTwoOptionMd(context, options, false, 0, true);
+        md_login_register = MaterialDialogFactory.createTwoOptionMd(context, options, false, 0, true);
+        final TwoOptionMaterialDialog finalMd_login_register = md_login_register;
+        md_login_register.setOnOptionChooseListener(new TwoOptionMaterialDialog.OnOptionChooseListener() {
+            @Override
+            public void onOptionChoose(int index) {
+                if(index == 0){
+                    context.startActivity(new Intent(context, LoginActivity.class));
+                    finalMd_login_register.dismiss();
+                } else{
+                    context.startActivity(new Intent(context, RegisterActivity.class));
+                    finalMd_login_register.dismiss();
+                }
+            }
+        });
+        md_login_register.setTitle("您还未登录");
+        md_login_register.setCanceledOnTouchOutside(true);
+        return md_login_register;
+    }
 
     /**
      *

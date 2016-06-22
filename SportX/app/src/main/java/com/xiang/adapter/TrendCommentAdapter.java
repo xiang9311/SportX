@@ -1,7 +1,6 @@
 package com.xiang.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -21,7 +20,6 @@ import com.xiang.Util.SportXIntent;
 import com.xiang.factory.DisplayOptionsFactory;
 import com.xiang.listener.OnRclViewItemClickListener;
 import com.xiang.proto.nano.Common;
-import com.xiang.sportx.GymDetailActivity;
 import com.xiang.sportx.R;
 import com.xiang.view.PlaceNameSpan;
 import com.xiang.view.UserNameSpan;
@@ -117,10 +115,7 @@ public class TrendCommentAdapter extends BaseRecyclerAdapter<TrendCommentAdapter
             PlaceNameSpan placeNameSpan = new PlaceNameSpan(context, new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(context, GymDetailActivity.class);
-                    //TODO
-                    intent.putExtra(Constant.FROM, Constant.FROM_PLACE_IN_TREND);
-                    context.startActivity(intent);
+                    SportXIntent.gotoGymDetailActivity(context, comment.gymId);
                 }
             });
             span.setSpan(placeNameSpan, 0, comment.gymName.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);

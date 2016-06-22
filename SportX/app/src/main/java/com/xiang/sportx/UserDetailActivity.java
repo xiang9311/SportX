@@ -23,10 +23,12 @@ import com.xiang.Util.ArrayUtil;
 import com.xiang.Util.Constant;
 import com.xiang.Util.SportXIntent;
 import com.xiang.Util.UserInfoUtil;
+import com.xiang.Util.UserStatic;
 import com.xiang.adapter.TrendAdapter;
 import com.xiang.base.BaseHandler;
 import com.xiang.database.helper.BriefUserHelper;
 import com.xiang.factory.DisplayOptionsFactory;
+import com.xiang.factory.MaterialDialogFactory;
 import com.xiang.proto.nano.Common;
 import com.xiang.proto.pilot.nano.Pilot;
 import com.xiang.request.RequestUtil;
@@ -34,6 +36,7 @@ import com.xiang.request.UrlUtil;
 import com.xiang.thread.GetTrendThread;
 import com.xiang.thread.LikeTrendThread;
 import com.xiang.view.MyTitleBar;
+import com.xiang.view.TwoOptionMaterialDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +58,7 @@ public class UserDetailActivity extends BaseAppCompatActivity {
     private TextView tv_guanzhu_count, tv_fensi_count, tv_trend_count;
     private LinearLayout ll_guanzhu, ll_fensi, ll_trend;
 
+    private TwoOptionMaterialDialog md_login_register;
     // adapter
     private TrendAdapter trendAdapter;
 
@@ -183,15 +187,29 @@ public class UserDetailActivity extends BaseAppCompatActivity {
         tv_follow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new GuanzhuThread(!detailUser.isFollowed).start();
+                if (UserStatic.logged) {
+                    new GuanzhuThread(!detailUser.isFollowed).start();
+                }  else{
+                    if(md_login_register == null){
+                        md_login_register = MaterialDialogFactory.createLoginOrRegisterMd(UserDetailActivity.this);
+                    }
+                    md_login_register.show();
+                }
             }
         });
         tv_chat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //启动会话界面
-                if (RongIM.getInstance() != null)
-                    RongIM.getInstance().startPrivateChat(UserDetailActivity.this, userId+"", userName);
+                if (UserStatic.logged) {
+                    if (RongIM.getInstance() != null)
+                        RongIM.getInstance().startPrivateChat(UserDetailActivity.this, userId + "", userName);
+                }  else{
+                    if(md_login_register == null){
+                        md_login_register = MaterialDialogFactory.createLoginOrRegisterMd(UserDetailActivity.this);
+                    }
+                    md_login_register.show();
+                }
             }
         });
 
@@ -295,6 +313,7 @@ public class UserDetailActivity extends BaseAppCompatActivity {
 
                 case KEY_GET_TREND_LIST_SUC:
                     Pilot.Response10005.Data data = (Pilot.Response10005.Data) msg.obj;
+                    trendAdapter.setLoadingMore(false);
                     if (data.maxCountPerPage > data.trends.length){
                         // 不能加载更多了
                         trendAdapter.setCannotLoadingMore();

@@ -279,7 +279,7 @@
                         android:id="@+id/civ_user_01"
                         style="@style/prefer_user_avatar"
                         android:layout_gravity="center_horizontal"
-                        android:src="@mipmap/avatar_01"/>
+                        android:src="@mipmap/image"/>
 
                     <TextView
                         android:id="@+id/tv_username_01"
@@ -305,7 +305,7 @@
                         android:id="@+id/civ_user_02"
                         style="@style/prefer_user_avatar"
                         android:layout_gravity="center_horizontal"
-                        android:src="@mipmap/avatar_01"/>
+                        android:src="@mipmap/image"/>
 
                     <TextView
                         android:id="@+id/tv_username_02"
@@ -331,7 +331,7 @@
                         android:id="@+id/civ_user_03"
                         style="@style/prefer_user_avatar"
                         android:layout_gravity="center_horizontal"
-                        android:src="@mipmap/avatar_01"/>
+                        android:src="@mipmap/image"/>
 
                     <TextView
                         android:id="@+id/tv_username_03"
@@ -357,7 +357,7 @@
                         android:id="@+id/civ_user_04"
                         style="@style/prefer_user_avatar"
                         android:layout_gravity="center_horizontal"
-                        android:src="@mipmap/avatar_01"/>
+                        android:src="@mipmap/image"/>
 
                     <TextView
                         android:id="@+id/tv_username_04"
@@ -383,7 +383,7 @@
                         android:id="@+id/civ_user_05"
                         style="@style/prefer_user_avatar"
                         android:layout_gravity="center_horizontal"
-                        android:src="@mipmap/avatar_01"/>
+                        android:src="@mipmap/image"/>
 
                     <TextView
                         android:id="@+id/tv_username_05"

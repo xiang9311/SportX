@@ -3,6 +3,7 @@ package com.xiang.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.Nullable;
@@ -20,16 +21,24 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.baidu.location.LocationClient;
 import com.google.protobuf.nano.InvalidProtocolBufferNanoException;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.xiang.Util.ArrayUtil;
 import com.xiang.Util.Constant;
+import com.xiang.Util.LocationUtil;
 import com.xiang.Util.SportTimeUtil;
+import com.xiang.Util.SportXIntent;
+import com.xiang.Util.UserStatic;
+import com.xiang.adapter.SearchedUserAdapter;
 import com.xiang.adapter.TrendAdapter;
 import com.xiang.base.BaseHandler;
 import com.xiang.dafault.DefaultUtil;
 import com.xiang.factory.DisplayOptionsFactory;
+import com.xiang.listener.OnRclViewItemClickListener;
 import com.xiang.proto.nano.Common;
 import com.xiang.proto.pilot.nano.Pilot;
 import com.xiang.proto.trend.nano.Trend;
@@ -37,6 +46,7 @@ import com.xiang.request.RequestUtil;
 import com.xiang.request.UrlUtil;
 import com.xiang.sportx.CommentMessageActivity;
 import com.xiang.sportx.R;
+import com.xiang.thread.GetRecommendUserThread;
 import com.xiang.thread.LikeTrendThread;
 
 import java.util.ArrayList;
@@ -45,7 +55,7 @@ import java.util.List;
 /**
  * Created by 祥祥 on 2016/4/25.
  */
-public class FollowFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
+public class FollowFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener, BDLocationListener {
 
     private View mView;
     private RecyclerView rv_trend;
@@ -61,10 +71,13 @@ public class FollowFragment extends BaseFragment implements SwipeRefreshLayout.O
 
     // data
     private List<Common.Trend> trendList = new ArrayList<>();
+    private List<Common.SearchedUser> searchedUsers = new ArrayList<>();
+    private SearchedUserAdapter searchedUserAdapter;
     Common.TrendBriefMessage message = DefaultUtil.getTrendBriefMessage();
     private int trendPageIndex = 0;
     private boolean addMoreTrend = false;
     private int maxCountPerPage_trend = 0;
+    private Location location;
 
     private boolean canLoadingMoreTrend = false;
     private long lastRefreshTime = 0;
@@ -73,9 +86,14 @@ public class FollowFragment extends BaseFragment implements SwipeRefreshLayout.O
     // tools
     private ImageLoader imageLoader = ImageLoader.getInstance();
     private DisplayImageOptions avatarOptions = DisplayOptionsFactory.createAvatarIconOption();
+    private LocationClient mLocationClient;
 
     @Override
     protected void onInitFragment() {
+        mLocationClient = new LocationClient(getContext().getApplicationContext());     //声明LocationClient类
+        mLocationClient.registerLocationListener(this);    //注册监听函数
+        mLocationClient.setLocOption(LocationUtil.getLocationClientOption());
+
         rv_trend = (RecyclerView) mView.findViewById(R.id.rv_follow_trend);
         rv_user = (RecyclerView) mView.findViewById(R.id.rv_recommend_user);
         swipeRefreshLayout = (SwipeRefreshLayout) mView.findViewById(R.id.srl_follow);
@@ -83,17 +101,21 @@ public class FollowFragment extends BaseFragment implements SwipeRefreshLayout.O
         swipeRefreshLayout.setOnRefreshListener(this);
 
         initHead();
-        // init trend
-        if ( ! initTrend()){
-            // TODO trend 没有内容 则需要显示推荐的列表, 此操作应该在获取trend之后进行
-        }
+        initTrend();
+        initUser();
 
         mHandler = new MyHandler(getContext(), swipeRefreshLayout);
-        new GetFollowTrendThread().start();
+
+        if(UserStatic.logged) {
+            new GetFollowTrendThread().start();
+        } else{
+            // 获取地理位置，然后再回调方法中获取推荐用户
+            mLocationClient.start();
+            rv_trend.setVisibility(View.GONE);
+            rv_user.setVisibility(View.VISIBLE);
+        }
 
         lastRefreshTime = System.currentTimeMillis();
-
-        //TODO 未登录的话获取推荐的trend
     }
 
     private void initHead() {
@@ -170,7 +192,26 @@ public class FollowFragment extends BaseFragment implements SwipeRefreshLayout.O
         return false;
     }
 
-    private boolean initTrend() {
+    private void initUser(){
+        searchedUserAdapter = new SearchedUserAdapter(getContext(), searchedUsers, rv_user);
+        searchedUserAdapter.setOnRclViewItemClickListener(new OnRclViewItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                SportXIntent.gotoUserDetail(getContext(), searchedUsers.get(position).userId, searchedUsers.get(position).userName);
+            }
+
+            @Override
+            public void OnItemLongClick(View view, int position) {
+
+            }
+        });
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+
+        rv_user.setAdapter(searchedUserAdapter);
+        rv_user.setLayoutManager(layoutManager);
+    }
+
+    private void initTrend() {
         trendAdapter = new TrendAdapter(getContext(), trendList, rv_trend, Constant.FROM_FOLLOW);
         trendAdapter.setOnLikeItemClickListener(new TrendAdapter.OnLikeItemClickListener() {
             @Override
@@ -220,7 +261,6 @@ public class FollowFragment extends BaseFragment implements SwipeRefreshLayout.O
             }
         });
 
-        return true;
     }
 
     @Nullable
@@ -236,15 +276,52 @@ public class FollowFragment extends BaseFragment implements SwipeRefreshLayout.O
 
     @Override
     public void onRefresh() {
-        addMoreTrend = false;
-        lastRefreshTime = System.currentTimeMillis();
-        trendPageIndex = 0;
-        new GetFollowTrendThread().start();
+        if (UserStatic.logged) {
+            addMoreTrend = false;
+            lastRefreshTime = System.currentTimeMillis();
+            trendPageIndex = 0;
+            new GetFollowTrendThread().start();
+            rv_trend.setVisibility(View.VISIBLE);
+            rv_user.setVisibility(View.GONE);
+        } else{
+            rv_trend.setVisibility(View.GONE);
+            rv_user.setVisibility(View.VISIBLE);
+            if (location != null) {
+                new GetRecommendUserThread(mHandler, location).start();
+            } else {
+                mLocationClient.start();
+            }
+        }
     }
 
     private final int KEY_GET_TRENDS_SUC = 101;
     private final int KEY_GET_BRIEF_MESSAGE_SUC = 102;
     private MyHandler mHandler;
+
+    @Override
+    public void onReceiveLocation(BDLocation bdLocation) {
+        location = new Location("baidu");
+        location.setLongitude(bdLocation.getLongitude());
+        location.setLatitude(bdLocation.getLatitude());
+
+        if (bdLocation.getLocType() == BDLocation.TypeGpsLocation){// GPS定位结果
+
+        } else if (bdLocation.getLocType() == BDLocation.TypeNetWorkLocation){// 网络定位结果
+
+        } else if (bdLocation.getLocType() == BDLocation.TypeOffLineLocation) {// 离线定位结果
+        } else if (bdLocation.getLocType() == BDLocation.TypeServerError) {
+            location = null;
+        } else if (bdLocation.getLocType() == BDLocation.TypeNetWorkException) {
+            location = null;
+        } else if (bdLocation.getLocType() == BDLocation.TypeCriteriaException) {
+            location = null;
+        }
+        if (!UserStatic.logged){
+            new GetRecommendUserThread(mHandler, location).start();
+        }
+        mLocationClient.stop();
+    }
+
     class MyHandler extends BaseHandler{
 
         public MyHandler(Context context, SwipeRefreshLayout mSwipeRefreshLayout) {
@@ -305,6 +382,14 @@ public class FollowFragment extends BaseFragment implements SwipeRefreshLayout.O
                 case KEY_GET_BRIEF_MESSAGE_SUC:
                     message = (Common.TrendBriefMessage) msg.obj;
                     configHead();
+                    break;
+
+                case KEY_GET_RECOMMENDUSER_SUC:
+                    Common.SearchedUser[] users = (Common.SearchedUser[]) msg.obj;
+                    searchedUsers.clear();
+                    searchedUsers.addAll(ArrayUtil.Array2List(users));
+                    searchedUserAdapter.notifyDataSetChanged();
+                    swipeRefreshLayout.setRefreshing(false);
                     break;
             }
         }

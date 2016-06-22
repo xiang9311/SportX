@@ -3,6 +3,7 @@ package com.xiang.thread;
 import android.os.Message;
 
 import com.google.protobuf.nano.InvalidProtocolBufferNanoException;
+import com.xiang.Util.UserStatic;
 import com.xiang.base.BaseHandler;
 import com.xiang.proto.nano.Common;
 import com.xiang.proto.trend.nano.Trend;
@@ -29,6 +30,12 @@ public class LikeTrendThread extends Thread{
     @Override
     public void run() {
         super.run();
+
+        if (!UserStatic.logged){
+            mHandler.sendEmptyMessage(BaseHandler.KEY_NEED_LOGGED);
+            return ;
+        }
+
         long currentMills = System.currentTimeMillis();
         int cmdid = 12005;
         Trend.Request12005 request = new Trend.Request12005();

@@ -15,6 +15,9 @@ public class ArrayUtil {
      */
     public static <T> List<T> Array2List(T[] array){
         List<T> list = new ArrayList<T>();
+        if (array == null){
+            return list;
+        }
         for (T t: array) {
             list.add(t);
         }

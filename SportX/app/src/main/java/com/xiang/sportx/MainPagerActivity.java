@@ -17,6 +17,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.xiang.Util.ActivityUtil;
 import com.xiang.Util.Constant;
@@ -40,6 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.rong.imkit.RongIM;
+import io.rong.imlib.model.Conversation;
 import io.rong.imlib.model.UserInfo;
 
 public class MainPagerActivity extends BaseAppCompatActivity {
@@ -50,12 +52,15 @@ public class MainPagerActivity extends BaseAppCompatActivity {
     private RelativeLayout rl_discover, rl_follow, rl_user, rl[], rl_chat;
     private ImageView iv_search, iv_add_trend;
     private TwoOptionMaterialDialog md_login_register;
+    private TextView tv_message_count;
 
     private MainPagerAdapter mainPagerAdapter;
     private static List<Fragment> fragmentList;
 
     private BriefUserHelper briefUserHelper = new BriefUserHelper(this);
     private SharedPreferences sp;
+
+    private int unReadMessageCount = 0;
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
@@ -106,6 +111,17 @@ public class MainPagerActivity extends BaseAppCompatActivity {
                 }
             }
         }, true);
+
+        RongIM.getInstance().setOnReceiveUnreadCountChangedListener(new RongIM.OnReceiveUnreadCountChangedListener() {
+            @Override
+            public void onMessageIncreased(int i) {
+                unReadMessageCount = i;
+                if (unReadMessageCount < 0) {
+                    unReadMessageCount = 0;
+                }
+                configUnReadMessageCount();
+            }
+        }, Conversation.ConversationType.PRIVATE);
     }
 
 
@@ -124,6 +140,7 @@ public class MainPagerActivity extends BaseAppCompatActivity {
         rl_user = (RelativeLayout) findViewById(R.id.rl_user);
         iv_search = (ImageView) findViewById(R.id.iv_search);
         iv_add_trend = (ImageView) findViewById(R.id.iv_add_trend);
+        tv_message_count = (TextView) findViewById(R.id.tv_message_count);
     }
 
     @Override
@@ -161,6 +178,9 @@ public class MainPagerActivity extends BaseAppCompatActivity {
 
     @Override
     protected void configView() {
+
+        configUnReadMessageCount();
+
         viewPager.setOffscreenPageLimit(4);        // 缓存的page数量
         viewPager.setAdapter(mainPagerAdapter);
 
@@ -204,7 +224,7 @@ public class MainPagerActivity extends BaseAppCompatActivity {
         });
 
 
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener(){
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
             @Override
             public void onPageScrollStateChanged(int arg0) {
@@ -219,26 +239,27 @@ public class MainPagerActivity extends BaseAppCompatActivity {
 //                if(arg1 > 0.1 && arg1 < 0.9)
 //                    fl_wrapper.setDragable(false);
 
-                arg1 = arg1 < 0? 0 : arg1;
-                arg1 = arg1 > 1? 1 : arg1;
+                arg1 = arg1 < 0 ? 0 : arg1;
+                arg1 = arg1 > 1 ? 1 : arg1;
                 int current = viewPager.getCurrentItem();    //当前会变化
                 int next = arg0;
-                if(current == next && current < SectionFragmentCOUNT - 1){
-                    rl[current+1].setAlpha(arg1*0.6f+0.4f);
-                    rl[current].setAlpha((1-arg1)*0.6f+0.4f);
-                }
-                else if(current > next){
-                    rl[current].setAlpha(arg1*0.6f+0.4f);
-                    rl[next].setAlpha((1-arg1)*0.6f+0.4f);
-                }
-                else{
+                if (current == next && current < SectionFragmentCOUNT - 1) {
+                    rl[current + 1].setAlpha(arg1 * 0.6f + 0.4f);
+                    rl[current].setAlpha((1 - arg1) * 0.6f + 0.4f);
+                } else if (current > next) {
+                    rl[current].setAlpha(arg1 * 0.6f + 0.4f);
+                    rl[next].setAlpha((1 - arg1) * 0.6f + 0.4f);
+                } else {
 //					Log.d(TAG,"不能往右划了");
                 }
             }
 
             @Override
             public void onPageSelected(int arg0) {
-                Log.d("onPageSelected",""+arg0);
+                Log.d("onPageSelected", "" + arg0);
+                if (arg0 == 0) {
+                    ((GymFragment) fragmentList.get(0)).refreshIfNeed();
+                }
             }
 
         });
@@ -255,18 +276,18 @@ public class MainPagerActivity extends BaseAppCompatActivity {
         iv_add_trend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(UserStatic.logged) {
+                if (UserStatic.logged) {
                     startActivity(new Intent(MainPagerActivity.this, CreateTrendActivity.class));
-                } else{
-                    if(md_login_register == null){
+                } else {
+                    if (md_login_register == null) {
                         String[] options = new String[]{"登录", "注册"};
                         md_login_register = MaterialDialogFactory.createTwoOptionMd(MainPagerActivity.this, options, false, 0, true);
                         md_login_register.setOnOptionChooseListener(new TwoOptionMaterialDialog.OnOptionChooseListener() {
                             @Override
                             public void onOptionChoose(int index) {
-                                if(index == 0){
+                                if (index == 0) {
                                     startActivity(new Intent(MainPagerActivity.this, LoginActivity.class));
-                                } else{
+                                } else {
                                     startActivity(new Intent(MainPagerActivity.this, RegisterActivity.class));
                                 }
                             }
@@ -289,6 +310,15 @@ public class MainPagerActivity extends BaseAppCompatActivity {
         if(UserStatic.logged && LoginUtil.GotoMessageWhenStart){
             startActivity(new Intent(MainPagerActivity.this, CommentMessageActivity.class));
             LoginUtil.GotoMessageWhenStart = false;
+        }
+    }
+
+    private void configUnReadMessageCount(){
+        if (unReadMessageCount <= 0){
+            tv_message_count.setVisibility(View.INVISIBLE);
+        } else{
+            tv_message_count.setText(unReadMessageCount + "");
+            tv_message_count.setVisibility(View.VISIBLE);
         }
     }
 

@@ -129,28 +129,55 @@
             </RelativeLayout>
 
             <RelativeLayout
-                android:id="@+id/rl_chat"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                style="@style/main_tab_bottom_rl">
+                android:layout_weight="1">
+
+                <RelativeLayout
+                    android:id="@+id/rl_chat"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    style="@style/main_tab_bottom_rl">
+
+                    <ImageView
+                        android:id="@+id/iv_2"
+                        android:layout_width="@dimen/bottom_image_size"
+                        android:layout_height="@dimen/bottom_image_size"
+                        android:src="@mipmap/chat"
+                        android:layout_centerHorizontal="true"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:singleLine="true"
+                        android:gravity="center"
+                        android:layout_below="@+id/iv_2"
+                        style="@style/main_tab_bottom_tv"
+                        android:text="聊天"/>
+
+                </RelativeLayout>
 
                 <ImageView
-                    android:id="@+id/iv_2"
+                    android:id="@+id/iv_22"
                     android:layout_width="@dimen/bottom_image_size"
                     android:layout_height="@dimen/bottom_image_size"
-                    android:src="@mipmap/chat"
-                    android:layout_centerHorizontal="true"/>
+                    android:layout_centerHorizontal="true"
+                    android:visibility="invisible"/>
 
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:singleLine="true"
+                    android:id="@+id/tv_message_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="13dp"
+                    android:minWidth="13dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginTop="5dp"
+                    android:layout_toRightOf="@+id/iv_22"
+                    android:layout_marginLeft="-2dp"
+                    android:background="@drawable/shape_message_count"
                     android:gravity="center"
-                    android:layout_below="@+id/iv_2"
-                    style="@style/main_tab_bottom_tv"
-                    android:text="聊天"/>
-
+                    android:textColor="@color/white"
+                    android:textSize="10dp"
+                    android:text="0"/>
             </RelativeLayout>
 
             <RelativeLayout

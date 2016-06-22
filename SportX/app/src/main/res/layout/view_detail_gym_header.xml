@@ -27,8 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:textSize="@dimen/text_normal"
-            android:textColor="@color/text_normal"
-            android:text="欧意健身房"/>
+            android:textColor="@color/text_normal"/>
 
         <TextView
             android:id="@+id/tv_place"
@@ -37,8 +36,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/text_light"
-            android:textSize="@dimen/text_small"
-            android:text="地址：北京市海淀区知春路25号院"/>
+            android:textSize="@dimen/text_small"/>
 
         <RelativeLayout
             android:id="@+id/rl_0"
@@ -68,8 +66,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/text_gym_intro_content"
-                android:layout_toRightOf="@+id/iv_div_0"
-                android:text="健身房 跑步机 游泳馆"/>
+                android:layout_toRightOf="@+id/iv_div_0"/>
 
         </RelativeLayout>
 
@@ -100,8 +97,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/text_gym_intro_content"
-                android:layout_toRightOf="@+id/iv_div_1"
-                android:text="瑜伽 普拉提 健身操"/>
+                android:layout_toRightOf="@+id/iv_div_1"/>
 
         </RelativeLayout>
 
@@ -132,8 +128,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/text_gym_intro_content"
-                android:layout_toRightOf="@+id/iv_div_2"
-                android:text="体验卡/90元 月卡/900元 年卡/2000元"/>
+                android:layout_toRightOf="@+id/iv_div_2"/>
 
         </RelativeLayout>
 
@@ -165,8 +160,7 @@
                 android:layout_height="wrap_content"
                 android:paddingTop="5dp"
                 style="@style/text_gym_intro_content"
-                android:layout_toRightOf="@+id/iv_div_3"
-                android:text="仅限一次体验完毕男女不限仅限16岁（含）以上至60（含）以下体验不适宜参加人群：患有心肺功能疾病、脊椎病、皮肤病及一切传染病患者。本方案仅限首次体验，不可重复使用，商家原会员不可使用美团券提供免费洗浴免费提供储物柜"/>
+                android:layout_toRightOf="@+id/iv_div_3"/>
 
         </RelativeLayout>
 

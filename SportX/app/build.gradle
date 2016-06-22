@@ -10,6 +10,16 @@ android {
         }
     }
 
+    //签名
+    signingConfigs{
+        release {
+            storeFile file("D:\\MyWork\\keystore\\xiangkey.jks")
+            storePassword "Xiang2491147"
+            keyAlias "xiang"
+            keyPassword "Xiang2491147"
+        }
+    }
+
     defaultConfig {
         applicationId "com.xiang.sportx"
         minSdkVersion 16
@@ -19,10 +29,33 @@ android {
     }
     buildTypes {
         release {
+            //混淆
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
+
+    productFlavors {
+
+        wandoujia {}
+        baidu {}
+        tencent {}
+        xiaomi {}
+        meizu {}
+        huawei {}
+        googleplay {}
+        web {}
+        xianxia {}
+        jiuyizhushou {}
+        androidmarket {}
+
+        productFlavors.all { flavor ->
+            flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
+        }
+
+    }
+
 }
 
 repositories{
@@ -36,8 +69,6 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile name: 'SMSSDK-2.0.2', ext: 'aar'
     compile name: 'SMSSDKGUI-2.0.2', ext: 'aar'
-
-
     compile 'com.android.support:appcompat-v7:23.2.1'
     compile files('libs/universal-image-loader-1.9.3.jar')
     compile 'de.hdodenhof:circleimageview:2.0.0'
@@ -58,4 +89,7 @@ dependencies {
     compile 'com.github.dmytrodanylyk.android-process-button:library:1.0.4'
     // 带有进度条的按钮
     compile 'com.ToxicBakery.viewpager.transforms:view-pager-transforms:1.2.32@aar'
+    compile files('libs/BaiduLBS_Android.jar')
+    // 友盟统计分析
+    compile 'com.umeng.analytics:analytics:latest.integration'
 }

@@ -9,7 +9,9 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.xiang.factory.MaterialDialogFactory;
 import com.xiang.sportx.BaseAppCompatActivity;
+import com.xiang.view.TwoOptionMaterialDialog;
 
 /**
  * Created by 祥祥 on 2016/3/21.
@@ -29,6 +31,7 @@ public class BaseHandler extends Handler {
     public static final int KEY_TOAST = 1000;
     public static final int KEY_TOAST_LONG = 1001;
     public static final int KEY_DISSMISS_PROGRESS = 1002;
+    public static final int KEY_NEED_LOGGED = 1003;
     public static final int KEY_ERROR = 2001;
     public static final int KEY_SUCCESS = 2000;
     public static final int KEY_NO_RES = 2002;
@@ -66,6 +69,10 @@ public class BaseHandler extends Handler {
      * 获取gym列表成功
      */
     public static final int KEY_GET_GYM_LIST_SUC = 3008;
+    /**
+     * 获取用户简要信息
+     */
+    public static final int KEY_GET_RECOMMENDUSER_SUC = 3009;
 
     @Override
     public void handleMessage(Message msg) {
@@ -124,6 +131,11 @@ public class BaseHandler extends Handler {
                 } catch(Exception e){
 
                 }
+                break;
+
+            case KEY_NEED_LOGGED:
+                TwoOptionMaterialDialog md_login_register = MaterialDialogFactory.createLoginOrRegisterMd(context);
+                md_login_register.show();
                 break;
         }
     }

@@ -3,6 +3,8 @@ package com.xiang.Util;
 import android.content.Context;
 import android.content.Intent;
 
+import com.xiang.sportx.GymDetailActivity;
+import com.xiang.sportx.MapActivity;
 import com.xiang.sportx.UserDetailActivity;
 import com.xiang.sportx.UserListActivity;
 
@@ -29,6 +31,25 @@ public class SportXIntent {
         intent.putExtra(Constant.USER_ID, relatedUserId);
         intent.putExtra(Constant.USER_NAME, username);
         intent.putExtra(Constant.FIND_WHAT, findWhat);
+        context.startActivity(intent);
+    }
+
+    /**
+     * 跳转详情页面
+     * @param context
+     * @param gymId gymId
+     */
+    public static void gotoGymDetailActivity(Context context, int gymId){
+        Intent intent = new Intent(context, GymDetailActivity.class);
+        intent.putExtra(Constant.GYM_ID, gymId);
+        context.startActivity(intent);
+    }
+
+    public static void gotoMapActivity(Context context, String gymName, float latitude, float longitude){
+        Intent intent = new Intent(context, MapActivity.class);
+        intent.putExtra(Constant.GYM_NAME, gymName);
+        intent.putExtra(Constant.LATITUDE, latitude);
+        intent.putExtra(Constant.LONGITUDE, longitude);
         context.startActivity(intent);
     }
 }

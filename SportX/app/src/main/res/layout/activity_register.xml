@@ -7,12 +7,12 @@
     android:background="@color/gray_background"
     tools:context="com.xiang.sportx.RegisterActivity">
 
-    <com.xiang.view.MyTitleBar
+    <com.xiang.view.MyTitleBarLight
         android:id="@+id/titleBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-    </com.xiang.view.MyTitleBar>
+    </com.xiang.view.MyTitleBarLight>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/vp_register"

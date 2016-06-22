@@ -25,3 +25,50 @@
 #==================protobuf======================
 -dontwarn com.google.**
 -keep class com.google.protobuf.** {*;}
+#==================baidu map=====================
+-keep class com.baidu.** {*;}
+-keep class vi.com.** {*;}
+-dontwarn com.baidu.**
+#==================rongyun=======================
+-keepclassmembers class fqcn.of.javascript.interface.for.webview {
+ public *;
+}
+
+-keepattributes Exceptions,InnerClasses
+
+-keep class io.rong.** {*;}
+
+-keep class * implements io.rong.imlib.model.MessageContent{*;}
+
+-keepattributes Signature
+
+-keepattributes *Annotation*
+
+-keep class sun.misc.Unsafe { *; }
+
+-keep class com.google.gson.examples.android.model.** { *; }
+
+-keepclassmembers class * extends com.sea_monster.dao.AbstractDao {
+ public static java.lang.String TABLENAME;
+}
+-keep class **$Properties
+-dontwarn org.eclipse.jdt.annotation.**
+
+-keep class com.ultrapower.** {*;}
+#======================== imageloader =========================
+-dontwarn com.nostra13.universalimageloader.**
+
+-keep class com.nostra13.universalimageloader.** { *; }
+#======================== sharesdk ============================
+-keep class cn.sharesdk.**{*;}
+-keep class com.sina.**{*;}
+-keep class **.R$* {*;}
+-keep class **.R{*;}
+-dontwarn cn.sharesdk.**
+-dontwarn **.R$*
+-keep class m.framework.**{*;}
+-keep class android.net.http.SslError
+-keep class com.mob.tools.utils
+-keep class com.xxx.share.onekey.theme.classic.EditPage
+
+-keep class com.xiang.view**

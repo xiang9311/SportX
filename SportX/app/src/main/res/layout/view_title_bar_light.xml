@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rv_root"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/top_height"
+    android:background="@color/gray_background">
+
+    <ImageView
+        android:id="@+id/iv_back"
+        android:layout_width="40dp"
+        android:layout_height="@dimen/top_height"
+        android:scaleType="fitCenter"
+        android:paddingTop="9dp"
+        android:paddingBottom="9dp"
+        android:clickable="true"
+        android:background="@drawable/selector_graybackground_to_gray"
+        android:src="@mipmap/back_main"/>
+
+    <TextView
+        android:id="@+id/tv_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/iv_back"
+        android:layout_toLeftOf="@+id/iv_more"
+        android:textColor="@color/main_color"
+        android:textSize="@dimen/text_big"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="5dp"
+        android:singleLine="true"/>
+
+    <ImageView
+        android:id="@+id/iv_more"
+        android:layout_width="@dimen/top_height"
+        android:layout_height="@dimen/top_height"
+        android:layout_alignParentRight="true"
+        android:padding="9dp"
+        android:scaleType="fitCenter"
+        android:background="@drawable/selector_graybackground_to_gray"
+        android:visibility="gone"
+        android:src="@mipmap/image"/>
+
+    <TextView
+        android:id="@+id/tv_more"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/top_height"
+        android:layout_alignParentRight="true"
+        android:padding="9dp"
+        android:textColor="@color/main_color"
+        android:textSize="@dimen/text_normal"
+        android:visibility="gone"
+        android:gravity="center"
+        android:clickable="true"
+        android:background="@drawable/selector_graybackground_to_gray"
+        android:text="发布" />
+
+</RelativeLayout>

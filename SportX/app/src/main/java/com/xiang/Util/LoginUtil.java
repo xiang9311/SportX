@@ -3,6 +3,12 @@ package com.xiang.Util;
 import android.content.Context;
 import android.util.Log;
 
+import com.xiang.handler.GetRongyunHandler;
+import com.xiang.proto.nano.Common;
+import com.xiang.proto.pilot.nano.Token;
+import com.xiang.request.RequestUtil;
+import com.xiang.thread.GetRongyunTokenThread;
+
 import java.util.Set;
 
 import cn.jpush.android.api.JPushInterface;
@@ -24,13 +30,33 @@ public class LoginUtil {
                 Log.d("gotResult", "gotResult:" + i + s);
             }
         });
+
+        connectRongyun(new GetRongyunHandler());
+    }
+
+    public static void connectRongyun(final GetRongyunHandler handler){
         /**
          * 连接融云
          */
         RongIM.connect(UserStatic.rongyunToken, new RongIMClient.ConnectCallback() {
             @Override
             public void onTokenIncorrect() {
+
+                UserStatic.tryTimes ++;
+                if(UserStatic.tryTimes > 3){
+                    return ;
+                }
+
                 Log.d("rongyun", "onTokenIncorrect");
+                long currentMills = System.currentTimeMillis();
+                int cmdid = 11002;
+                Token.Request11002 request = new Token.Request11002();
+                Token.Request11002.Params params = new Token.Request11002.Params();
+                Common.RequestCommon common = RequestUtil.getProtoCommon(cmdid, currentMills);
+                request.common = common;
+                request.params = params;
+                params.oldTokenCannotUse = true;
+                new GetRongyunTokenThread(handler, request).start();
             }
 
             @Override

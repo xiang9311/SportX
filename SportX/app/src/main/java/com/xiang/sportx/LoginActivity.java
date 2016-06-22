@@ -25,11 +25,11 @@ import com.xiang.proto.nano.Common;
 import com.xiang.proto.pilot.nano.Pilot;
 import com.xiang.request.RequestUtil;
 import com.xiang.request.UrlUtil;
-import com.xiang.view.MyTitleBar;
+import com.xiang.view.MyTitleBarLight;
 
 public class LoginActivity extends BaseAppCompatActivity {
 
-    private MyTitleBar titleBar;
+    private MyTitleBarLight titleBar;
     private MaterialEditText met_phone, met_password;
     private ActionProcessButton apb_login, apb_register;
     private CheckBox cb_auto_login;                 // 自动登录
@@ -54,8 +54,6 @@ public class LoginActivity extends BaseAppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
     }
 
     @Override
@@ -63,13 +61,15 @@ public class LoginActivity extends BaseAppCompatActivity {
         setContentView(R.layout.activity_login);
         from = getIntent().getIntExtra(Constant.FROM, -1);
 
-        titleBar = (MyTitleBar) findViewById(R.id.titleBar);
+        titleBar = (MyTitleBarLight) findViewById(R.id.titleBar);
         met_phone = (MaterialEditText) findViewById(R.id.met_phone);
         met_password = (MaterialEditText) findViewById(R.id.met_password);
         apb_login = (ActionProcessButton) findViewById(R.id.apb_login);
         apb_register = (ActionProcessButton) findViewById(R.id.apb_register);
         cb_auto_login = (CheckBox) findViewById(R.id.cb_auto_login);
         cb_remember_password = (CheckBox) findViewById(R.id.cb_remember_password);
+
+        colorId = R.color.gray_background;
     }
 
     @Override
@@ -131,6 +131,7 @@ public class LoginActivity extends BaseAppCompatActivity {
 
         // 是否有记住密码
         if(sp.getBoolean(Constant.REMEMBER, false)){
+            met_password.setText("");
             met_password.setText(sp.getString(Constant.PASSWORD, ""));
             met_phone.setText(sp.getString(Constant.LOGIN_USER_NAME, ""));
         }
@@ -208,6 +209,9 @@ public class LoginActivity extends BaseAppCompatActivity {
                     finish();
                     break;
 
+                case KEY_NO_RES:
+                case KEY_PARSE_ERROR:
+                case KEY_ERROR:
                 case KEY_LOGIN_ERROR:
                     met_password.setEnabled(true);
                     met_phone.setEnabled(true);

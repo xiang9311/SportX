@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/white"
+    android:background="@color/gray_background"
     android:layout_height="match_parent">
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -11,7 +11,7 @@
         android:layout_height="106dp"
         android:layout_marginTop="26dp"
         android:layout_gravity="center_horizontal"
-        android:src="@mipmap/avatar_01"
+        android:src="@mipmap/image"
         app:civ_border_color="@color/main_color"
         app:civ_border_width="2dp"/>
 
@@ -54,7 +54,7 @@
         android:layout_marginLeft="@dimen/match_parent_margin"
         android:layout_marginRight="@dimen/match_parent_margin"
         android:clickable="true"
-        android:background="@drawable/selector_white_to_gray"
+        android:background="@drawable/selector_graybackground_to_gray"
         android:textSize="@dimen/text_normal"
         android:textColor="@color/main_color"
         android:text="性别：男"/>

@@ -41,8 +41,7 @@
             android:layout_marginLeft="8dp"
             android:layout_marginTop="1dp"
             android:textColor="@color/text_high_light"
-            android:textSize="@dimen/text_normal"
-            android:text="名字呀"/>
+            android:textSize="@dimen/text_normal"/>
 
         <ImageView
             android:id="@+id/iv_icon0"
@@ -61,8 +60,7 @@
             android:gravity="center"
             android:layout_alignTop="@+id/iv_icon0"
             android:layout_toRightOf="@+id/iv_icon0"
-            android:layout_marginLeft="3dp"
-            android:text="10000"/>
+            android:layout_marginLeft="3dp"/>
 
         <ImageView
             android:id="@+id/iv_icon1"
@@ -81,8 +79,7 @@
             android:gravity="center"
             android:layout_alignTop="@+id/iv_icon0"
             android:layout_toRightOf="@+id/iv_icon1"
-            android:layout_marginLeft="3dp"
-            android:text="10000"/>
+            android:layout_marginLeft="3dp"/>
 
         <TextView
             android:id="@+id/tv_equipment"
@@ -92,9 +89,8 @@
             android:layout_alignLeft="@+id/iv_icon0"
             android:layout_marginTop="2dp"
             android:textSize="@dimen/text_small"
-            android:maxLength="2"
-            android:ellipsize="end"
-            android:text="器材齐全"/>
+            android:maxLines="2"
+            android:ellipsize="end"/>
 
     </RelativeLayout>
 

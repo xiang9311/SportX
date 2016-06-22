@@ -900,23 +900,23 @@ public interface Gym {
         return _emptyArray;
       }
 
+      // optional int32 gymId = 3;
+      public int gymId;
+
       // optional float longitude = 1;
       public float longitude;
 
       // optional float latitude = 2;
       public float latitude;
 
-      // optional int32 wantGymId = 3;
-      public int wantGymId;
-
       public Params() {
         clear();
       }
 
       public Params clear() {
+        gymId = 0;
         longitude = 0F;
         latitude = 0F;
-        wantGymId = 0;
         cachedSize = -1;
         return this;
       }
@@ -932,8 +932,8 @@ public interface Gym {
             != Float.floatToIntBits(0F)) {
           output.writeFloat(2, this.latitude);
         }
-        if (this.wantGymId != 0) {
-          output.writeInt32(3, this.wantGymId);
+        if (this.gymId != 0) {
+          output.writeInt32(3, this.gymId);
         }
         super.writeTo(output);
       }
@@ -951,9 +951,9 @@ public interface Gym {
           size += com.google.protobuf.nano.CodedOutputByteBufferNano
               .computeFloatSize(2, this.latitude);
         }
-        if (this.wantGymId != 0) {
+        if (this.gymId != 0) {
           size += com.google.protobuf.nano.CodedOutputByteBufferNano
-              .computeInt32Size(3, this.wantGymId);
+              .computeInt32Size(3, this.gymId);
         }
         return size;
       }
@@ -982,7 +982,7 @@ public interface Gym {
               break;
             }
             case 24: {
-              this.wantGymId = input.readInt32();
+              this.gymId = input.readInt32();
               break;
             }
           }

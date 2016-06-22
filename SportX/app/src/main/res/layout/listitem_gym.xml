@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_parent"
     android:paddingLeft="@dimen/padding_lr"
     android:paddingRight="@dimen/padding_lr"
     android:paddingTop="4dp"

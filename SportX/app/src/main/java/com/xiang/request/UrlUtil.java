@@ -48,6 +48,7 @@ public class UrlUtil {
     public static final String URL_VERIFY_PHONE_CAN_USE = BASE_URL + "/pilot/verifyPhoneCanUse";
     public static final String URL_GET_TREND_BRIEF_MESSAGE = BASE_URL + "/pilot/getTrendBriefMessage";
     public static final String URL_GET_BRIEF_USER = BASE_URL + "/pilot/getBriefUser";
+    public static final String URL_GET_RECOMMEND_USER = BASE_URL + "/pilot/getRecommendUser";
 
     /**
      * trend
@@ -63,5 +64,8 @@ public class UrlUtil {
      * gym
      */
     public static final String URL_GET_GYM_LIST = BASE_URL + "/gym/getGymList";
+    public static final String URL_GET_DETAIL_GYM = BASE_URL + "/gym/getGymDetail";
+    public static final String URL_GET_RECOMMEND_GYM = BASE_URL + "/gym/getRecommendGym";
+    public static final String URL_GET_GYM_TREND = BASE_URL + "/gym/getGymTrend";
 
 }

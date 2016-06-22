@@ -2,6 +2,7 @@ package com.xiang.application;
 
 import android.app.Application;
 
+import com.baidu.mapapi.SDKInitializer;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
@@ -66,6 +67,12 @@ public class MainApplication extends Application{
         JPushInterface.setDebugMode(Constant.DEBUG);
         JPushInterface.init(this);
 
+
+        // 百度地图
+        SDKInitializer.initialize(getApplicationContext());
+
+        // 友盟统计
+//        MobclickAgent.setScenarioType(this, );
     }
 
 }

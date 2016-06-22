@@ -33,7 +33,7 @@ public class UserStatic {
     /**
      * 用户的id
      */
-    public static int userId = -1;
+    public static int userId = 0;
     /**
      * 用户的id
      */
@@ -47,6 +47,7 @@ public class UserStatic {
      * 聊天的token
      */
     public static String rongyunToken = "";
+    public static int tryTimes = 0;
 
     /**
      * 签名

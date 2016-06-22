@@ -96,7 +96,6 @@ public class MyDetailActivity extends BaseAppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -124,6 +123,7 @@ public class MyDetailActivity extends BaseAppCompatActivity {
         met_sign.setMaxCharacters(Constant.MAX_LENGTH_SIGN);
         met_sign.setFloatingLabelText("个性签名");
         met_sign.setHint("个性签名");
+
     }
 
     @Override
@@ -178,6 +178,7 @@ public class MyDetailActivity extends BaseAppCompatActivity {
 
                             Pilot.Request10004.Params params = new Pilot.Request10004.Params();
                             params.userName = username;
+                            params.sexChanged = false;
                             new UpdateMyInfoThread(params).start();
 
                         }
@@ -218,6 +219,7 @@ public class MyDetailActivity extends BaseAppCompatActivity {
 
                             Pilot.Request10004.Params params = new Pilot.Request10004.Params();
                             params.sign = sign;
+                            params.sexChanged = false;
                             new UpdateMyInfoThread(params).start();
                         }
                     });
@@ -270,6 +272,7 @@ public class MyDetailActivity extends BaseAppCompatActivity {
                                     Pilot.Request10004.Params params = new Pilot.Request10004.Params();
                                     params.sex = index;
                                     C_WHAT = C_SEX;
+                                    params.sexChanged = true;
                                     new UpdateMyInfoThread(params).start();
                                 }
                             }, 250);  // 这个时间时redio的动画时间
@@ -353,6 +356,7 @@ public class MyDetailActivity extends BaseAppCompatActivity {
                 Pilot.Request10004.Params params = new Pilot.Request10004.Params();
                 params.avatarKey = avatar_key;
                 params.bucketName = bucketName;
+                params.sexChanged = false;
                 new UpdateMyInfoThread(params).start();
             }
         }, null);              // option可以尝试使用，高级策略

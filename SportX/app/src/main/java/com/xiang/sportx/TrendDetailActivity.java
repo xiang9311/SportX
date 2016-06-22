@@ -28,11 +28,14 @@ import com.xiang.Util.ArrayUtil;
 import com.xiang.Util.Constant;
 import com.xiang.Util.SportTimeUtil;
 import com.xiang.Util.SportXIntent;
+import com.xiang.Util.UserStatic;
 import com.xiang.Util.ViewUtil;
 import com.xiang.Util.WindowUtil;
 import com.xiang.adapter.TrendCommentAdapter;
 import com.xiang.base.BaseHandler;
+import com.xiang.database.helper.GymScoreHelper;
 import com.xiang.factory.DisplayOptionsFactory;
+import com.xiang.factory.MaterialDialogFactory;
 import com.xiang.listener.OnRclViewItemClickListener;
 import com.xiang.model.ChoosedGym;
 import com.xiang.proto.nano.Common;
@@ -42,6 +45,7 @@ import com.xiang.request.UrlUtil;
 import com.xiang.thread.LikeTrendThread;
 import com.xiang.transport.TrendStatic;
 import com.xiang.view.MyTitleBar;
+import com.xiang.view.TwoOptionMaterialDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -199,6 +203,12 @@ public class TrendDetailActivity extends BaseAppCompatActivity {
         tv_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if(!UserStatic.logged){
+                    TwoOptionMaterialDialog md_login_register = MaterialDialogFactory.createLoginOrRegisterMd(TrendDetailActivity.this);
+                    md_login_register.show();
+                    return;
+                }
 
                 if (et_comment_text.getText().toString().length() > Constant.MAX_LENGTH_TREND_COMMENT){
                     sendToast("您输入的内容过长。应小于100字。");
@@ -508,6 +518,11 @@ public class TrendDetailActivity extends BaseAppCompatActivity {
                     trend.commentCount ++;
                     configLikeAndCommentCount();
                     et_comment_text.setText("");
+
+                    if (choosedGym != null) {
+                        GymScoreHelper gymScoreHelper = new GymScoreHelper(TrendDetailActivity.this);
+                        gymScoreHelper.whenUseGym(choosedGym.getGymId());
+                    }
                     break;
 
                 case KEY_LIKE_TREND:

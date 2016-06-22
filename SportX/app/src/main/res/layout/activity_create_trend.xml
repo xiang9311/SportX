@@ -3,87 +3,93 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gray_background"
     tools:context="com.xiang.sportx.CreateTrendActivity">
 
-    <com.xiang.view.MyTitleBar
-        android:id="@+id/titleBar"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:background="@color/gray_background">
 
-    </com.xiang.view.MyTitleBar>
-
-    <EditText
-        android:id="@+id/et_trend_content"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/titleBar"
-        android:gravity="top|left"
-        android:background="@color/white"
-        style="@style/main_padding"
-        android:minHeight="140dp"
-        android:maxHeight="260dp"/>
-
-    <com.wefika.flowlayout.FlowLayout
-        android:id="@+id/fl_images"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:layout_below="@+id/et_trend_content">
-
-        <RelativeLayout
-            android:id="@+id/rl_images"
-            android:layout_width="wrap_content"
-            android:clickable="true"
-            android:background="@drawable/selector_white_to_gray"
-            android:layout_margin="@dimen/trend_iv_margin"
+        <com.xiang.view.MyTitleBar
+            android:id="@+id/titleBar"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+        </com.xiang.view.MyTitleBar>
+
+        <EditText
+            android:id="@+id/et_trend_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/titleBar"
+            android:gravity="top|left"
+            android:background="@color/white"
+            style="@style/main_padding"
+            android:minHeight="140dp"
+            android:maxHeight="260dp"/>
+
+        <com.wefika.flowlayout.FlowLayout
+            android:id="@+id/fl_images"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:layout_below="@+id/et_trend_content">
+
+            <RelativeLayout
+                android:id="@+id/rl_images"
+                android:layout_width="wrap_content"
+                android:clickable="true"
+                android:background="@drawable/selector_white_to_gray"
+                android:layout_margin="@dimen/trend_iv_margin"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="@dimen/trend_upload_size"
+                    android:layout_height="@dimen/trend_upload_size"
+                    android:scaleType="centerCrop"
+                    android:src="@mipmap/add"/>
+
+            </RelativeLayout>
+
+        </com.wefika.flowlayout.FlowLayout>
+
+
+
+        <FrameLayout
+            android:id="@+id/fl_0"
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_below="@+id/fl_images"
+            android:background="@color/lightLightGray"/>
+
+        <RelativeLayout
+            android:id="@+id/rl_choose_gym"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/main_padding"
+            android:clickable="true"
+            android:background="@drawable/selector_white_to_gray"
+            android:layout_below="@+id/fl_0">
+
             <ImageView
-                android:layout_width="@dimen/trend_upload_size"
-                android:layout_height="@dimen/trend_upload_size"
+                android:id="@+id/iv_0"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:padding="3dp"
                 android:scaleType="fitCenter"
-                android:padding="7dp"
-                android:src="@mipmap/add"/>
+                android:src="@mipmap/location"/>
+
+            <TextView
+                android:id="@+id/tv_gym_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/iv_0"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:textColor="@color/text_high_light"
+                android:text="选择我的位置 （可以获取更多关注哦）"/>
 
         </RelativeLayout>
-
-    </com.wefika.flowlayout.FlowLayout>
-
-
-
-    <FrameLayout
-        android:id="@+id/fl_0"
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:layout_below="@+id/fl_images"
-        android:background="@color/lightLightGray"/>
-
-    <RelativeLayout
-        android:id="@+id/rl_choose_gym"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        style="@style/main_padding"
-        android:clickable="true"
-        android:background="@drawable/selector_white_to_gray"
-        android:layout_below="@+id/fl_0">
-
-        <ImageView
-            android:id="@+id/iv_0"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:padding="3dp"
-            android:scaleType="fitCenter"
-            android:src="@mipmap/location"/>
-
-        <TextView
-            android:id="@+id/tv_gym_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/iv_0"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
-            android:text="选择我的位置 （可以获取更多关注哦）"/>
 
     </RelativeLayout>
 
